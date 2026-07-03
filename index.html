@@ -1,112 +1,67 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top 3 Leaderboard</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .leaderboard {
-            background: #1e293b;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            width: 350px;
-            text-align: center;
-        }
-        h2 { margin-bottom: 1.5rem; color: #38bdf8; }
-        .podium-item {
-            display: flex;
-            align-items: center;
-            background: #334155;
-            margin: 10px 0;
-            padding: 12px 16px;
-            border-radius: 8px;
-            transition: transform 0.2s;
-        }
-        .podium-item:hover { transform: scale(1.02); }
-        .position {
-            font-size: 1.2rem;
-            font-weight: bold;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-        /* Cores do Pódio */
-        .pos-1 { background: #eab308; color: #000; } /* Ouro */
-        .pos-2 { background: #cbd5e1; color: #000; } /* Prata */
-        .pos-3 { background: #b45309; color: #fff; } /* Bronze */
-        
-        .name { flex-grow: 1; text-align: left; font-weight: 500; }
-        .score { font-weight: bold; color: #38bdf8; }
-    </style>
-</head>
-<body>
+<script>
+    // Coloque o ID da sua planilha aqui
+    const SHEET_ID = '2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7'; 
+    
+    // URL da planilha publicada como Página da Web
+    const URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pubhtml`;
 
-    <div class="leaderboard">
-        <h2>🏆 Top 3 Atualizado</h2>
-        <div id="podium-container">Carregando pódio...</div>
-    </div>
+    async function fetchTop3() {
+        try {
+            const response = await fetch(URL);
+            if (!response.ok) throw new Error('Falha ao acessar a página da planilha');
+            
+            const htmlText = await response.text();
+            
+            // Criamos um elemento temporário para o JavaScript conseguir ler o HTML do Google
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+            
+            // Seleciona todas as linhas da tabela (tr) dentro da planilha
+            const rows = doc.querySelectorAll('table tbody tr');
+            let htmlContent = '';
+            
+            // Contador para garantir que pegamos apenas as 3 primeiras linhas válidas
+            let count = 0;
 
-    <script>
-        const SHEET_ID = '2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7';
-        // Buscando a primeira aba (pode mudar o nome se necessário)
-        const URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pubhtml?gid=277533887&single=true`;
+            for (let i = 0; i < rows.length; i++) {
+                if (count >= 3) break; // Para quando achar o Top 3
 
-        async function fetchTop3() {
-            try {
-                const response = await fetch(URL);
-                const text = await response.text();
+                const cells = rows[i].querySelectorAll('td');
                 
-                // O Google retorna um rascunho de objeto que precisamos limpar para virar JSON puro
-                const jsonText = text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1);
-                const data = JSON.parse(jsonText);
-                
-                // Mapeia as linhas da planilha
-                const rows = data.table.rows;
-                let htmlContent = '';
-
-                // Pegamos apenas os 3 primeiros (ou menos, se a planilha tiver menos)
-                const limit = Math.min(rows.length, 3);
-
-                for (let i = 0; i < limit; i++) {
-                    const name = rows[i].c[0] ? rows[i].c[0].v : 'N/A'; // Coluna A
-                    const score = rows[i].c[1] ? rows[i].c[1].v : 0;    // Coluna B
+                // Verifica se a linha tem pelo menos duas colunas preenchidas (Nome e Valor)
+                if (cells.length >= 2) {
+                    const name = cells[0].textContent.trim();  // Coluna A
+                    const score = cells[1].textContent.trim(); // Coluna B
                     
+                    // Pula linhas que estejam completamente vazias
+                    if (!name && !score) continue;
+
                     htmlContent += `
                         <div class="podium-item">
-                            <span class="position pos-${i+1}">${i+1}</span>
+                            <span class="position pos-${count + 1}">${count + 1}</span>
                             <span class="name">${name}</span>
                             <span class="score">${score}</span>
                         </div>
                     `;
+                    count++;
                 }
-
-                document.getElementById('podium-container').innerHTML = htmlContent;
-            } catch (error) {
-                console.error("Erro ao buscar dados:", error);
-                document.getElementById('podium-container').innerHTML = "Erro ao carregar dados.";
             }
-        }
 
-        // Carrega ao abrir a página
-        fetchTop3();
-        
-        // Atualiza automaticamente a cada 30 segundos
-        setInterval(fetchTop3, 30000);
-    </script>
-</body>
-</html>
+            if (count === 0) {
+                document.getElementById('podium-container').innerHTML = "Nenhum dado encontrado na planilha.";
+            } else {
+                document.getElementById('podium-container').innerHTML = htmlContent;
+            }
+
+        } catch (error) {
+            console.error("Erro ao buscar dados:", error);
+            document.getElementById('podium-container').innerHTML = "Erro ao carregar dados. Verifique o ID.";
+        }
+    }
+
+    // Executa ao carregar a página
+    fetchTop3();
+    
+    // Atualiza automaticamente a cada 30 segundos
+    setInterval(fetchTop3, 30000);
+</script>
