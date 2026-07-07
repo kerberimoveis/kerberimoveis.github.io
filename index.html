@@ -1,6 +1,9 @@
 <script>
+    // Coloque o ID da sua planilha aqui
+    const SHEET_ID = 'SEU_ID_DA_PLANILHA_AQUI'; 
+    
     // URL da planilha publicada como Página da Web
-    const URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pubhtml?gid=277533887&single=true`;
+    const URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pubhtml`;
 
     async function fetchTop3() {
         try {
@@ -9,49 +12,64 @@
             
             const htmlText = await response.text();
             
-            // Criamos um elemento temporário para o JavaScript conseguir ler o HTML do Google
+            // Parser para ler o HTML da planilha
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlText, 'text/html');
             
-            // Seleciona todas as linhas da tabela (tr) dentro da planilha
+            // Seleciona todas as linhas da tabela
             const rows = doc.querySelectorAll('table tbody tr');
-            let htmlContent = '';
             
-            // Contador para garantir que pegamos apenas as 3 primeiras linhas válidas
-            let count = 0;
+            // Array para armazenar todos os dados brutos da planilha
+            let allData = [];
 
             for (let i = 0; i < rows.length; i++) {
-                if (count >= 3) break; // Para quando achar o Top 3
-
                 const cells = rows[i].querySelectorAll('td');
                 
-                // Verifica se a linha tem pelo menos duas colunas preenchidas (Nome e Valor)
                 if (cells.length >= 2) {
-                    const name = cells[0].textContent.trim();  // Coluna A
-                    const score = cells[1].textContent.trim(); // Coluna B
+                    const name = cells[0].textContent.trim();
+                    let scoreText = cells[1].textContent.trim();
                     
-                    // Pula linhas que estejam completamente vazias
-                    if (!name && !score) continue;
+                    if (!name && !scoreText) continue; // Pula linhas vazias
 
-                    htmlContent += `
-                        <div class="podium-item">
-                            <span class="position pos-${count + 1}">${count + 1}</span>
-                            <span class="name">${name}</span>
-                            <span class="score">${score}</span>
-                        </div>
-                    `;
-                    count++;
+                    // Tratamento do número: remove pontos de milhar e troca vírgula decimal por ponto
+                    // Exemplo: "1.500,50" vira 1500.50 para o JavaScript conseguir calcular correto
+                    scoreText = scoreText.replace(/\./g, '').replace(',', '.');
+                    const score = parseFloat(scoreText);
+
+                    // Só adiciona se o nome for válido e o score for um número real
+                    if (name && !isNaN(score)) {
+                        allData.push({ name, score, originalScoreText: cells[1].textContent.trim() });
+                    }
                 }
             }
 
-            if (count === 0) {
-                document.getElementById('podium-container').innerHTML = "Nenhum dado encontrado na planilha.";
-            } else {
-                document.getElementById('podium-container').innerHTML = htmlContent;
+            // Ordena a lista inteira colocando os MAIORES valores no topo (ordem decrescente)
+            allData.sort((a, b) => b.score - a.score);
+
+            // Pega apenas os 3 primeiros da lista já ordenada
+            const top3 = allData.slice(0, 3);
+            let htmlContent = '';
+
+            if (top3.length === 0) {
+                document.getElementById('podium-container').innerHTML = "Nenhum dado válido encontrado.";
+                return;
             }
 
+            // Monta o HTML do pódio com o Top 3 real
+            top3.forEach((item, index) => {
+                htmlContent += `
+                    <div class="podium-item">
+                        <span class="position pos-${index + 1}">${index + 1}</span>
+                        <span class="name">${item.name}</span>
+                        <span class="score">${item.originalScoreText}</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('podium-container').innerHTML = htmlContent;
+
         } catch (error) {
-            console.error("Erro ao buscar dados:", error);
+            console.error("Erro ao processar dados:", error);
             document.getElementById('podium-container').innerHTML = "Erro ao carregar dados. Verifique o ID.";
         }
     }
