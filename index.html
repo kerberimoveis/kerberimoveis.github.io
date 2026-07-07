@@ -27,7 +27,7 @@
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             width: 100%;
-            max-width: 500px;
+            /* CORREÇÃO: Removida max-width duplicada */
             max-width: 600px;
             text-align: center;
         }
@@ -35,23 +35,26 @@
         .title-container {
             display: flex;
             justify-content: center; /* Centraliza o grupo horizontalmente */
-            align-items: baseline;    /* Centraliza verticalmente texto e imagem */
-            margin-top: 10px;       /* Controla a altura */
-            margin-bottom: 45px;    /* Distância até o pódio */
+            align-items: center;    /* ESTE É O ALINHAMENTO VERTICAL: Alinha o centro do texto com o centro da imagem */
+            margin-top: 10px;
+            margin-bottom: 45px;
         }
 
         h1 {
             color: #000000;
-            margin-top: 10;
-            margin-bottom: 45px;
+            /* CORREÇÃO: Removidas margens que devem ser controladas pelo contêiner pai (.title-container) */
+            margin: 0;
             font-size: 28px;
             font-weight: 700;
+            line-height: 1.2; /* NOVO: Garante que o texto tenha uma altura de linha consistente para o alinhamento */
         }
         
         .title-image {
-            width: 100px;           
+            /* AJUSTE: Reduzido o tamanho para alinhar melhor com o texto de 28px */
+            width: 50px;           
             height: auto;
             margin-left: 20px;
+            display: block; /* NOVO: Remove espaços em branco indesejados abaixo da imagem */
         }
         
         .podium {
@@ -59,7 +62,7 @@
             justify-content: space-between;
             align-items: flex-end;
             margin-bottom: 20px;
-            height: 200px;
+            /* CORREÇÃO: Removida height duplicada */
             height: 210px;
             padding: 10px;
         }
@@ -74,6 +77,7 @@
 
         .podium-place:hover {
             transform: translateY(-5px);
+            transition: transform 0.3s ease; /* CORREÇÃO: Removida propriedade duplicada */
         }
 
         .avatar {
@@ -119,29 +123,22 @@
             font-size: 20px;
             box-shadow: inset 0 -5px 0 rgba(0,0,0,0.1);
         }
-            .first .column { height: 100px; background: linear-gradient(135deg, #fcd34d, #f59e0b); }
-            .first .avatar { border-color: #f59e0b; background: #fef3c7; color: #d97706; }
 
+        /* CORREÇÃO: Removidas regras CSS duplicadas e mal formatadas abaixo */
         .first .column { height: 100px; background: linear-gradient(135deg, #fcd34d, #f59e0b); }
         .first .avatar { border-color: #f59e0b; background: #fef3c7; color: #d97706; }
-            .second .column { height: 75px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
-            .second .avatar { border-color: #94a3b8; background: #f1f5f9; color: #475569; }
 
         .second .column { height: 75px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
         .second .avatar { border-color: #94a3b8; background: #f1f5f9; color: #475569; }
-            .third .column { height: 50px; background: linear-gradient(135deg, #fdba74, #ea580c); }
-            .third .avatar { border-color: #ea580c; background: #fff7ed; color: #c2410c; }
 
         .third .column { height: 50px; background: linear-gradient(135deg, #fdba74, #ea580c); }
         .third .avatar { border-color: #ea580c; background: #fff7ed; color: #c2410c; }
 
         .loading, .error {
-            .loading, .error {
             color: #ffffff;
             font-size: 14px;
             padding: 20px;
         }
-            }
     </style>
 </head>
 <body>
@@ -149,6 +146,7 @@
 <div class="container">
     <div class="title-container">
         <h1>🏆 Top 3 Líderes de Vendas</h1>
+        <!-- AJUSTE: Certifique-se de que o caminho da imagem está correto -->
         <img src="LOGO KERBER.jpeg" class="title-image">
     </div>
     
