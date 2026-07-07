@@ -1,82 +1,224 @@
-<script>
-    // Coloque o ID da sua planilha aqui
-    const SHEET_ID = 'SEU_ID_DA_PLANILHA_AQUI'; 
+html_content_v2 = """<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 3 - Por Colunas</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1f2937;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .podium {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            height: 200px;
+            padding: 10px;
+        }
+
+        .podium-place {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 30%;
+            transition: transform 0.3s ease;
+        }
+
+        .podium-place:hover {
+            transform: translateY(-5px);
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+            border: 3px solid transparent;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4b5563;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .score {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        .column {
+            width: 100%;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            box-shadow: inset 0 -5px 0 rgba(0,0,0,0.1);
+        }
+
+        .first .column { height: 100px; background: linear-gradient(135deg, #fcd34d, #f59e0b); }
+        .first .avatar { border-color: #f59e0b; background: #fef3c7; color: #d97706; }
+
+        .second .column { height: 75px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
+        .second .avatar { border-color: #94a3b8; background: #f1f5f9; color: #475569; }
+
+        .third .column { height: 50px; background: linear-gradient(135deg, #fdba74, #ea580c); }
+        .third .avatar { border-color: #ea580c; background: #fff7ed; color: #c2410c; }
+
+        .loading, .error {
+            color: #6b7280;
+            font-size: 14px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏆 Top 3 Líderes de vendas</h1>
     
-    // URL da planilha publicada como Página da Web
-    const URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pubhtml`;
+    <div id="loading" class="loading">Carregando dados da planilha...</div>
+    <div id="error" class="error" style="display: none;">Erro ao carregar os dados. Verifique a configuração.</div>
 
-    async function fetchTop3() {
+    <div id="podium-container" class="podium" style="display: none;">
+        <!-- Segundo Lugar -->
+        <div class="podium-place second" id="place-2">
+            <div class="avatar" id="avatar-2">2º</div>
+            <div class="name" id="name-2">-</div>
+            <div class="score" id="score-2">0</div>
+            <div class="column">2</div>
+        </div>
+
+        <!-- Primeiro Lugar -->
+        <div class="podium-place first" id="place-1">
+            <div class="avatar" id="avatar-1">1º</div>
+            <div class="name" id="name-1">-</div>
+            <div class="score" id="score-1">0</div>
+            <div class="column">1</div>
+        </div>
+
+        <!-- Terceiro Lugar -->
+        <div class="podium-place third" id="place-3">
+            <div class="avatar" id="avatar-3">3º</div>
+            <div class="name" id="name-3">-</div>
+            <div class="score" id="score-3">0</div>
+            <div class="column">3</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ⚠️ SUBSTITUA PELO SEU LINK CSV PUBLICADO DO GOOGLE SHEETS
+    const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
+
+    // Converte o CSV quebrando em linhas e mapeando por índice de coluna
+    function csvToArrays(csvText) {
+        const lines = csvText.split('\\n');
+        const result = [];
+
+        // Ignora a linha 0 (cabeçalhos) e começa da linha 1 (dados reais)
+        for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue;
+            
+            const currentLine = lines[i].split(',');
+            
+            // Cria um objeto simplificado usando a ordem física das colunas
+            result.push({
+                nome: currentLine[0] ? currentLine[0].trim() : '',
+                valor: currentLine[1] ? currentLine[1].trim() : '0'
+            });
+        }
+        return result;
+    }
+
+    async function carregarTop3() {
         try {
-            const response = await fetch(URL);
-            if (!response.ok) throw new Error('Falha ao acessar a página da planilha');
+            const response = await fetch(URL_PLANILHA);
+            if (!response.ok) throw new Error('Erro na requisição');
             
-            const htmlText = await response.text();
-            
-            // Parser para ler o HTML da planilha
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, 'text/html');
-            
-            // Seleciona todas as linhas da tabela
-            const rows = doc.querySelectorAll('table tbody tr');
-            
-            // Array para armazenar todos os dados brutos da planilha
-            let allData = [];
+            const dataText = await response.text();
+            const listaItens = csvToArrays(dataText);
 
-            for (let i = 0; i < rows.length; i++) {
-                const cells = rows[i].querySelectorAll('td');
+            // Ordena de forma decrescente utilizando a segunda coluna convertida em número
+            listaItens.sort((a, b) => Number(b.valor) - Number(a.valor));
+
+            // Preenche as posições do pódio de 1 a 3
+            for (let i = 0; i < 3; i++) {
+                const item = listaItens[i];
+                const posicao = i + 1;
                 
-                if (cells.length >= 2) {
-                    const name = cells[0].textContent.trim();
-                    let scoreText = cells[1].textContent.trim();
-                    
-                    if (!name && !scoreText) continue; // Pula linhas vazias
-
-                    // Tratamento do número: remove pontos de milhar e troca vírgula decimal por ponto
-                    // Exemplo: "1.500,50" vira 1500.50 para o JavaScript conseguir calcular correto
-                    scoreText = scoreText.replace(/\./g, '').replace(',', '.');
-                    const score = parseFloat(scoreText);
-
-                    // Só adiciona se o nome for válido e o score for um número real
-                    if (name && !isNaN(score)) {
-                        allData.push({ name, score, originalScoreText: cells[1].textContent.trim() });
-                    }
+                if (item) {
+                    document.getElementById(`name-${posicao}`).innerText = item.nome || 'Sem Nome';
+                    document.getElementById(`score-${posicao}`).innerText = item.valor || '0';
+                } else {
+                    document.getElementById(`name-${posicao}`).innerText = 'N/A';
+                    document.getElementById(`score-${posicao}`).innerText = '-';
                 }
             }
 
-            // Ordena a lista inteira colocando os MAIORES valores no topo (ordem decrescente)
-            allData.sort((a, b) => b.score - a.score);
-
-            // Pega apenas os 3 primeiros da lista já ordenada
-            const top3 = allData.slice(0, 3);
-            let htmlContent = '';
-
-            if (top3.length === 0) {
-                document.getElementById('podium-container').innerHTML = "Nenhum dado válido encontrado.";
-                return;
-            }
-
-            // Monta o HTML do pódio com o Top 3 real
-            top3.forEach((item, index) => {
-                htmlContent += `
-                    <div class="podium-item">
-                        <span class="position pos-${index + 1}">${index + 1}</span>
-                        <span class="name">${item.name}</span>
-                        <span class="score">${item.originalScoreText}</span>
-                    </div>
-                `;
-            });
-
-            document.getElementById('podium-container').innerHTML = htmlContent;
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('podium-container').style.display = 'flex';
 
         } catch (error) {
-            console.error("Erro ao processar dados:", error);
-            document.getElementById('podium-container').innerHTML = "Erro ao carregar dados. Verifique o ID.";
+            console.error(error);
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
         }
     }
 
-    // Executa ao carregar a página
-    fetchTop3();
-    
-    // Atualiza automaticamente a cada 30 segundos
-    setInterval(fetchTop3, 30000);
+    carregarTop3();
 </script>
+</body>
+</html>
+"""
+
+with open("index-v2.html", "w", encoding="utf-8") as f:
+    f.write(html_content_v2)
+print("Updated file generated successfully")
