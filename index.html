@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top 3 - Por Colunas</title>
+    <title>Top 3 Líderes de Vendas</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,7 +13,7 @@
         }
 
         body {
-            background-color: #f3f4f6;
+            background-color: #fc8803;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -22,7 +22,7 @@
         }
 
         .container {
-            background: white;
+            background: black;
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
@@ -122,7 +122,7 @@
 <body>
 
 <div class="container">
-    <h1>🏆 Top 3 Líderes de vendas</h1>
+    <h1>🏆 Top 3 Líderes</h1>
     
     <div id="loading" class="loading">Carregando dados da planilha...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados. Verifique a configuração.</div>
@@ -156,7 +156,7 @@
 
 <script>
     // ⚠️ SUBSTITUA PELO SEU LINK CSV PUBLICADO DO GOOGLE SHEETS
-    const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
+    const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQxxxxxx/pub?output=csv';
 
     // Converte o CSV quebrando em linhas e mapeando por índice de coluna
     function csvToArrays(csvText) {
