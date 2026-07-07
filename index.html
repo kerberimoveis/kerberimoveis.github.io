@@ -140,7 +140,7 @@
         }
 
         .first .column { height: 140px; background: linear-gradient(135deg, #fcd34d, #f59e0b); }
-        .first .avatar { border-color: #f59e0b; background-color: #fef3c7; color: #d97706; }
+        .first .avatar { border-color: #f59e0b; background-color: #fef3c7; color: #ffd700; }
         .first .badge { background-color: #f59e0b; }
 
         .second .column { height: 105px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
@@ -162,7 +162,7 @@
 
 <div class="container">
     <div class="title-container">
-        <h1>🏆 Top 3 Líderes de Vendas</h1>
+        <h1>🏆 TOP 3 LÍDERES DE VENDAS</h1>
         <img src="LOGO KERBER.jpeg" class="title-image">
     </div>
     
@@ -299,6 +299,8 @@
                     
                     if (item.foto && item.foto.trim() !== '') {
                         avatarElement.style.backgroundImage = `url('FOTOS/${item.foto}')`;
+                        avatarElement.style.backgroundPosition = 'center';
+                        avatarElement.style.backgroundSize = 'cover';
                         avatarElement.childNodes[0].textContent = ''; 
                     } else {
                         avatarElement.style.backgroundImage = 'none';
