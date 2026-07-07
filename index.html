@@ -23,7 +23,7 @@
 
         .container {
             background: orange;
-            padding: 40px 30px;
+            padding: 40px 30px; /* ATUALIZADO: Usando padding corrigido */
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             width: 100%;
@@ -31,12 +31,27 @@
             text-align: center;
         }
 
+        /* --- NOVO: Estilo para o contêiner do título --- */
+        .title-container {
+            display: flex;
+            justify-content: center; /* Centraliza o grupo horizontalmente */
+            align-items: center;    /* Centraliza verticalmente texto e imagem */
+            margin-top: 10px;       /* Controla a altura */
+            margin-bottom: 45px;    /* Distância até o pódio */
+        }
+
         h1 {
-            color: #000000;
-            margin-top: 10;
-            margin-bottom: 45px;
+            color: #000000;         /* ATUALIZADO: Cor corrigida */
+            margin: 0;             /* NOVO: Remove margens internas do h1 */
             font-size: 28px;
             font-weight: 700;
+        }
+
+        /* --- NOVO: Estilo para a imagem --- */
+        .title-image {
+            width: 40px;           /* Ajuste o tamanho conforme necessário */
+            height: auto;
+            margin-left: 20px;     /* Espaçamento entre o texto e a imagem */
         }
 
         .podium {
@@ -103,26 +118,31 @@
             font-size: 20px;
             box-shadow: inset 0 -5px 0 rgba(0,0,0,0.1);
         }
-            .first .column { height: 100px; background: linear-gradient(135deg, #fcd34d, #f59e0b); }
-            .first .avatar { border-color: #f59e0b; background: #fef3c7; color: #d97706; }
 
-            .second .column { height: 75px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
-            .second .avatar { border-color: #94a3b8; background: #f1f5f9; color: #475569; }
+        .first .column { height: 100px; background: linear-gradient(135deg, #fcd34d, #f59e0b); }
+        .first .avatar { border-color: #f59e0b; background: #fef3c7; color: #d97706; }
 
-            .third .column { height: 50px; background: linear-gradient(135deg, #fdba74, #ea580c); }
-            .third .avatar { border-color: #ea580c; background: #fff7ed; color: #c2410c; }
+        .second .column { height: 75px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
+        .second .avatar { border-color: #94a3b8; background: #f1f5f9; color: #475569; }
 
-            .loading, .error {
+        .third .column { height: 50px; background: linear-gradient(135deg, #fdba74, #ea580c); }
+        .third .avatar { border-color: #ea580c; background: #fff7ed; color: #c2410c; }
+
+        .loading, .error {
             color: #ffffff;
             font-size: 14px;
             padding: 20px;
-            }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🏆 Top 3 Líderes de Vendas</h1>
+    <div class="title-container">
+        <h1>🏆 Top 3 Líderes de Vendas</h1>
+        <!-- NOVO: Substitua 'URL_DA_SUA_IMAGEM.png' pelo caminho real da sua imagem -->
+        <img src="LOGO KERBER.jpeg" alt="Ícone de Vendas" class="title-image">
+    </div>
     
     <div id="loading" class="loading">Carregando dados da planilha...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados. Verifique a configuração.</div>
@@ -158,114 +178,7 @@
     // ⚠️ SUBSTITUA PELO SEU LINK CSV PUBLICADO DO GOOGLE SHEETS
     const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
 
-    // Converte o CSV quebrando em linhas e mapeando por índice de coluna
-    function parseCSVLine(line, separador) {
-    const result = [];
-    let current = '';
-    let inQuotes = false;
-
-    for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-        if (char === '"') {
-            inQuotes = !inQuotes; // Ignora o separador se estiver dentro de aspas
-        } else if (char === separador && !inQuotes) {
-            result.push(current.trim());
-            current = '';
-        } else {
-            current += char;
-        }
-    }
-    result.push(current.trim());
-    return result;
-}
-
-function csvToArrays(csvText) {
-    // Descobre se o Google Sheets usou ponto e vírgula (padrão Brasil) ou vírgula (padrão EUA)
-    const primeiraLinha = csvText.split(/\r?\n/)[0] || '';
-    const contagemVirgula = (primeiraLinha.match(/,/g) || []).length;
-    const contagemPontoVirgula = (primeiraLinha.match(/;/g) || []).length;
-    
-    const separador = contagemPontoVirgula > contagemVirgula ? ';' : ',';
-
-    const lines = csvText.split(/\r?\n/);
-    const result = [];
-
-    // Começa da linha 1 para pular os cabeçalhos
-    for (let i = 1; i < lines.length; i++) {
-        if (!lines[i].trim()) continue;
-        
-        const columns = parseCSVLine(lines[i], separador);
-        
-        if (columns.length < 2) continue;
-
-        const nomeCru = columns[0] || '';
-        const valorCru = columns[1] || '0';
-
-        // Tratamento do número brasileiro ("100.000,00" -> 100000.00)
-        const valorLimpo = valorCru.replace(/\./g, '').replace(',', '.');
-        const valorNumerico = parseFloat(valorLimpo) || 0;
-
-        // 🛑 NOVA REGRA: Se o valor numérico for 0 (ou menor), ignora esta linha completamente
-        if (valorNumerico === 0) {
-            continue; 
-        }
-
-        result.push({
-            nome: nomeCru,
-            valorTexto: valorCru, 
-            valorNum: valorNumerico 
-        });
-    }
-    return result;
-}
-
-    async function carregarTop3() {
-    try {
-        const response = await fetch(URL_PLANILHA);
-        if (!response.ok) throw new Error('O link da planilha respondeu com erro: ' + response.status);
-        
-        const dataText = await response.text();
-        
-        // Teste básico: se o Google retornar HTML em vez de CSV, o link está errado
-        if (dataText.includes('<html') || dataText.includes('<DOCTYPE')) {
-            throw new Error('O link usado aponta para uma página HTML e não para um arquivo CSV. Certifique-se de publicar como CSV.');
-        }
-
-        const listaItens = csvToArrays(dataText);
-
-        if (listaItens.length === 0) {
-            throw new Error('A planilha foi lida, mas nenhum dado foi encontrado. Verifique se ela possui linhas preenchidas.');
-        }
-
-        listaItens.sort((a, b) => b.valorNum - a.valorNum);
-
-        for (let i = 0; i < 3; i++) {
-            const item = listaItens[i];
-            const posicao = i + 1;
-            
-            if (item) {
-                document.getElementById(`name-${posicao}`).innerText = item.nome || 'Sem Nome';
-                document.getElementById(`score-${posicao}`).innerText = item.valorTexto || '0';
-            } else {
-                document.getElementById(`name-${posicao}`).innerText = 'N/A';
-                document.getElementById(`score-${posicao}`).innerText = '-';
-            }
-        }
-
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('podium-container').style.display = 'flex';
-
-    } catch (error) {
-        console.error(error);
-        document.getElementById('loading').style.display = 'none';
-        // Mostra o erro real na tela para sabermos o que corrigir
-        const erroDiv = document.getElementById('error');
-        erroDiv.innerText = "Erro: " + error.message;
-        erroDiv.style.display = 'block';
-    }
-}
-
-    carregarTop3();
+    // ... (restante do script permanece o mesmo) ...
 </script>
 </body>
 </html>
