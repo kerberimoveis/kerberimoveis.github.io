@@ -13,7 +13,7 @@
         }
 
         body {
-            background-color: #000000;
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -122,7 +122,7 @@
 <body>
 
 <div class="container">
-    <h1>🏆 Top 3 Líderes</h1>
+    <h1>🏆 Top 3 Líderes de Vendas</h1>
     
     <div id="loading" class="loading">Carregando dados da planilha...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados. Verifique a configuração.</div>
@@ -181,33 +181,34 @@
 
 function csvToArrays(csvText) {
     // Descobre se o Google Sheets usou ponto e vírgula (padrão Brasil) ou vírgula (padrão EUA)
-    // Procuramos na primeira linha qual caractere aparece mais
     const primeiraLinha = csvText.split(/\r?\n/)[0] || '';
     const contagemVirgula = (primeiraLinha.match(/,/g) || []).length;
     const contagemPontoVirgula = (primeiraLinha.match(/;/g) || []).length;
     
-    // Define o separador correto dinamicamente
     const separador = contagemPontoVirgula > contagemVirgula ? ';' : ',';
 
     const lines = csvText.split(/\r?\n/);
     const result = [];
 
-    // Começa da linha 1 para pular os cabeçalhos (Nome, Valor)
+    // Começa da linha 1 para pular os cabeçalhos
     for (let i = 1; i < lines.length; i++) {
         if (!lines[i].trim()) continue;
         
         const columns = parseCSVLine(lines[i], separador);
         
-        // Garante que existem pelo menos duas colunas preenchidas na linha
         if (columns.length < 2) continue;
 
         const nomeCru = columns[0] || '';
         const valorCru = columns[1] || '0';
 
         // Tratamento do número brasileiro ("100.000,00" -> 100000.00)
-        // Remove pontos de milhar e troca vírgula decimal por ponto para o JS entender
         const valorLimpo = valorCru.replace(/\./g, '').replace(',', '.');
         const valorNumerico = parseFloat(valorLimpo) || 0;
+
+        // 🛑 NOVA REGRA: Se o valor numérico for 0 (ou menor), ignora esta linha completamente
+        if (valorNumerico === 0) {
+            continue; 
+        }
 
         result.push({
             nome: nomeCru,
