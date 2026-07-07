@@ -13,7 +13,7 @@
         }
 
         body {
-            background-color: #fc8803;
+            background-color: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -22,7 +22,7 @@
         }
 
         .container {
-            background: black;
+            background: orange;
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
@@ -179,39 +179,50 @@
     }
 
     async function carregarTop3() {
-        try {
-            const response = await fetch(URL_PLANILHA);
-            if (!response.ok) throw new Error('Erro na requisição');
-            
-            const dataText = await response.text();
-            const listaItens = csvToArrays(dataText);
-
-            // Ordena de forma decrescente utilizando a segunda coluna convertida em número
-            listaItens.sort((a, b) => Number(b.valor) - Number(a.valor));
-
-            // Preenche as posições do pódio de 1 a 3
-            for (let i = 0; i < 3; i++) {
-                const item = listaItens[i];
-                const posicao = i + 1;
-                
-                if (item) {
-                    document.getElementById(`name-${posicao}`).innerText = item.nome || 'Sem Nome';
-                    document.getElementById(`score-${posicao}`).innerText = item.valor || '0';
-                } else {
-                    document.getElementById(`name-${posicao}`).innerText = 'N/A';
-                    document.getElementById(`score-${posicao}`).innerText = '-';
-                }
-            }
-
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('podium-container').style.display = 'flex';
-
-        } catch (error) {
-            console.error(error);
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
+    try {
+        const response = await fetch(URL_PLANILHA);
+        if (!response.ok) throw new Error('O link da planilha respondeu com erro: ' + response.status);
+        
+        const dataText = await response.text();
+        
+        // Teste básico: se o Google retornar HTML em vez de CSV, o link está errado
+        if (dataText.includes('<html') || dataText.includes('<DOCTYPE')) {
+            throw new Error('O link usado aponta para uma página HTML e não para um arquivo CSV. Certifique-se de publicar como CSV.');
         }
+
+        const listaItens = csvToArrays(dataText);
+
+        if (listaItens.length === 0) {
+            throw new Error('A planilha foi lida, mas nenhum dado foi encontrado. Verifique se ela possui linhas preenchidas.');
+        }
+
+        listaItens.sort((a, b) => b.valorNum - a.valorNum);
+
+        for (let i = 0; i < 3; i++) {
+            const item = listaItens[i];
+            const posicao = i + 1;
+            
+            if (item) {
+                document.getElementById(`name-${posicao}`).innerText = item.nome || 'Sem Nome';
+                document.getElementById(`score-${posicao}`).innerText = item.valorTexto || '0';
+            } else {
+                document.getElementById(`name-${posicao}`).innerText = 'N/A';
+                document.getElementById(`score-${posicao}`).innerText = '-';
+            }
+        }
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('podium-container').style.display = 'flex';
+
+    } catch (error) {
+        console.error(error);
+        document.getElementById('loading').style.display = 'none';
+        // Mostra o erro real na tela para sabermos o que corrigir
+        const erroDiv = document.getElementById('error');
+        erroDiv.innerText = "Erro: " + error.message;
+        erroDiv.style.display = 'block';
     }
+}
 
     carregarTop3();
 </script>
