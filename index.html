@@ -166,7 +166,7 @@
         <img src="LOGO KERBER.jpeg" class="title-image">
     </div>
     
-    <div id="loading" class="loading">Carregando dados da planilha...</div>
+    <div id="loading" class="loading">Carregando dados das planilhas...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados. Verifique a configuração.</div>
 
     <div id="podium-container" class="podium" style="display: none;">
@@ -197,7 +197,9 @@
 </div>
 
 <script>
-    const URL_PLANILHA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
+    // Links das duas planilhas publicadas como CSV
+    const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
+    const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv'; // <--- Substitua pelo link CSV da sua segunda planilha
 
     function parseCSVLine(line, separador) {
         const result = [];
@@ -237,7 +239,7 @@
 
             const nomeCru = columns[0] || '';
             const valorCru = columns[1] || '0';
-            const nomeFotoArquivo = columns[2] || ''; // Captura apenas o nome do arquivo da planilha (ex: joao.png)
+            const nomeFotoArquivo = columns[2] || ''; 
 
             const valorLimpo = valorCru.replace(/\./g, '').replace(',', '.');
             const valorNumerico = parseFloat(valorLimpo) || 0;
@@ -256,25 +258,38 @@
 
     async function carregarTop3() {
         try {
-            const response = await fetch(URL_PLANILHA);
-            if (!response.ok) throw new Error('O link da planilha respondeu com erro: ' + response.status);
+            // Realiza a chamada das duas planilhas simultaneamente
+            const [response1, response2] = await Promise.all([
+                fetch(URL_PLANILHA_1),
+                fetch(URL_PLANILHA_2)
+            ]);
 
-            const dataText = await response.text();
+            if (!response1.ok) throw new Error('A Planilha 1 respondeu com erro.');
+            if (!response2.ok) throw new Error('A Planilha 2 respondeu com erro.');
 
-            if (dataText.includes('<html') || dataText.includes('<DOCTYPE')) {
-                throw new Error('O link usado aponta para uma página HTML e não para um arquivo CSV.');
+            const dataText1 = await response1.text();
+            const dataText2 = await response2.text();
+
+            if (dataText1.includes('<html') || dataText1.includes('<DOCTYPE') || dataText2.includes('<html') || dataText2.includes('<DOCTYPE')) {
+                throw new Error('Um dos links usados aponta para uma página HTML e não para um arquivo CSV.');
             }
 
-            const listaItens = csvToArrays(dataText);
+            // Converte os dados de cada planilha
+            const listaItens1 = csvToArrays(dataText1);
+            const listaItens2 = csvToArrays(dataText2);
 
-            if (listaItens.length === 0) {
-                throw new Error('Nenhum dado encontrado na planilha.');
+            // Junta as duas listas em uma só
+            const listaCompleta = listaItens1.concat(listaItens2);
+
+            if (listaCompleta.length === 0) {
+                throw new Error('Nenhum dado encontrado nas planilhas.');
             }
 
-            listaItens.sort((a, b) => b.valorNum - a.valorNum);
+            // Ordena a lista unificada do maior valor para o menor
+            listaCompleta.sort((a, b) => b.valorNum - a.valorNum);
 
             for (let i = 0; i < 3; i++) {
-                const item = listaItens[i];
+                const item = listaCompleta[i];
                 const posicao = i + 1;
                 const avatarElement = document.getElementById(`avatar-${posicao}`);
 
@@ -282,7 +297,6 @@
                     document.getElementById(`name-${posicao}`).innerText = item.nome || 'Sem Nome';
                     document.getElementById(`score-${posicao}`).innerText = item.valorTexto || '0';
                     
-                    // MODIFICADO: Agora aponta para a pasta local FOTOS/nome-do-arquivo
                     if (item.foto && item.foto.trim() !== '') {
                         avatarElement.style.backgroundImage = `url('FOTOS/${item.foto}')`;
                         avatarElement.childNodes[0].textContent = ''; 
