@@ -24,7 +24,6 @@
         .container {
             background: orange;
             padding: 30px;
-            padding: 40px 30px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             width: 100%;
@@ -33,15 +32,28 @@
             text-align: center;
         }
 
+        .title-container {
+            display: flex;
+            justify-content: center; /* Centraliza o grupo horizontalmente */
+            align-items: center;    /* Centraliza verticalmente texto e imagem */
+            margin-top: 10px;       /* Controla a altura */
+            margin-bottom: 45px;    /* Distância até o pódio */
+        }
+
         h1 {
             color: #000000;
-            margin-bottom: 30px;
             margin-top: 10;
             margin-bottom: 45px;
             font-size: 28px;
             font-weight: 700;
         }
-
+        
+        .title-image {
+            width: auto;           
+            height: auto;
+            margin-left: 15px;
+        }
+        
         .podium {
             display: flex;
             justify-content: space-between;
@@ -135,8 +147,11 @@
 <body>
 
 <div class="container">
-    <h1>🏆 Top 3 Líderes de Vendas</h1>
-
+    <div class="title-container">
+        <h1>🏆 Top 3 Líderes de Vendas</h1>
+        <img src="LOGO KERBER.jpeg" class="title-image">
+    </div>
+    
     <div id="loading" class="loading">Carregando dados da planilha...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados. Verifique a configuração.</div>
 
