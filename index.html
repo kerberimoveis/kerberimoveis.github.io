@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top 3 Líderes de Vendas</title>
+    <title>Ranking do VGV</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,191 +13,140 @@
         }
 
         body {
-            background-color: black;
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .container {
-            background: orange;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            width: 100%;
-            max-width: 1000px;
-            text-align: center;
-        }
-
-        .title-container {
-            display: flex;
-            justify-content: center;
-            align-items: center; 
-            margin-top: 10px;
-            margin-bottom: 45px;
-        }
-
-        h1 {
-            color: #000000;
-            margin: 0;
-            font-size: 48px;
-            font-weight: 800;
-            line-height: 1.2;
-        }
-        
-        .title-image {
-            width: 80px;           
-            height: auto;
-            margin-left: 20px;
-            display: block;
-        }
-        
-        .podium {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 20px;
-            height: 340px;
-            padding: 10px;
-        }
-
-        .podium-place {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 30%;
-            transition: transform 0.3s ease;
-        }
-
-        .podium-place:hover {
-            transform: translateY(-5px);
-        }
-
-        .avatar {
-            width: 120px; 
-            height: 120px;
-            border-radius: 50%;
-            background: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 32px;
-            margin-bottom: 8px;
-            border: 3px solid transparent;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            background-size: cover;
+        /* O container agora usa a imagem enviada como plano de fundo fixo */
+        .screen-container {
+            width: 1920px;
+            height: 1080px;
+            background-image: url('BACKGROUND RANKING SITE.jpg');
+            background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
             position: relative;
+            /* Se quiser que ele se ajuste a telas menores proporcionalmente: */
+            zoom: 1; 
         }
 
-        .badge {
+        /* Posicionamento estratégico absoluto por cima das molduras da imagem */
+        .podium-layer {
             position: absolute;
-            bottom: -5px;
-            right: -5px;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            font-size: 14px;
+            top: 250px;
+            right: 35px;
+            width: 535px;
+            height: 520px;
             display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .podium-slot {
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            border: 2px solid white;
+            width: 165px;
+            position: relative;
+        }
+
+        /* Ajustes finos individuais para alinhar milimetricamente com cada oval da imagem */
+        #slot-2 { margin-top: 110px; } /* 2º Lugar */
+        #slot-1 { margin-top: 0px; }   /* 1º Lugar */
+        #slot-3 { margin-top: 110px; } /* 3º Lugar */
+
+        /* A foto se torna oval para casar perfeitamente com o desenho de fundo */
+        .avatar-photo {
+            width: 96px;
+            height: 125px;
+            border-radius: 50% / 50%;
+            background-color: transparent;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin-top: 100px; /* Empurra a foto para o centro da moldura dourada */
+        }
+
+        /* Legendas posicionadas logo abaixo dos blocos pretos */
+        .legend-container {
+            margin-top: 135px; /* Empurra o texto para fora e abaixo do bloco preto */
+            text-align: center;
+            width: 190px;
         }
 
         .name {
-            font-size: 36px; 
-            font-weight: 600;
-            color: #ffffff;
-            max-width: 100%;
+            font-size: 22px;
+            font-weight: 700;
+            color: #000000;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            margin-bottom: 2px;
         }
 
         .score {
-            font-size: 32px;
-            color: black
-            margin-bottom: 10px;
+            font-size: 19px;
+            font-weight: 600;
+            color: #e67e22; /* Tom alaranjado elegante para destacar o valor */
         }
-
-        .column {
-            width: 100%;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-            box-shadow: inset 0 -5px 0 rgba(0,0,0,0.1);
-        }
-
-        .first .column { height: 140px; background: linear-gradient(135deg, #fcd34d, #f59e0b); }
-        .first .avatar { border-color: #f59e0b; background-color: #fef3c7; color: #ffd700; }
-        .first .badge { background-color: #f59e0b; }
-
-        .second .column { height: 105px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
-        .second .avatar { border-color: #94a3b8; background-color: #f1f5f9; color: #475569; }
-        .second .badge { background-color: #94a3b8; }
-
-        .third .column { height: 70px; background: linear-gradient(135deg, #fdba74, #ea580c); }
-        .third .avatar { border-color: #ea580c; background-color: #fff7ed; color: #c2410c; }
-        .third .badge { background-color: #ea580c; }
 
         .loading, .error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
             color: #ffffff;
-            font-size: 14px;
-            padding: 20px;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="title-container">
-        <h1>🏆 TOP 3 LÍDERES DE VENDAS</h1>
-        <img src="LOGO KERBER.jpeg" class="title-image">
-    </div>
+<div class="screen-container">
     
-    <div id="loading" class="loading">Carregando dados das planilhas...</div>
-    <div id="error" class="error" style="display: none;">Erro ao carregar os dados. Verifique a configuração.</div>
+    <div id="loading" class="loading">Carregando dados...</div>
+    <div id="error" class="error" style="display: none;">Erro ao carregar os dados.</div>
 
-    <div id="podium-container" class="podium" style="display: none;">
-        <!-- Segundo Lugar -->
-        <div class="podium-place second" id="place-2">
-            <div class="avatar" id="avatar-2">2º<div class="badge">2º</div></div>
-            <div class="name" id="name-2">-</div>
-            <div class="score" id="score-2">0</div>
-            <div class="column">2</div>
+    <div id="podium-container" class="podium-layer" style="display: none;">
+        
+        <!-- Segundo Lugar (Esquerda) -->
+        <div class="podium-slot" id="slot-2">
+            <div class="avatar-photo" id="photo-2"></div>
+            <div class="legend-container">
+                <div class="name" id="name-2">-</div>
+                <div class="score" id="score-2">0</div>
+            </div>
         </div>
 
-        <!-- Primeiro Lugar -->
-        <div class="podium-place first" id="place-1">
-            <div class="avatar" id="avatar-1">1º<div class="badge">1º</div></div>
-            <div class="name" id="name-1">-</div>
-            <div class="score" id="score-1">0</div>
-            <div class="column">1</div>
+        <!-- Primeiro Lugar (Centro) -->
+        <div class="podium-slot" id="slot-1">
+            <div class="avatar-photo" id="photo-1"></div>
+            <div class="legend-container">
+                <div class="name" id="name-1">-</div>
+                <div class="score" id="score-1">0</div>
+            </div>
         </div>
 
-        <!-- Terceiro Lugar -->
-        <div class="podium-place third" id="place-3">
-            <div class="avatar" id="avatar-3">3º<div class="badge">3º</div></div>
-            <div class="name" id="name-3">-</div>
-            <div class="score" id="score-3">0</div>
-            <div class="column">3</div>
+        <!-- Terceiro Lugar (Direita) -->
+        <div class="podium-slot" id="slot-3">
+            <div class="avatar-photo" id="photo-3"></div>
+            <div class="legend-container">
+                <div class="name" id="name-3">-</div>
+                <div class="score" id="score-3">0</div>
+            </div>
         </div>
+
     </div>
 </div>
 
 <script>
-    // Links das duas planilhas publicadas como CSV
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
     const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv'; // <--- Substitua pelo link CSV da sua segunda planilha
 
@@ -258,59 +207,50 @@
 
     async function carregarTop3() {
         try {
-            // Realiza a chamada das duas planilhas simultaneamente
             const [response1, response2] = await Promise.all([
                 fetch(URL_PLANILHA_1),
                 fetch(URL_PLANILHA_2)
             ]);
 
-            if (!response1.ok) throw new Error('A Planilha 1 respondeu com erro.');
-            if (!response2.ok) throw new Error('A Planilha 2 respondeu com erro.');
+            if (!response1.ok || !response2.ok) throw new Error('Erro ao buscar dados das planilhas.');
 
             const dataText1 = await response1.text();
             const dataText2 = await response2.text();
 
-            if (dataText1.includes('<html') || dataText1.includes('<DOCTYPE') || dataText2.includes('<html') || dataText2.includes('<DOCTYPE')) {
-                throw new Error('Um dos links usados aponta para uma página HTML e não para um arquivo CSV.');
+            if (dataText1.includes('<html') || dataText2.includes('<html')) {
+                throw new Error('Um dos links retornou HTML em vez de CSV.');
             }
 
-            // Converte os dados de cada planilha
             const listaItens1 = csvToArrays(dataText1);
             const listaItens2 = csvToArrays(dataText2);
-
-            // Junta as duas listas em uma só
             const listaCompleta = listaItens1.concat(listaItens2);
 
             if (listaCompleta.length === 0) {
-                throw new Error('Nenhum dado encontrado nas planilhas.');
+                throw new Error('Nenhum dado encontrado.');
             }
 
-            // Ordena a lista unificada do maior valor para o menor
             listaCompleta.sort((a, b) => b.valorNum - a.valorNum);
 
             for (let i = 0; i < 3; i++) {
                 const item = listaCompleta[i];
                 const posicao = i + 1;
-                const avatarElement = document.getElementById(`avatar-${posicao}`);
+                const photoElement = document.getElementById(`photo-${posicao}`);
 
                 if (item) {
                     document.getElementById(`name-${posicao}`).innerText = item.nome || 'Sem Nome';
                     document.getElementById(`score-${posicao}`).innerText = item.valorTexto || '0';
                     
                     if (item.foto && item.foto.trim() !== '') {
-                        avatarElement.style.backgroundImage = `url('FOTOS/${item.foto}')`;
-                        avatarElement.style.backgroundPosition = 'center';
-                        avatarElement.style.backgroundSize = 'cover';
-                        avatarElement.childNodes[0].textContent = ''; 
+                        photoElement.style.backgroundImage = `url('FOTOS/${item.foto}')`;
+                        photoElement.style.backgroundPosition = 'center';
+                        photoElement.style.backgroundSize = 'cover';
                     } else {
-                        avatarElement.style.backgroundImage = 'none';
-                        avatarElement.childNodes[0].textContent = `${posicao}º`;
+                        photoElement.style.backgroundImage = 'none';
                     }
                 } else {
                     document.getElementById(`name-${posicao}`).innerText = 'N/A';
                     document.getElementById(`score-${posicao}`).innerText = '-';
-                    avatarElement.style.backgroundImage = 'none';
-                    avatarElement.childNodes[0].textContent = `${posicao}º`;
+                    photoElement.style.backgroundImage = 'none';
                 }
             }
 
