@@ -12,9 +12,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Trava a tela do navegador para evitar rolagens e centralizar o painel */
+        /* Preenche a tela e centraliza o container do ranking */
         body {
-            background-color: #0b0b0b; /* Fundo escuro elegante de segurança */
+            background-color: #0d0d0d;
             min-height: 100vh;
             width: 100vw;
             display: flex;
@@ -23,92 +23,100 @@
             overflow: hidden;
         }
 
-        /* O CONTAINER AGORA É FIXADO EXATAMENTE NO TAMANHO DA SUA IMAGEM */
+        /* Container travado na proporção real da imagem (1920x1080) */
         .screen-container {
             width: 1920px;
             height: 1080px;
             background-image: url('BACKGROUND%20RANKING%20SITE.png');
-            background-size: 100% 100%; /* Garante o encaixe milimétrico nos limites horizontais/verticais */
+            background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
             position: relative;
-            flex-shrink: 0; /* Impede que o navegador esmague o container */
-            
-            /* Efeito de escala automática caso a tela do monitor seja menor que 1080p */
+            flex-shrink: 0;
             transform-origin: center center;
         }
 
-        /* Posicionamento estratégico absoluto por cima das molduras da imagem */
-        .podium-layer {
-            position: absolute;
-            top: 250px;
-            right: 35px;
-            width: 535px;
-            height: 520px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
+        /* Estilização dos Blocos do Pódio (Áreas de conteúdo sobrepostas às caixas pretas) */
         .podium-slot {
+            position: absolute;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 165px;
-            position: relative;
         }
 
-        /* Ajustes finos individuais para alinhar milimetricamente com cada oval da imagem */
-        #slot-2 { margin-top: 110px; } /* 2º Lugar */
-        #slot-1 { margin-top: 0px; }   /* 1º Lugar */
-        #slot-3 { margin-top: 110px; } /* 3º Lugar */
-
-        /* A foto se torna oval para casar perfeitamente com o desenho de fundo */
+        /* Ajuste do tamanho dos Avatares para encaixar dentro do contorno das caixas */
         .avatar-photo {
-            width: 96px;
-            height: 125px;
-            border-radius: 50% / 50%;
+            width: 250px;
+            height: 250px;
+            border-radius: 25px; /* Cantos arredondados combinando com os blocos */
             background-color: transparent;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            margin-top: 100px; /* Empurra a foto para o centro da moldura dourada */
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
         }
 
-        /* Legendas posicionadas logo abaixo dos blocos pretos */
+        /* Textos centralizados dentro dos blocos escuros */
         .legend-container {
-            margin-top: 135px; /* Empurra o texto para fora e abaixo do bloco preto */
             text-align: center;
-            width: 190px;
+            width: 280px;
         }
 
         .name {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 700;
-            color: #000000;
+            color: #ffffff; /* Texto branco para leitura perfeita no fundo preto */
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            margin-bottom: 2px;
+            margin-bottom: 5px;
         }
 
         .score {
-            font-size: 19px;
-            font-weight: 600;
-            color: #e67e22; /* Tom alaranjado elegante para destacar o valor */
+            font-size: 28px;
+            font-weight: 800;
+            color: #ff9f43; /* Tom dourado/laranja para os números */
         }
+
+        /* =========================================================================
+           CALIBRAÇÃO DE COORDENADAS (Posicionamento exato sobre a sua imagem)
+           ========================================================================= */
+
+        /* 1º LUGAR (CENTRO) 
+           Largura do bloco: ~312px | Início horizontal: ~1188px */
+        #slot-1 {
+            top: 360px;
+            left: 1200px;
+        }
+
+        /* 2º LUGAR (ESQUERDA) 
+           Largura do bloco: ~295px | Início horizontal: ~862px */
+        #slot-2 {
+            top: 480px;
+            left: 870px;
+        }
+
+        /* 3º LUGAR (DIREITA) 
+           Largura do bloco: ~295px | Início horizontal: ~1532px */
+        #slot-3 {
+            top: 480px;
+            left: 1540px;
+        }
+
+        /* ========================================================================= */
 
         .loading, .error {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             color: #ffffff;
-            padding: 15px 30px;
+            padding: 20px 40px;
             border-radius: 8px;
-            font-size: 18px;
-            z-index: 10;
+            font-size: 24px;
+            z-index: 100;
         }
     </style>
 </head>
@@ -119,7 +127,7 @@
     <div id="loading" class="loading">Carregando dados...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados.</div>
 
-    <div id="podium-container" class="podium-layer" style="display: none;">
+    <div id="podium-container" style="display: none;">
         
         <!-- Segundo Lugar (Esquerda) -->
         <div class="podium-slot" id="slot-2">
@@ -155,7 +163,7 @@
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
     const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
 
-    // Função inteligente: se a tela aberta for menor que 1920x1080, ela escala a aplicação sem quebrar o layout
+    // Responsividade Proporcional: Mantém o layout perfeito independente do tamanho do monitor
     function ajustarEscala() {
         const container = document.getElementById('main-container');
         const larguraTela = window.innerWidth;
@@ -165,11 +173,7 @@
         const escalaY = alturaTela / 1080;
         const escalaFinal = Math.min(escalaX, escalaY);
         
-        if (escalaFinal < 1) {
-            container.style.transform = `scale(${escalaFinal})`;
-        } else {
-            container.style.transform = 'none';
-        }
+        container.style.transform = `scale(${escalaFinal})`;
     }
     window.addEventListener('resize', ajustarEscala);
     ajustarEscala();
@@ -207,7 +211,6 @@
             if (!lines[i].trim()) continue;
 
             const columns = parseCSVLine(lines[i], separador);
-
             if (columns.length < 2) continue;
 
             const nomeCru = columns[0] || '';
@@ -236,22 +239,16 @@
                 fetch(URL_PLANILHA_2)
             ]);
 
-            if (!response1.ok || !response2.ok) throw new Error('Erro ao buscar dados das planilhas.');
+            if (!response1.ok || !response2.ok) throw new Error('Erro ao carregar dados.');
 
             const dataText1 = await response1.text();
             const dataText2 = await response2.text();
-
-            if (dataText1.includes('<html') || dataText2.includes('<html')) {
-                throw new Error('Um dos links retornou HTML em vez de CSV.');
-            }
 
             const listaItens1 = csvToArrays(dataText1);
             const listaItens2 = csvToArrays(dataText2);
             const listaCompleta = listaItens1.concat(listaItens2);
 
-            if (listaCompleta.length === 0) {
-                throw new Error('Nenhum dado encontrado.');
-            }
+            if (listaCompleta.length === 0) throw new Error('Nenhum dado válido.');
 
             listaCompleta.sort((a, b) => b.valorNum - a.valorNum);
 
@@ -266,8 +263,6 @@
                     
                     if (item.foto && item.foto.trim() !== '') {
                         photoElement.style.backgroundImage = `url('FOTOS/${item.foto}')`;
-                        photoElement.style.backgroundPosition = 'center';
-                        photoElement.style.backgroundSize = 'cover';
                     } else {
                         photoElement.style.backgroundImage = 'none';
                     }
@@ -279,7 +274,7 @@
             }
 
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('podium-container').style.display = 'flex';
+            document.getElementById('podium-container').style.display = 'block';
 
         } catch (error) {
             console.error(error);
