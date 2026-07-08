@@ -12,9 +12,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Preenche a tela e centraliza o container do ranking */
+        /* Remove totalmente as barras de rolagem e centraliza o container */
         body {
-            background-color: #0d0d0d;
+            background-color: #000000;
             min-height: 100vh;
             width: 100vw;
             display: flex;
@@ -23,85 +23,88 @@
             overflow: hidden;
         }
 
-        /* Container travado na proporção real da imagem (1920x1080) */
+        /* Mantém a proporção exata da imagem sem distorcer e sem criar barras */
         .screen-container {
             width: 1920px;
             height: 1080px;
             background-image: url('BACKGROUND%20RANKING%20SITE.png');
-            background-size: 100% 100%;
-            background-position: center;
+            background-size: contain;
+            background-position: center center;
             background-repeat: no-repeat;
             position: relative;
             flex-shrink: 0;
             transform-origin: center center;
         }
 
-        /* Estilização dos Blocos do Pódio (Áreas de conteúdo sobrepostas às caixas pretas) */
-        .podium-slot {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Ajuste do tamanho dos Avatares para encaixar dentro do contorno das caixas */
+        /* Formato Oval vertical para casar perfeitamente no topo dos blocos pretos */
         .avatar-photo {
-            width: 250px;
-            height: 250px;
-            border-radius: 25px; /* Cantos arredondados combinando com os blocos */
+            position: absolute;
+            width: 220px;  /* Largura proporcional ao bloco preto */
+            height: 270px; /* Mais alta do que larga para o efeito oval desejado */
+            border-radius: 40px; /* Cantos arredondados que combinam com o pódio */
             background-color: transparent;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            z-index: 2;
         }
 
-        /* Textos centralizados dentro dos blocos escuros */
+        /* Caixas de texto centralizadas logo abaixo dos blocos pretos */
         .legend-container {
+            position: absolute;
+            width: 320px;
             text-align: center;
-            width: 280px;
+            z-index: 3;
         }
 
         .name {
             font-size: 26px;
             font-weight: 700;
-            color: #ffffff; /* Texto branco para leitura perfeita no fundo preto */
+            color: #000000; /* Preto para dar leitura na parte clara inferior */
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .score {
-            font-size: 28px;
-            font-weight: 800;
-            color: #ff9f43; /* Tom dourado/laranja para os números */
+            font-size: 24px;
+            font-weight: 700;
+            color: #e67e22; /* Laranja escuro destacado */
         }
 
         /* =========================================================================
-           CALIBRAÇÃO DE COORDENADAS (Posicionamento exato sobre a sua imagem)
+           ALINHAMENTO EXATO SOBRE OS BLOCOS PRETOS DA IMAGEM
            ========================================================================= */
 
-        /* 1º LUGAR (CENTRO) 
-           Largura do bloco: ~312px | Início horizontal: ~1188px */
-        #slot-1 {
-            top: 360px;
-            left: 1200px;
+        /* 1º LUGAR (CENTRO) */
+        #photo-1 {
+            top: 330px;
+            left: 1240px;
+        }
+        #legend-1 {
+            top: 795px;
+            left: 1190px;
         }
 
-        /* 2º LUGAR (ESQUERDA) 
-           Largura do bloco: ~295px | Início horizontal: ~862px */
-        #slot-2 {
-            top: 480px;
-            left: 870px;
+        /* 2º LUGAR (ESQUERDA) */
+        #photo-2 {
+            top: 435px;
+            left: 915px;
+        }
+        #legend-2 {
+            top: 795px;
+            left: 865px;
         }
 
-        /* 3º LUGAR (DIREITA) 
-           Largura do bloco: ~295px | Início horizontal: ~1532px */
-        #slot-3 {
-            top: 480px;
-            left: 1540px;
+        /* 3º LUGAR (DIREITA) */
+        #photo-3 {
+            top: 435px;
+            left: 1565px;
+        }
+        #legend-3 {
+            top: 795px;
+            left: 1515px;
         }
 
         /* ========================================================================= */
@@ -115,7 +118,7 @@
             color: #ffffff;
             padding: 20px 40px;
             border-radius: 8px;
-            font-size: 24px;
+            font-size: 22px;
             z-index: 100;
         }
     </style>
@@ -127,33 +130,27 @@
     <div id="loading" class="loading">Carregando dados...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados.</div>
 
-    <div id="podium-container" style="display: none;">
+    <div id="podium-elements" style="display: none;">
         
-        <!-- Segundo Lugar (Esquerda) -->
-        <div class="podium-slot" id="slot-2">
-            <div class="avatar-photo" id="photo-2"></div>
-            <div class="legend-container">
-                <div class="name" id="name-2">-</div>
-                <div class="score" id="score-2">0</div>
-            </div>
+        <!-- Primeiro Lugar -->
+        <div class="avatar-photo" id="photo-1"></div>
+        <div class="legend-container" id="legend-1">
+            <div class="name" id="name-1">-</div>
+            <div class="score" id="score-1">0</div>
         </div>
 
-        <!-- Primeiro Lugar (Centro) -->
-        <div class="podium-slot" id="slot-1">
-            <div class="avatar-photo" id="photo-1"></div>
-            <div class="legend-container">
-                <div class="name" id="name-1">-</div>
-                <div class="score" id="score-1">0</div>
-            </div>
+        <!-- Segundo Lugar -->
+        <div class="avatar-photo" id="photo-2"></div>
+        <div class="legend-container" id="legend-2">
+            <div class="name" id="name-2">-</div>
+            <div class="score" id="score-2">0</div>
         </div>
 
-        <!-- Terceiro Lugar (Direita) -->
-        <div class="podium-slot" id="slot-3">
-            <div class="avatar-photo" id="photo-3"></div>
-            <div class="legend-container">
-                <div class="name" id="name-3">-</div>
-                <div class="score" id="score-3">0</div>
-            </div>
+        <!-- Terceiro Lugar -->
+        <div class="avatar-photo" id="photo-3"></div>
+        <div class="legend-container" id="legend-3">
+            <div class="name" id="name-3">-</div>
+            <div class="score" id="score-3">0</div>
         </div>
 
     </div>
@@ -163,7 +160,7 @@
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
     const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
 
-    // Responsividade Proporcional: Mantém o layout perfeito independente do tamanho do monitor
+    // Responsável por ajustar o painel perfeitamente em telas menores ou maiores sem criar barras
     function ajustarEscala() {
         const container = document.getElementById('main-container');
         const larguraTela = window.innerWidth;
@@ -171,10 +168,11 @@
         
         const escalaX = larguraTela / 1920;
         const escalaY = alturaTela / 1080;
-        const escalaFinal = Math.min(escalaX, escalaY);
         
+        const escalaFinal = Math.min(escalaX, escalaY);
         container.style.transform = `scale(${escalaFinal})`;
     }
+    
     window.addEventListener('resize', ajustarEscala);
     ajustarEscala();
 
@@ -239,7 +237,7 @@
                 fetch(URL_PLANILHA_2)
             ]);
 
-            if (!response1.ok || !response2.ok) throw new Error('Erro ao carregar dados.');
+            if (!response1.ok || !response2.ok) throw new Error('Erro ao buscar dados das planilhas.');
 
             const dataText1 = await response1.text();
             const dataText2 = await response2.text();
@@ -248,7 +246,9 @@
             const listaItens2 = csvToArrays(dataText2);
             const listaCompleta = listaItens1.concat(listaItens2);
 
-            if (listaCompleta.length === 0) throw new Error('Nenhum dado válido.');
+            if (listaCompleta.length === 0) {
+                throw new Error('Nenhum dado encontrado.');
+            }
 
             listaCompleta.sort((a, b) => b.valorNum - a.valorNum);
 
@@ -274,7 +274,7 @@
             }
 
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('podium-container').style.display = 'block';
+            document.getElementById('podium-elements').style.display = 'block';
 
         } catch (error) {
             console.error(error);
