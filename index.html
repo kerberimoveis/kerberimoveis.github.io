@@ -12,29 +12,25 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* 1. O plano de fundo direto no body evita quebras de contêiner e margens brancas */
         body {
-            background-image: url('BACKGROUND%20RANKING%20SITE.png');
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-color: #000000; /* Cor de segurança caso a imagem demore a carregar */
-            min-height: 100vh;
-            width: 100vw;
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
-        /* 2. Container centralizado proporcional (16:9) para manter os elementos fixos sobre o pódio */
+        /* O container agora usa a imagem enviada como plano de fundo fixo */
         .screen-container {
-            width: 100%;
-            max-width: 1920px;
-            height: 100vh;
-            max-height: 1080px;
+            width: 1920px;
+            height: 1080px;
+            background-image: url('BACKGROUND RANKING SITE.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
             position: relative;
+            /* Se quiser que ele se ajuste a telas menores proporcionalmente: */
+            zoom: 1; 
         }
 
         /* Posicionamento estratégico absoluto por cima das molduras da imagem */
@@ -114,12 +110,12 @@
 <body>
 
 <div class="screen-container">
-    
+
     <div id="loading" class="loading">Carregando dados...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados.</div>
 
     <div id="podium-container" class="podium-layer" style="display: none;">
-        
+
         <!-- Segundo Lugar (Esquerda) -->
         <div class="podium-slot" id="slot-2">
             <div class="avatar-photo" id="photo-2"></div>
@@ -152,7 +148,7 @@
 
 <script>
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
-    const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
+    const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv'; // <--- Substitua pelo link CSV da sua segunda planilha
 
     function parseCSVLine(line, separador) {
         const result = [];
@@ -243,12 +239,11 @@
                 if (item) {
                     document.getElementById(`name-${posicao}`).innerText = item.nome || 'Sem Nome';
                     document.getElementById(`score-${posicao}`).innerText = item.valorTexto || '0';
-                    
+
                     if (item.foto && item.foto.trim() !== '') {
                         photoElement.style.backgroundImage = `url('FOTOS/${item.foto}')`;
                         photoElement.style.backgroundPosition = 'center';
                         photoElement.style.backgroundSize = 'cover';
-                        photoElement.style.backgroundRepeat = 'no-repeat';
                     } else {
                         photoElement.style.backgroundImage = 'none';
                     }
