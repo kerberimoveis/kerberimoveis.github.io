@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Remove totalmente as barras de rolagem e centraliza o container */
+        /* Remove as barras e fixa o background do sistema */
         body {
             background-color: #000000;
             min-height: 100vh;
@@ -23,25 +23,25 @@
             overflow: hidden;
         }
 
-        /* Mantém a proporção exata da imagem sem distorcer e sem criar barras */
+        /* CONFIGURAÇÃO PARA PREENCHER TODA A TELA SEM BORDAS PRETAS */
         .screen-container {
             width: 1920px;
             height: 1080px;
             background-image: url('BACKGROUND%20RANKING%20SITE.png');
-            background-size: contain;
+            background-size: 100% 100%; /* Força a imagem a esticar por toda a área interna do container */
             background-position: center center;
             background-repeat: no-repeat;
-            position: relative;
+            position: absolute;
             flex-shrink: 0;
-            transform-origin: center center;
+            transform-origin: top left; /* Ajustado para alinhar perfeitamente a partir do canto superior esquerdo */
         }
 
-        /* Formato Oval vertical para casar perfeitamente no topo dos blocos pretos */
+        /* Formato Oval vertical adaptado aos blocos do pódio */
         .avatar-photo {
             position: absolute;
-            width: 220px;  /* Largura proporcional ao bloco preto */
-            height: 270px; /* Mais alta do que larga para o efeito oval desejado */
-            border-radius: 40px; /* Cantos arredondados que combinam com o pódio */
+            width: 220px;
+            height: 270px;
+            border-radius: 40px;
             background-color: transparent;
             background-size: cover;
             background-position: center;
@@ -49,7 +49,7 @@
             z-index: 2;
         }
 
-        /* Caixas de texto centralizadas logo abaixo dos blocos pretos */
+        /* Caixas de texto centralizadas na área inferior */
         .legend-container {
             position: absolute;
             width: 320px;
@@ -60,7 +60,7 @@
         .name {
             font-size: 26px;
             font-weight: 700;
-            color: #000000; /* Preto para dar leitura na parte clara inferior */
+            color: #000000;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -70,11 +70,11 @@
         .score {
             font-size: 24px;
             font-weight: 700;
-            color: #e67e22; /* Laranja escuro destacado */
+            color: #e67e22;
         }
 
         /* =========================================================================
-           ALINHAMENTO EXATO SOBRE OS BLOCOS PRETOS DA IMAGEM
+           ALINHAMENTO DAS FOTOS E TEXTOS
            ========================================================================= */
 
         /* 1º LUGAR (CENTRO) */
@@ -160,7 +160,7 @@
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
     const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
 
-    // Responsável por ajustar o painel perfeitamente em telas menores ou maiores sem criar barras
+    // Nova lógica de escala responsiva dinâmica para preenchimento total
     function ajustarEscala() {
         const container = document.getElementById('main-container');
         const larguraTela = window.innerWidth;
@@ -169,8 +169,8 @@
         const escalaX = larguraTela / 1920;
         const escalaY = alturaTela / 1080;
         
-        const escalaFinal = Math.min(escalaX, escalaY);
-        container.style.transform = `scale(${escalaFinal})`;
+        // Aplica a transformação baseada no tamanho exato da janela do navegador
+        container.style.transform = `scale(${escalaX}, ${escalaY})`;
     }
     
     window.addEventListener('resize', ajustarEscala);
