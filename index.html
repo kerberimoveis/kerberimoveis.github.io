@@ -12,25 +12,30 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        /* Trava a tela do navegador para evitar rolagens e centralizar o painel */
         body {
-            background-color: #ffffff;
+            background-color: #0b0b0b; /* Fundo escuro elegante de segurança */
+            min-height: 100vh;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            overflow: hidden;
         }
 
-        /* O container agora usa a imagem enviada como plano de fundo fixo */
+        /* O CONTAINER AGORA É FIXADO EXATAMENTE NO TAMANHO DA SUA IMAGEM */
         .screen-container {
             width: 1920px;
             height: 1080px;
-            background-image: url('BACKGROUND RANKING SITE.png');
-            background-size: contain;
+            background-image: url('BACKGROUND%20RANKING%20SITE.png');
+            background-size: 100% 100%; /* Garante o encaixe milimétrico nos limites horizontais/verticais */
             background-position: center;
             background-repeat: no-repeat;
             position: relative;
-            /* Se quiser que ele se ajuste a telas menores proporcionalmente: */
-            zoom: 1; 
+            flex-shrink: 0; /* Impede que o navegador esmague o container */
+            
+            /* Efeito de escala automática caso a tela do monitor seja menor que 1080p */
+            transform-origin: center center;
         }
 
         /* Posicionamento estratégico absoluto por cima das molduras da imagem */
@@ -109,13 +114,13 @@
 </head>
 <body>
 
-<div class="screen-container">
-
+<div class="screen-container" id="main-container">
+    
     <div id="loading" class="loading">Carregando dados...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados.</div>
 
     <div id="podium-container" class="podium-layer" style="display: none;">
-
+        
         <!-- Segundo Lugar (Esquerda) -->
         <div class="podium-slot" id="slot-2">
             <div class="avatar-photo" id="photo-2"></div>
@@ -148,7 +153,26 @@
 
 <script>
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
-    const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv'; // <--- Substitua pelo link CSV da sua segunda planilha
+    const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
+
+    // Função inteligente: se a tela aberta for menor que 1920x1080, ela escala a aplicação sem quebrar o layout
+    function ajustarEscala() {
+        const container = document.getElementById('main-container');
+        const larguraTela = window.innerWidth;
+        const alturaTela = window.innerHeight;
+        
+        const escalaX = larguraTela / 1920;
+        const escalaY = alturaTela / 1080;
+        const escalaFinal = Math.min(escalaX, escalaY);
+        
+        if (escalaFinal < 1) {
+            container.style.transform = `scale(${escalaFinal})`;
+        } else {
+            container.style.transform = 'none';
+        }
+    }
+    window.addEventListener('resize', ajustarEscala);
+    ajustarEscala();
 
     function parseCSVLine(line, separador) {
         const result = [];
@@ -239,7 +263,7 @@
                 if (item) {
                     document.getElementById(`name-${posicao}`).innerText = item.nome || 'Sem Nome';
                     document.getElementById(`score-${posicao}`).innerText = item.valorTexto || '0';
-
+                    
                     if (item.foto && item.foto.trim() !== '') {
                         photoElement.style.backgroundImage = `url('FOTOS/${item.foto}')`;
                         photoElement.style.backgroundPosition = 'center';
