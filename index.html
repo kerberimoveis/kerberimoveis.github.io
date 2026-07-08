@@ -11,17 +11,30 @@
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        /* O container agora usa a imagem enviada como plano de fundo fixo */
-        .screen-container {
-            width: 1920px;
-            height: 1080px;
-            background-image: url('BACKGROUND RANKING SITE.jpg');
-            background-size: contain;
-            background-position: center;
+
+        /* 1. O plano de fundo direto no body evita quebras de contêiner e margens brancas */
+        body {
+            background-image: url('BACKGROUND%20RANKING%20SITE.png');
+            background-size: cover;
+            background-position: center center;
             background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #000000; /* Cor de segurança caso a imagem demore a carregar */
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 2. Container centralizado proporcional (16:9) para manter os elementos fixos sobre o pódio */
+        .screen-container {
+            width: 100%;
+            max-width: 1920px;
+            height: 100vh;
+            max-height: 1080px;
             position: relative;
-            /* Se quiser que ele se ajuste a telas menores proporcionalmente: */
-            zoom: 1; 
         }
 
         /* Posicionamento estratégico absoluto por cima das molduras da imagem */
@@ -139,7 +152,7 @@
 
 <script>
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
-    const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv'; // <--- Substitua pelo link CSV da sua segunda planilha
+    const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
 
     function parseCSVLine(line, separador) {
         const result = [];
@@ -235,6 +248,7 @@
                         photoElement.style.backgroundImage = `url('FOTOS/${item.foto}')`;
                         photoElement.style.backgroundPosition = 'center';
                         photoElement.style.backgroundSize = 'cover';
+                        photoElement.style.backgroundRepeat = 'no-repeat';
                     } else {
                         photoElement.style.backgroundImage = 'none';
                     }
