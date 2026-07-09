@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking do VGV</title>
+    <title>Ranking Vendedor do Mês</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,22 +12,31 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Remove as barras e fixa o background do sistema */
+        /* Remove as barras e fixa o background do sistema no topo esquerdo */
+        body {
+            background-color: #000000;
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            overflow: hidden;
+        }
 
         /* CONFIGURAÇÃO PARA PREENCHER TODA A TELA SEM BORDAS PRETAS */
         .screen-container {
             width: 1920px;
             height: 1080px;
             background-image: url('BACKGROUND%20RANKING%20SITE.png');
-            background-size: 100% 100%; /* Força a imagem a esticar por toda a área interna do container */
+            background-size: 100% 100%;
             background-position: center center;
             background-repeat: no-repeat;
             position: absolute;
             flex-shrink: 0;
-            transform-origin: top left; /* Ajustado para alinhar perfeitamente a partir do canto superior esquerdo */
+            transform-origin: top left;
         }
 
-        /* Formato Oval vertical adaptado aos blocos do pódio */
+        /* Formato Oval vertical ajustado para o topo do bloco preto */
         .avatar-photo {
             position: absolute;
             width: 220px;
@@ -40,62 +49,64 @@
             z-index: 2;
         }
 
-        /* Caixas de texto centralizadas na área inferior */
+        /* Caixas de texto posicionadas na base interna dos blocos pretos */
         .legend-container {
             position: absolute;
-            width: 320px;
+            width: 260px; /* Reduzido para não vazar a borda interna do bloco */
             text-align: center;
             z-index: 3;
         }
 
         .name {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 700;
-            color: #000000;
+            color: #ffffff; /* Alterado para BRANCO para dar leitura dentro do bloco preto */
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         .score {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
-            color: #e67e22;
+            color: #e67e22; /* Mantido o tom laranja em destaque */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         /* =========================================================================
-           ALINHAMENTO DAS FOTOS E TEXTOS
+           ALINHAMENTO CIRÚRGICO INTEIRAMENTE DENTRO DOS QUADRADOS PRETOS
            ========================================================================= */
 
         /* 1º LUGAR (CENTRO) */
         #photo-1 {
-            top: 330px;
+            top: 335px;
             left: 1240px;
         }
         #legend-1 {
-            top: 795px;
-            left: 1190px;
+            top: 615px;
+            left: 1220px; /* Centralizado horizontalmente no bloco central */
         }
 
         /* 2º LUGAR (ESQUERDA) */
         #photo-2 {
-            top: 435px;
+            top: 440px;
             left: 915px;
         }
         #legend-2 {
-            top: 795px;
-            left: 865px;
+            top: 720px;
+            left: 895px; /* Centralizado horizontalmente no bloco da esquerda */
         }
 
         /* 3º LUGAR (DIREITA) */
         #photo-3 {
-            top: 435px;
+            top: 440px;
             left: 1565px;
         }
         #legend-3 {
-            top: 795px;
-            left: 1515px;
+            top: 720px;
+            left: 1545px; /* Centralizado horizontalmente no bloco da direita */
         }
 
         /* ========================================================================= */
@@ -151,7 +162,6 @@
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
     const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
 
-    // Nova lógica de escala responsiva dinâmica para preenchimento total
     function ajustarEscala() {
         const container = document.getElementById('main-container');
         const larguraTela = window.innerWidth;
@@ -160,7 +170,6 @@
         const escalaX = larguraTela / 1920;
         const escalaY = alturaTela / 1080;
         
-        // Aplica a transformação baseada no tamanho exato da janela do navegador
         container.style.transform = `scale(${escalaX}, ${escalaY})`;
     }
     
