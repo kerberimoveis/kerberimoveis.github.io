@@ -75,17 +75,18 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
         }
 
-        /* Estilização para o VGV Total na base do painel */
+        /* Estilização com FUNDO PRETO SÓLIDO para o VGV Total na base do painel */
         .vgv-container {
             position: absolute;
             bottom: 150px;
-            left: 1210px;
+            left: 1180px;
             text-align: center;
             z-index: 3;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px 30px;
-            border-radius: 15px;
-            border: 1px solid #e67e22;
+            background-color: #000000; /* Fundo preto puro */
+            padding: 15px 35px;
+            border-radius: 12px;
+            border: 2px solid #e67e22; /* Borda laranja combinando com o sistema */
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
         }
 
         .vgv-title {
@@ -93,15 +94,15 @@
             color: #ffffff;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             margin-bottom: 5px;
         }
 
         .vgv-value {
-            font-size: 36px;
-            color: #2ecc71; /* Verde para destacar o faturamento total */
+            font-size: 38px;
+            color: #2ecc71; /* Verde vivo para destacar o faturamento total */
             font-weight: 800;
-            text-shadow: 1px 1px 5px rgba(0,0,0,0.9);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
 
         /* =========================================================================
@@ -188,7 +189,7 @@
             <div class="score" id="score-3">0</div>
         </div>
 
-        <!-- Container do VGV Total -->
+        <!-- Container do VGV Total com fundo preto -->
         <div class="vgv-container" id="vgv-container">
             <div class="vgv-title">VGV Total Acumulado</div>
             <div class="vgv-value" id="vgv-total">R$ 0,00</div>
@@ -213,7 +214,7 @@
     }
     
     window.addEventListener('resize', ajustarEscala);
-    ajustarEscala(); // Corrigido aqui (removido o "e" que quebrava o script)
+    ajustarEscala();
 
     function parseCSVLine(line, separador) {
         const result = [];
@@ -302,6 +303,7 @@
             
             const listaCompleta = resultado1.itens.concat(resultado2.itens);
 
+            // Coleta e soma dos dados do VGV (atualiza junto com o top 3 a cada ciclo)
             const vgv1 = extrairVgvDaSegundaLinha(dataText1, resultado1.separador);
             const vgv2 = extrairVgvDaSegundaLinha(dataText2, resultado2.separador);
             const vgvTotal = vgv1 + vgv2;
@@ -333,6 +335,7 @@
                 }
             }
 
+            // Atualiza o valor textual do VGV na tela
             document.getElementById('vgv-total').innerText = vgvTotal.toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
@@ -352,6 +355,7 @@
     }
 
     carregarTop3();
+    // Este gatilho faz a função carregarTop3 (que inclui o cálculo do VGV) rodar a cada 30 segundos
     setInterval(carregarTop3, 30000);
 </script>
 </body>
