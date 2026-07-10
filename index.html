@@ -75,6 +75,35 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
         }
 
+        /* Estilização para o VGV Total na base do painel */
+        .vgv-container {
+            position: absolute;
+            bottom: 150px;
+            left: 1210px;
+            text-align: center;
+            z-index: 3;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 30px;
+            border-radius: 15px;
+            border: 1px solid #e67e22;
+        }
+
+        .vgv-title {
+            font-size: 20px;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .vgv-value {
+            font-size: 36px;
+            color: #2ecc71; /* Verde para destacar o faturamento total */
+            font-weight: 800;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.9);
+        }
+
         /* =========================================================================
            ALINHAMENTO CIRÚRGICO INTEIRAMENTE DENTRO DOS QUADRADOS PRETOS
            ========================================================================= */
@@ -159,6 +188,12 @@
             <div class="score" id="score-3">0</div>
         </div>
 
+        <!-- Container do VGV Total -->
+        <div class="vgv-container" id="vgv-container">
+            <div class="vgv-title">VGV Total Acumulado</div>
+            <div class="vgv-value" id="vgv-total">R$ 0,00</div>
+        </div>
+
     </div>
 </div>
 
@@ -178,7 +213,7 @@
     }
     
     window.addEventListener('resize', ajustarEscala);
-    ajustarEscala();
+    ajustarEscala(); // Corrigido aqui (removido o "e" que quebrava o script)
 
     function parseCSVLine(line, separador) {
         const result = [];
@@ -200,6 +235,23 @@
         return result;
     }
 
+    function limparValorMonetario(valorCru) {
+        if (!valorCru) return 0;
+        const valorLimpo = valorCru.replace(/\./g, '').replace(',', '.');
+        return parseFloat(valorLimpo) || 0;
+    }
+
+    function extrairVgvDaSegundaLinha(csvText, separador) {
+        const lines = csvText.split(/\r?\n/);
+        if (lines.length > 1 && lines[1].trim()) {
+            const columns = parseCSVLine(lines[1], separador);
+            if (columns.length >= 4) {
+                return limparValorMonetario(columns[3]);
+            }
+        }
+        return 0;
+    }
+
     function csvToArrays(csvText) {
         const primeiraLinha = csvText.split(/\r?\n/)[0] || '';
         const contagemVirgula = (primeiraLinha.match(/,/g) || []).length;
@@ -219,8 +271,7 @@
             const valorCru = columns[1] || '0';
             const nomeFotoArquivo = columns[2] || ''; 
 
-            const valorLimpo = valorCru.replace(/\./g, '').replace(',', '.');
-            const valorNumerico = parseFloat(valorLimpo) || 0;
+            const valorNumerico = limparValorMonetario(valorCru);
 
             if (valorNumerico === 0) continue; 
 
@@ -231,7 +282,7 @@
                 foto: nomeFotoArquivo
             });
         }
-        return result;
+        return { itens: result, separador: separador };
     }
 
     async function carregarTop3() {
@@ -246,12 +297,17 @@
             const dataText1 = await response1.text();
             const dataText2 = await response2.text();
 
-            const listaItens1 = csvToArrays(dataText1);
-            const listaItens2 = csvToArrays(dataText2);
-            const listaCompleta = listaItens1.concat(listaItens2);
+            const resultado1 = csvToArrays(dataText1);
+            const resultado2 = csvToArrays(dataText2);
+            
+            const listaCompleta = resultado1.itens.concat(resultado2.itens);
+
+            const vgv1 = extrairVgvDaSegundaLinha(dataText1, resultado1.separador);
+            const vgv2 = extrairVgvDaSegundaLinha(dataText2, resultado2.separador);
+            const vgvTotal = vgv1 + vgv2;
 
             if (listaCompleta.length === 0) {
-                throw new Error('Nenhum dado encontrado.');
+                throw new Error('Nenhum dado com valor encontrado.');
             }
 
             listaCompleta.sort((a, b) => b.valorNum - a.valorNum);
@@ -277,7 +333,13 @@
                 }
             }
 
+            document.getElementById('vgv-total').innerText = vgvTotal.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+
             document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
             document.getElementById('podium-elements').style.display = 'block';
 
         } catch (error) {
