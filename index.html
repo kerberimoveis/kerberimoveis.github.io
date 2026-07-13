@@ -75,6 +75,17 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
         }
 
+        /* LOGOTIPO KERBER - Posicionado cirurgicamente no canto superior esquerdo */
+        .logo-kerber {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            width: 280px; /* Tamanho ajustado e elegante para o canto superior */
+            height: auto;
+            z-index: 3;
+            display: block;
+        }
+
         /* Estilização com FUNDO PRETO SÓLIDO para o VGV Total na base do painel */
         .vgv-container {
             position: absolute;
@@ -168,6 +179,9 @@
 
     <div id="podium-elements" style="display: none;">
         
+        <!-- Logotipo Kerber no Canto -->
+        <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
+
         <!-- Primeiro Lugar -->
         <div class="avatar-photo" id="photo-1"></div>
         <div class="legend-container" id="legend-1">
@@ -215,6 +229,14 @@
     
     window.addEventListener('resize', ajustarEscala);
     ajustarEscala();
+
+    // Recarga On Demand nativa via teclado ('R' ou 'Espaço') que ignora o cache
+    window.addEventListener('keydown', function(event) {
+        if (event.key.toLowerCase() === 'r' || event.key === ' ') {
+            console.log('Forçando atualização completa da interface...');
+            window.location.search = '?v=' + new Date().getTime();
+        }
+    });
 
     function parseCSVLine(line, separador) {
         const result = [];
@@ -288,9 +310,10 @@
 
     async function carregarTop3() {
         try {
+            const timestamp = new Date().getTime();
             const [response1, response2] = await Promise.all([
-                fetch(URL_PLANILHA_1),
-                fetch(URL_PLANILHA_2)
+                fetch(`${URL_PLANILHA_1}&cache=${timestamp}`),
+                fetch(`${URL_PLANILHA_2}&cache=${timestamp}`)
             ]);
 
             if (!response1.ok || !response2.ok) throw new Error('Erro ao buscar dados das planilhas.');
@@ -303,7 +326,6 @@
             
             const listaCompleta = resultado1.itens.concat(resultado2.itens);
 
-            // Coleta e soma dos dados do VGV (atualiza junto com o top 3 a cada ciclo)
             const vgv1 = extrairVgvDaSegundaLinha(dataText1, resultado1.separador);
             const vgv2 = extrairVgvDaSegundaLinha(dataText2, resultado2.separador);
             const vgvTotal = vgv1 + vgv2;
@@ -324,7 +346,7 @@
                     document.getElementById(`score-${posicao}`).innerText = item.valorTexto || '0';
                     
                     if (item.foto && item.foto.trim() !== '') {
-                        photoElement.style.backgroundImage = `url('FOTOS/${item.foto}')`;
+                        photoElement.style.backgroundImage = `url('FOTOS/${item.foto}?v=${timestamp}')`;
                     } else {
                         photoElement.style.backgroundImage = 'none';
                     }
@@ -335,7 +357,6 @@
                 }
             }
 
-            // Atualiza o valor textual do VGV na tela
             document.getElementById('vgv-total').innerText = vgvTotal.toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
@@ -355,8 +376,7 @@
     }
 
     carregarTop3();
-    // Este gatilho faz a função carregarTop3 (que inclui o cálculo do VGV) rodar a cada 30 segundos
-    setInterval(carregarTop3, 20000);
+    setInterval(carregarTop3, 10000);
 </script>
 </body>
 </html>
