@@ -261,9 +261,10 @@
         container.style.transform = `scale(${escalaX}, ${escalaY})`;
     }
 
-    function aplicarEstadoCongelamento(frozen, mostrarIndicadorLocal = false) {
+    function aplicarEstadoCongelamento(frozen, mostrarIndicadorLocal = false, textoIndicador = 'Modo teste') {
         paginaCongelada = frozen;
         comandoLocal = mostrarIndicadorLocal;
+        textoIndicadorCongelamento = textoIndicador;
         salvarEstadoCongelamento();
         atualizarIndicadorCongelamento();
 
@@ -285,6 +286,7 @@
     let paginaCongelada = false;
     let intervaloAtualizacao = null;
     let comandoLocal = false;
+    let textoIndicadorCongelamento = 'Modo teste';
 
     function carregarEstadoCongelamentoSalvo() {
         try {
@@ -305,16 +307,18 @@
 
     function atualizarIndicadorCongelamento() {
         const indicador = document.getElementById('freeze-indicator');
-        indicador.classList.toggle('active', paginaCongelada);
+        const deveMostrar = paginaCongelada && comandoLocal;
+        indicador.classList.toggle('active', deveMostrar);
+        indicador.innerText = deveMostrar ? textoIndicadorCongelamento : '';
     }
 
     function alternarCongelamentoLocal() {
-        aplicarEstadoCongelamento(!paginaCongelada, true);
+        aplicarEstadoCongelamento(!paginaCongelada, true, 'Congelado');
         console.log(`Página ${paginaCongelada ? 'congelada' : 'descongelada'}.`);
     }
 
     function alternarCongelamentoRemoto() {
-        aplicarEstadoCongelamento(!paginaCongelada, false);
+        aplicarEstadoCongelamento(!paginaCongelada, false, 'Modo teste');
         console.log(`Página ${paginaCongelada ? 'congelada' : 'descongelada'}.`);
     }
 
@@ -421,17 +425,20 @@
 
     // 2. DETECTA O TOQUE NAS TECLAS CTRL+R E CTRL+P
     window.addEventListener('keydown', async function(event) {
-        const tecla = event.key.toLowerCase();
+        const tecla = (event.key || '').toLowerCase();
+        const code = (event.code || '').toLowerCase();
 
         if (event.shiftKey && tecla === 'r') {
             event.preventDefault();
+            event.stopPropagation();
             console.log('Atualizando apenas os valores da própria página...');
             await recarregarValoresLocal();
             return;
         }
 
-        if (event.ctrlKey && tecla === 'r') {
+        if ((event.ctrlKey || event.metaKey) && tecla === 'r') {
             event.preventDefault();
+            event.stopPropagation();
             console.log('Atualizando os valores das demais páginas, mas não a própria...');
             await recarregarValoresRemotos();
             return;
@@ -439,6 +446,7 @@
 
         if (event.altKey && tecla === 'r') {
             event.preventDefault();
+            event.stopPropagation();
             const resposta = window.confirm('Deseja recarregar a página completa apenas na local ou em todas as demais páginas?\n\nClique OK para a local ou Cancelar para as demais.');
             if (resposta) {
                 recarregarPaginaLocal();
@@ -449,20 +457,23 @@
 
         if (event.shiftKey && tecla === 'p') {
             event.preventDefault();
+            event.stopPropagation();
             alternarCongelamentoLocal();
             return;
         }
 
-        if (event.ctrlKey && tecla === 'p') {
+        if ((event.ctrlKey || event.metaKey) && (tecla === 'p' || code === 'keyp')) {
             event.preventDefault();
+            event.stopPropagation();
             console.log('Alternando o congelamento das demais páginas, mas não a própria...');
+            alternarCongelamentoLocal();
             await channel.send({
                 type: 'broadcast',
                 event: 'toggle-freeze-others',
                 payload: { fromId: DEVICE_ID, timestamp: new Date().getTime() }
             });
         }
-    });
+    }, true);
 
     function parseCSVLine(line, separador) {
         const result = [];
