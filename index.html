@@ -79,7 +79,7 @@
         .logo-kerber {
             position: absolute;
             top: 0px;
-            right: 10px;
+            right: 0px;
             width: 220px; /* Tamanho ajustado e elegante para o canto superior */
             height: auto;
             z-index: 3;
@@ -168,6 +168,27 @@
             font-size: 22px;
             z-index: 100;
         }
+
+        .freeze-indicator {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(231, 76, 60, 0.95);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 999px;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            z-index: 110;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        .freeze-indicator.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -176,6 +197,7 @@
     
     <div id="loading" class="loading">Carregando dados...</div>
     <div id="error" class="error" style="display: none;">Erro ao carregar os dados.</div>
+    <div id="freeze-indicator" class="freeze-indicator">Congelado</div>
 
     <div id="podium-elements" style="display: none;">
         
@@ -212,9 +234,21 @@
     </div>
 </div>
 
+<!-- Importa a biblioteca do Supabase via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
     const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
+
+    // =========================================================================
+    // CONFIGURAÇÃO DO REALTIME (Corrigido conflito de nome do objeto)
+    // =========================================================================
+    const SUPABASE_URL = 'https://qpvwrheqwzzqynfyqgoq.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_pnz26qo9AP-jristVGo6CQ_dmFGamqP';
+    
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // =========================================================================
 
     function ajustarEscala() {
         const container = document.getElementById('main-container');
@@ -226,15 +260,147 @@
         
         container.style.transform = `scale(${escalaX}, ${escalaY})`;
     }
+
+    function aplicarEstadoCongelamento(frozen, mostrarIndicadorLocal = false) {
+        paginaCongelada = frozen;
+        comandoLocal = mostrarIndicadorLocal;
+        salvarEstadoCongelamento();
+        atualizarIndicadorCongelamento();
+
+        if (paginaCongelada) {
+            if (intervaloAtualizacao) {
+                clearInterval(intervaloAtualizacao);
+                intervaloAtualizacao = null;
+            }
+        } else {
+            iniciarAtualizacaoAutomatica();
+        }
+    }
     
     window.addEventListener('resize', ajustarEscala);
     ajustarEscala();
 
-    // Recarga On Demand nativa via teclado ('R' ou 'Espaço') que ignora o cache
-    window.addEventListener('keydown', function(event) {
-        if (event.key.toLowerCase() === 'r' || event.key === ' ') {
-            console.log('Forçando atualização completa da interface...');
+    const STORAGE_KEY = 'ranking-freeze-state';
+
+    let paginaCongelada = false;
+    let intervaloAtualizacao = null;
+    let comandoLocal = false;
+
+    function carregarEstadoCongelamentoSalvo() {
+        try {
+            return localStorage.getItem(STORAGE_KEY) === 'true';
+        } catch (error) {
+            console.warn('Não foi possível carregar o estado de congelamento.', error);
+            return false;
+        }
+    }
+
+    function salvarEstadoCongelamento() {
+        try {
+            localStorage.setItem(STORAGE_KEY, String(paginaCongelada));
+        } catch (error) {
+            console.warn('Não foi possível salvar o estado de congelamento.', error);
+        }
+    }
+
+    function atualizarIndicadorCongelamento() {
+        const indicador = document.getElementById('freeze-indicator');
+        indicador.classList.toggle('active', paginaCongelada);
+    }
+
+    function alternarCongelamentoLocal() {
+        aplicarEstadoCongelamento(!paginaCongelada, true);
+        console.log(`Página ${paginaCongelada ? 'congelada' : 'descongelada'}.`);
+    }
+
+    function alternarCongelamentoRemoto() {
+        aplicarEstadoCongelamento(!paginaCongelada, false);
+        console.log(`Página ${paginaCongelada ? 'congelada' : 'descongelada'}.`);
+    }
+
+    function iniciarAtualizacaoAutomatica() {
+        if (intervaloAtualizacao) {
+            clearInterval(intervaloAtualizacao);
+        }
+
+        intervaloAtualizacao = setInterval(() => {
+            if (!paginaCongelada) {
+                carregarTop3();
+            }
+        }, 15000);
+    }
+
+    paginaCongelada = carregarEstadoCongelamentoSalvo();
+    atualizarIndicadorCongelamento();
+
+    if (!paginaCongelada) {
+        iniciarAtualizacaoAutomatica();
+    }
+
+    const DEVICE_ID = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+    // 1. ESCUTA O COMANDO DE RECARGA E CONGELAMENTO DE OUTROS DISPOSITIVOS (REALTIME CHANNEL)
+    const channel = supabaseClient.channel('ranking-updates')
+    .on('broadcast', { event: 'reload-others' }, (payload) => {
+        if (payload.payload?.fromId === DEVICE_ID) {
+            return;
+        }
+
+        console.log('Comando de recarga recebido via Realtime.', payload);
+
+        if (paginaCongelada) {
+            console.log('Página congelada. Ignorando recarga remota.');
+            return;
+        }
+
+        window.location.search = '?v=' + new Date().getTime();
+    })
+    .on('broadcast', { event: 'toggle-freeze-others' }, (payload) => {
+        if (payload.payload?.fromId === DEVICE_ID) {
+            return;
+        }
+
+        console.log('Comando de congelamento recebido via Realtime.', payload);
+        alternarCongelamentoRemoto();
+    })
+    .subscribe();
+
+    // 2. DETECTA O TOQUE NAS TECLAS CTRL+R E CTRL+P
+    window.addEventListener('keydown', async function(event) {
+        const tecla = event.key.toLowerCase();
+
+        if (event.shiftKey && tecla === 'r') {
+            event.preventDefault();
+            console.log('Recarregando apenas a própria página...');
             window.location.search = '?v=' + new Date().getTime();
+            return;
+        }
+
+        if (event.ctrlKey && tecla === 'r') {
+            event.preventDefault();
+            console.log('Recarregando as demais páginas, mas não a própria...');
+            await channel.send({
+                type: 'broadcast',
+                event: 'reload-others',
+                payload: { fromId: DEVICE_ID, timestamp: new Date().getTime() }
+            });
+            return;
+        }
+
+        if (event.shiftKey && tecla === 'p') {
+            event.preventDefault();
+            alternarCongelamentoLocal();
+            return;
+        }
+
+        if (event.ctrlKey && tecla === 'p') {
+            event.preventDefault();
+            console.log('Alternando o congelamento das demais páginas, mas não a própria...');
+            await channel.send({
+                type: 'broadcast',
+                event: 'toggle-freeze-others',
+                payload: { fromId: DEVICE_ID, timestamp: new Date().getTime() }
+            });
         }
     });
 
@@ -309,6 +475,11 @@
     }
 
     async function carregarTop3() {
+        if (paginaCongelada) {
+            console.log('Atualização bloqueada porque a página está congelada.');
+            return;
+        }
+
         try {
             const timestamp = new Date().getTime();
             const [response1, response2] = await Promise.all([
@@ -376,7 +547,7 @@
     }
 
     carregarTop3();
-    setInterval(carregarTop3, 15000);
+    iniciarAtualizacaoAutomatica();
 </script>
 </body>
 </html>
