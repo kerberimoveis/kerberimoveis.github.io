@@ -250,14 +250,27 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     // =========================================================================
 
+    function ehTelaTV() {
+        const userAgent = navigator.userAgent || '';
+        const larguraTela = window.screen.width || window.innerWidth;
+        const alturaTela = window.screen.height || window.innerHeight;
+
+        const temUserAgentTV = /tv|android tv|google tv|smarttv|webos|tizen|netcast|roku|apple tv/i.test(userAgent);
+        const ehTelaGrande = larguraTela >= 1920 && alturaTela >= 1080;
+        const naoEhMobile = !/(iphone|ipad|android|mobile)/i.test(userAgent);
+
+        return temUserAgentTV || (ehTelaGrande && naoEhMobile && !window.matchMedia('(pointer: coarse)').matches);
+    }
+
     function ajustarEscala() {
         const container = document.getElementById('main-container');
         const larguraTela = window.innerWidth;
         const alturaTela = window.innerHeight;
-        
-        const escalaX = larguraTela / 1920;
-        const escalaY = alturaTela / 1080;
-        
+        const fatorZoom = ehTelaTV() ? 0.6 : 1;
+
+        const escalaX = (larguraTela / 1920) * fatorZoom;
+        const escalaY = (alturaTela / 1080) * fatorZoom;
+
         container.style.transform = `scale(${escalaX}, ${escalaY})`;
     }
 
