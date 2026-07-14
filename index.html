@@ -327,7 +327,47 @@
             if (!paginaCongelada) {
                 carregarTop3();
             }
-        }, 15000);
+        }, 600000);
+    }
+
+    async function recarregarValoresLocal() {
+        if (paginaCongelada) {
+            console.log('Página congelada. Ignorando atualização de valores local.');
+            return;
+        }
+        await carregarTop3();
+    }
+
+    async function recarregarValoresRemotos() {
+        if (paginaCongelada) {
+            console.log('Página congelada. Ignorando atualização de valores remotos.');
+            return;
+        }
+        await channel.send({
+            type: 'broadcast',
+            event: 'refresh-values',
+            payload: { fromId: DEVICE_ID, timestamp: new Date().getTime() }
+        });
+    }
+
+    function recarregarPaginaLocal() {
+        if (paginaCongelada) {
+            console.log('Página congelada. Ignorando recarga completa local.');
+            return;
+        }
+        window.location.search = '?v=' + new Date().getTime();
+    }
+
+    function recarregarPaginaRemota() {
+        if (paginaCongelada) {
+            console.log('Página congelada. Ignorando recarga completa remota.');
+            return;
+        }
+        channel.send({
+            type: 'broadcast',
+            event: 'reload-page-others',
+            payload: { fromId: DEVICE_ID, timestamp: new Date().getTime() }
+        });
     }
 
     paginaCongelada = carregarEstadoCongelamentoSalvo();
@@ -341,15 +381,29 @@
 
     // 1. ESCUTA O COMANDO DE RECARGA E CONGELAMENTO DE OUTROS DISPOSITIVOS (REALTIME CHANNEL)
     const channel = supabaseClient.channel('ranking-updates')
-    .on('broadcast', { event: 'reload-others' }, (payload) => {
+    .on('broadcast', { event: 'refresh-values' }, async (payload) => {
         if (payload.payload?.fromId === DEVICE_ID) {
             return;
         }
 
-        console.log('Comando de recarga recebido via Realtime.', payload);
+        console.log('Comando de atualização de valores recebido via Realtime.', payload);
 
         if (paginaCongelada) {
-            console.log('Página congelada. Ignorando recarga remota.');
+            console.log('Página congelada. Ignorando atualização de valores remota.');
+            return;
+        }
+
+        await carregarTop3();
+    })
+    .on('broadcast', { event: 'reload-page-others' }, (payload) => {
+        if (payload.payload?.fromId === DEVICE_ID) {
+            return;
+        }
+
+        console.log('Comando de recarga completa recebido via Realtime.', payload);
+
+        if (paginaCongelada) {
+            console.log('Página congelada. Ignorando recarga completa remota.');
             return;
         }
 
@@ -371,20 +425,26 @@
 
         if (event.shiftKey && tecla === 'r') {
             event.preventDefault();
-            console.log('Recarregando apenas a própria página...');
-            window.location.search = '?v=' + new Date().getTime();
+            console.log('Atualizando apenas os valores da própria página...');
+            await recarregarValoresLocal();
             return;
         }
 
         if (event.ctrlKey && tecla === 'r') {
             event.preventDefault();
-            console.log('Recarregando as demais páginas, mas não a própria...');
-            await channel.send({
-                type: 'broadcast',
-                event: 'reload-others',
-                payload: { fromId: DEVICE_ID, timestamp: new Date().getTime() }
-            });
+            console.log('Atualizando os valores das demais páginas, mas não a própria...');
+            await recarregarValoresRemotos();
             return;
+        }
+
+        if (event.altKey && tecla === 'r') {
+            event.preventDefault();
+            const resposta = window.confirm('Deseja recarregar a página completa apenas na local ou em todas as demais páginas?\n\nClique OK para a local ou Cancelar para as demais.');
+            if (resposta) {
+                recarregarPaginaLocal();
+            } else {
+                recarregarPaginaRemota();
+            }
         }
 
         if (event.shiftKey && tecla === 'p') {
