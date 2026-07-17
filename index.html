@@ -189,6 +189,81 @@
         .freeze-indicator.active {
             display: block;
         }
+
+        /* Ranking de Quantidade de Vendas */
+        .sales-ranking-container {
+            position: absolute;
+            left: 350px;
+            top: 600px;
+            width: 700px;
+            max-width: calc(100vw - 80px);
+            z-index: 3;
+        }
+
+        /* Quando o ranking usar duas colunas, deslocar o container para a esquerda
+           para não sobrepor o card do 2º lugar. Ajuste fino conforme o layout. */
+        .sales-ranking-container.two-columns {
+            left: 150px; /* move mais para a esquerda quando houver duas colunas */
+        }
+        .sales-ranking-container.one-column {
+            left: 220px; /* ajuste para evitar sobrepor o 2º lugar quando estiver em uma coluna */
+            width: 380px; /* largura menor em uma coluna */
+            max-width: none;
+        }
+        .ranking-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .ranking-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1 1 320px;
+            min-width: 320px;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #e67e22;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+
+        .ranking-position {
+            font-size: 16px;
+            font-weight: 700;
+            color: #e67e22;
+            margin-right: 12px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .ranking-info {
+            flex: 1;
+        }
+
+        .ranking-company {
+            font-size: 12px;
+            font-weight: 600;
+            color: #333333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-bottom: 3px;
+        }
+
+        .ranking-quantity {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2ecc71;
+        }
     </style>
 </head>
 <body>
@@ -201,6 +276,11 @@
 
     <div id="podium-elements" style="display: none;">
         
+        <!-- Ranking de Quantidade de Vendas -->
+        <div class="sales-ranking-container" id="sales-ranking-container">
+            <div class="ranking-list" id="ranking-list"></div>
+        </div>
+
         <!-- Logotipo Kerber no Canto -->
         <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
 
@@ -545,6 +625,106 @@
         return { itens: result, separador: separador };
     }
 
+    function csvToSalesRanking(csvText) {
+        const primeiraLinha = csvText.split(/\r?\n/)[0] || '';
+        const contagemVirgula = (primeiraLinha.match(/,/g) || []).length;
+        const contagemPontoVirgula = (primeiraLinha.match(/;/g) || []).length;
+        const separador = contagemPontoVirgula > contagemVirgula ? ';' : ',';
+
+        const lines = csvText.split(/\r?\n/);
+        const result = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue;
+
+            const columns = parseCSVLine(lines[i], separador);
+            if (columns.length < 6) continue; // Precisa ter pelo menos 6 colunas (até F)
+
+            const construtoraNome = columns[4] || ''; // Coluna E (índice 4)
+            const quantidadeVendas = columns[5] || '0'; // Coluna F (índice 5)
+
+            if (!construtoraNome.trim()) continue;
+
+            const quantidade = parseInt(quantidadeVendas) || 0;
+            if (quantidade === 0) continue;
+
+            result.push({
+                nome: construtoraNome,
+                quantidade: quantidade
+            });
+        }
+        return { itens: result, separador: separador };
+    }
+
+function exibirRankingVendas(vendedoresRanking) {
+        const rankingList = document.getElementById('ranking-list');
+        rankingList.innerHTML = '';
+
+        // Agrega por nome (soma quantidades quando o nome for igual)
+        const mapa = new Map();
+        vendedoresRanking.forEach(it => {
+            const nomeRaw = (it.nome || '').trim();
+            if (!nomeRaw) return;
+            const chave = nomeRaw.toLowerCase();
+            const q = parseInt(it.quantidade) || 0;
+            if (mapa.has(chave)) {
+                mapa.get(chave).quantidade += q;
+            } else {
+                mapa.set(chave, { nome: nomeRaw, quantidade: q });
+            }
+        });
+
+        const agregados = Array.from(mapa.values());
+        agregados.sort((a, b) => b.quantidade - a.quantidade);
+
+        // Exibir top 10, quebrando em duas colunas quando houver mais de 5 itens
+        const top10 = agregados.slice(0, 10);
+        const colunas = top10.length > 5 ? [top10.slice(0, 5), top10.slice(5)] : [top10];
+
+        // Ajusta a posição do container quando houver duas colunas para não sobrepor o 2º lugar
+        const salesContainer = document.getElementById('sales-ranking-container');
+        if (salesContainer) {
+            const duas = colunas.length > 1;
+            salesContainer.classList.toggle('two-columns', duas);
+            salesContainer.classList.toggle('one-column', !duas);
+            // Define posição e largura explícitas para evitar heranças/resíduos de classes
+            if (duas) {
+                salesContainer.style.left = '150px';
+                salesContainer.style.width = '700px';
+                salesContainer.style.maxWidth = 'calc(100vw - 80px)';
+            } else {
+                salesContainer.style.left = '320px';
+                salesContainer.style.width = '380px';
+                salesContainer.style.maxWidth = 'none';
+            }
+        }
+
+        colunas.forEach((colunaItems, colunaIndex) => {
+            const columnDiv = document.createElement('div');
+            columnDiv.className = 'ranking-column';
+
+            colunaItems.forEach((item, index) => {
+                const posicao = colunaIndex * 5 + index + 1;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'ranking-item';
+
+                const textoVendas = item.quantidade === 1 ? 'venda' : 'vendas';
+
+                itemDiv.innerHTML = `
+                    <div class="ranking-position">${posicao}º</div>
+                    <div class="ranking-info">
+                        <div class="ranking-company">${item.nome}</div>
+                        <div class="ranking-quantity">${item.quantidade} ${textoVendas}</div>
+                    </div>
+                `;
+
+                columnDiv.appendChild(itemDiv);
+            });
+
+            rankingList.appendChild(columnDiv);
+        });
+    }
+
     async function carregarTop3() {
         if (paginaCongelada) {
             console.log('Atualização bloqueada porque a página está congelada.');
@@ -588,7 +768,7 @@
                     document.getElementById(`score-${posicao}`).innerText = item.valorTexto || '0';
                     
                     if (item.foto && item.foto.trim() !== '') {
-                        photoElement.style.backgroundImage = `url('FOTOS/${item.foto}?v=${timestamp}')`;
+                        photoElement.style.backgroundImage = `url('FOTOS/${item.foto}?v=${timestamp}')`;  
                     } else {
                         photoElement.style.backgroundImage = 'none';
                     }
@@ -603,6 +783,15 @@
                 style: 'currency',
                 currency: 'BRL'
             });
+
+            // Carregar ranking de vendas (colunas E e F)
+            const rankingSales1 = csvToSalesRanking(dataText1);
+            const rankingSales2 = csvToSalesRanking(dataText2);
+            const rankingCompleto = rankingSales1.itens.concat(rankingSales2.itens);
+
+            if (rankingCompleto.length > 0) {
+                exibirRankingVendas(rankingCompleto);
+            }
 
             document.getElementById('loading').style.display = 'none';
             document.getElementById('error').style.display = 'none';
