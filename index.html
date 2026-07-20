@@ -250,7 +250,7 @@
         }
 
         .ranking-company {
-            font-size: 12px;
+            font-size: 16px;
             font-weight: 600;
             color: #333333;
             overflow: hidden;
@@ -328,16 +328,22 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_pnz26qo9AP-jristVGo6CQ_dmFGamqP';
     
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const $ = id => document.getElementById(id);
+    const show = id => { const el = $(id); if (el) el.style.display = 'block'; };
+    const hide = id => { const el = $(id); if (el) el.style.display = 'none'; };
+    const setText = (id, text) => { const el = $(id); if (el) el.innerText = text; };
+    const setStyle = (id, styleName, value) => { const el = $(id); if (el) el.style[styleName] = value; };
+    const setBackgroundImage = (id, imageValue) => setStyle(id, 'backgroundImage', imageValue);
     // =========================================================================
 
     function ajustarEscala() {
-        const container = document.getElementById('main-container');
+        const container = $('main-container');
+        if (!container) return;
+
         const larguraTela = window.innerWidth;
         const alturaTela = window.innerHeight;
-        
         const escalaX = larguraTela / 1920;
         const escalaY = alturaTela / 1080;
-        
         container.style.transform = `scale(${escalaX}, ${escalaY})`;
     }
 
@@ -386,8 +392,9 @@
     }
 
     function atualizarIndicadorCongelamento() {
-        const indicador = document.getElementById('freeze-indicator');
+        const indicador = $('freeze-indicator');
         const deveMostrar = paginaCongelada && comandoLocal;
+        if (!indicador) return;
         indicador.classList.toggle('active', deveMostrar);
         indicador.innerText = deveMostrar ? textoIndicadorCongelamento : '';
     }
@@ -563,7 +570,12 @@
         for (let i = 0; i < line.length; i++) {
             const char = line[i];
             if (char === '"') {
-                inQuotes = !inQuotes;
+                if (inQuotes && line[i + 1] === '"') {
+                    current += '"';
+                    i += 1;
+                } else {
+                    inQuotes = !inQuotes;
+                }
             } else if (char === separador && !inQuotes) {
                 result.push(current.trim());
                 current = '';
@@ -573,6 +585,13 @@
         }
         result.push(current.trim());
         return result;
+    }
+
+    function detectCsvSeparator(csvText) {
+        const primeiraLinha = csvText.split(/\r?\n/)[0] || '';
+        const contagemVirgula = (primeiraLinha.match(/,/g) || []).length;
+        const contagemPontoVirgula = (primeiraLinha.match(/;/g) || []).length;
+        return contagemPontoVirgula > contagemVirgula ? ';' : ',';
     }
 
     function limparValorMonetario(valorCru) {
@@ -592,72 +611,56 @@
         return 0;
     }
 
-    function csvToArrays(csvText) {
-        const primeiraLinha = csvText.split(/\r?\n/)[0] || '';
-        const contagemVirgula = (primeiraLinha.match(/,/g) || []).length;
-        const contagemPontoVirgula = (primeiraLinha.match(/;/g) || []).length;
-        const separador = contagemPontoVirgula > contagemVirgula ? ';' : ',';
-
+    function forCsvRows(csvText, rowHandler) {
+        const separador = detectCsvSeparator(csvText);
         const lines = csvText.split(/\r?\n/);
-        const result = [];
 
         for (let i = 1; i < lines.length; i++) {
-            if (!lines[i].trim()) continue;
+            const line = lines[i];
+            if (!line?.trim()) continue;
 
-            const columns = parseCSVLine(lines[i], separador);
-            if (columns.length < 2) continue;
+            const columns = parseCSVLine(line, separador);
+            rowHandler(columns, separador);
+        }
 
+        return separador;
+    }
+
+    function csvToArrays(csvText) {
+        const result = [];
+        const separador = forCsvRows(csvText, (columns) => {
+            if (columns.length < 2) return;
             const nomeCru = columns[0] || '';
             const valorCru = columns[1] || '0';
-            const nomeFotoArquivo = columns[2] || ''; 
-
+            const nomeFotoArquivo = columns[2] || '';
             const valorNumerico = limparValorMonetario(valorCru);
 
-            if (valorNumerico === 0) continue; 
+            if (valorNumerico === 0) return;
+            result.push({ nome: nomeCru, valorTexto: valorCru, valorNum: valorNumerico, foto: nomeFotoArquivo });
+        });
 
-            result.push({
-                nome: nomeCru,
-                valorTexto: valorCru, 
-                valorNum: valorNumerico,
-                foto: nomeFotoArquivo
-            });
-        }
-        return { itens: result, separador: separador };
+        return { itens: result, separador };
     }
 
     function csvToSalesRanking(csvText) {
-        const primeiraLinha = csvText.split(/\r?\n/)[0] || '';
-        const contagemVirgula = (primeiraLinha.match(/,/g) || []).length;
-        const contagemPontoVirgula = (primeiraLinha.match(/;/g) || []).length;
-        const separador = contagemPontoVirgula > contagemVirgula ? ';' : ',';
-
-        const lines = csvText.split(/\r?\n/);
         const result = [];
+        const separador = forCsvRows(csvText, (columns) => {
+            if (columns.length < 6) return;
+            const construtoraNome = columns[4] || '';
+            const quantidadeVendas = columns[5] || '0';
+            if (!construtoraNome.trim()) return;
 
-        for (let i = 1; i < lines.length; i++) {
-            if (!lines[i].trim()) continue;
+            const quantidade = parseInt(quantidadeVendas, 10) || 0;
+            if (quantidade === 0) return;
+            result.push({ nome: construtoraNome, quantidade });
+        });
 
-            const columns = parseCSVLine(lines[i], separador);
-            if (columns.length < 6) continue; // Precisa ter pelo menos 6 colunas (até F)
-
-            const construtoraNome = columns[4] || ''; // Coluna E (índice 4)
-            const quantidadeVendas = columns[5] || '0'; // Coluna F (índice 5)
-
-            if (!construtoraNome.trim()) continue;
-
-            const quantidade = parseInt(quantidadeVendas) || 0;
-            if (quantidade === 0) continue;
-
-            result.push({
-                nome: construtoraNome,
-                quantidade: quantidade
-            });
-        }
-        return { itens: result, separador: separador };
+        return { itens: result, separador };
     }
 
 function exibirRankingVendas(vendedoresRanking) {
-        const rankingList = document.getElementById('ranking-list');
+        const rankingList = $('ranking-list');
+        if (!rankingList) return;
         rankingList.innerHTML = '';
 
         // Agrega por nome (soma quantidades quando o nome for igual)
@@ -761,53 +764,55 @@ function exibirRankingVendas(vendedoresRanking) {
             for (let i = 0; i < 3; i++) {
                 const item = listaCompleta[i];
                 const posicao = i + 1;
-                const photoElement = document.getElementById(`photo-${posicao}`);
+                const photoElement = $(`photo-${posicao}`);
+                const nameElement = $(`name-${posicao}`);
+                const scoreElement = $(`score-${posicao}`);
 
                 if (item) {
-                    document.getElementById(`name-${posicao}`).innerText = item.nome || 'Sem Nome';
-                    document.getElementById(`score-${posicao}`).innerText = item.valorTexto || '0';
-                    
-                    if (item.foto && item.foto.trim() !== '') {
-                        photoElement.style.backgroundImage = `url('FOTOS/${item.foto}?v=${timestamp}')`;  
-                    } else {
-                        photoElement.style.backgroundImage = 'none';
+                    if (nameElement) nameElement.innerText = item.nome || 'Sem Nome';
+                    if (scoreElement) scoreElement.innerText = item.valorTexto || '0';
+                    if (photoElement) {
+                        photoElement.style.backgroundImage = item.foto?.trim()
+                            ? `url('FOTOS/${item.foto}?v=${timestamp}')`
+                            : 'none';
                     }
                 } else {
-                    document.getElementById(`name-${posicao}`).innerText = 'N/A';
-                    document.getElementById(`score-${posicao}`).innerText = '-';
-                    photoElement.style.backgroundImage = 'none';
+                    if (nameElement) nameElement.innerText = 'N/A';
+                    if (scoreElement) scoreElement.innerText = '-';
+                    if (photoElement) photoElement.style.backgroundImage = 'none';
                 }
             }
 
-            document.getElementById('vgv-total').innerText = vgvTotal.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
+            const vgvTotalElement = $('vgv-total');
+            if (vgvTotalElement) {
+                vgvTotalElement.innerText = vgvTotal.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                });
+            }
 
             // Carregar ranking de vendas (colunas E e F)
             const rankingSales1 = csvToSalesRanking(dataText1);
             const rankingSales2 = csvToSalesRanking(dataText2);
             const rankingCompleto = rankingSales1.itens.concat(rankingSales2.itens);
+            exibirRankingVendas(rankingCompleto);
 
-            if (rankingCompleto.length > 0) {
-                exibirRankingVendas(rankingCompleto);
-            }
-
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'none';
-            document.getElementById('podium-elements').style.display = 'block';
+            hide('loading');
+            hide('error');
+            show('podium-elements');
 
         } catch (error) {
             console.error(error);
-            document.getElementById('loading').style.display = 'none';
-            const erroDiv = document.getElementById('error');
-            erroDiv.innerText = "Erro: " + error.message;
-            erroDiv.style.display = 'block';
+            hide('loading');
+            const erroDiv = $('error');
+            if (erroDiv) {
+                erroDiv.innerText = "Erro: " + error.message;
+                erroDiv.style.display = 'block';
+            }
         }
     }
 
     carregarTop3();
-    iniciarAtualizacaoAutomatica();
 </script>
 </body>
 </html>
