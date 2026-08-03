@@ -86,11 +86,12 @@
             display: block;
         }
 
-        /* Estilização com FUNDO PRETO SÓLIDO para o VGV Total na base do painel */
-        .vgv-container {
+        /* Estilização com FUNDO PRETO SÓLIDO para o VGV Total e o ASSINADO CEF,
+           agora posicionados abaixo do 1º lugar, entre os blocos do 2º e 3º lugar */
+        .stat-box {
             position: absolute;
-            bottom: 150px;
-            left: 1175px;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
             z-index: 3;
             background-color: #000000; /* Fundo preto puro */
@@ -100,8 +101,21 @@
             box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
         }
 
-        .vgv-title {
-            font-size: 20px;
+        .vgv-container {
+            top: 690px;
+            left: 1360px;
+            transform: translateX(-50%);
+        }
+
+        .cef-container {
+            top: 830px;
+            left: 1360px;
+            transform: translateX(-50%);
+        }
+
+        .vgv-title,
+        .cef-title {
+            font-size: 30px;
             color: #ffffff;
             font-weight: 600;
             text-transform: uppercase;
@@ -109,11 +123,13 @@
             margin-bottom: 5px;
         }
 
-        .vgv-value {
-            font-size: 38px;
+        .vgv-value,
+        .cef-value {
+            font-size: 30px;
             color: #2ecc71; /* Verde vivo para destacar o faturamento total */
             font-weight: 800;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            white-space: nowrap;
         }
 
         /* =========================================================================
@@ -305,10 +321,16 @@
             <div class="score" id="score-3">0</div>
         </div>
 
-        <!-- Container do VGV Total com fundo preto -->
-        <div class="vgv-container" id="vgv-container">
+        <!-- Container do VGV Total, agora abaixo do 1º lugar, entre o 2º e o 3º -->
+        <div class="stat-box vgv-container" id="vgv-container">
             <div class="vgv-title">VGV Total</div>
             <div class="vgv-value" id="vgv-total">R$ 0,00</div>
+        </div>
+
+        <!-- Container do ASSINADO CEF, logo abaixo do VGV Total -->
+        <div class="stat-box cef-container" id="cef-container">
+            <div class="cef-title">Assinado CEF</div>
+            <div class="cef-value" id="cef-total">R$ 0,00</div>
         </div>
 
     </div>
@@ -600,15 +622,27 @@
         return parseFloat(valorLimpo) || 0;
     }
 
-    function extrairVgvDaSegundaLinha(csvText, separador) {
+    // Função genérica: extrai e limpa o valor monetário de uma coluna específica
+    // (índice zero-based) da segunda linha (linha 2) de um CSV.
+    function extrairValorColunaDaSegundaLinha(csvText, separador, indiceColuna) {
         const lines = csvText.split(/\r?\n/);
         if (lines.length > 1 && lines[1].trim()) {
             const columns = parseCSVLine(lines[1], separador);
-            if (columns.length >= 4) {
-                return limparValorMonetario(columns[3]);
+            if (columns.length > indiceColuna) {
+                return limparValorMonetario(columns[indiceColuna]);
             }
         }
         return 0;
+    }
+
+    function extrairVgvDaSegundaLinha(csvText, separador) {
+        // Coluna D (índice 3)
+        return extrairValorColunaDaSegundaLinha(csvText, separador, 3);
+    }
+
+    function extrairAssinadoCefDaSegundaLinha(csvText, separador) {
+        // Coluna G (índice 6)
+        return extrairValorColunaDaSegundaLinha(csvText, separador, 6);
     }
 
     function forCsvRows(csvText, rowHandler) {
@@ -755,6 +789,10 @@ function exibirRankingVendas(vendedoresRanking) {
             const vgv2 = extrairVgvDaSegundaLinha(dataText2, resultado2.separador);
             const vgvTotal = vgv1 + vgv2;
 
+            const cef1 = extrairAssinadoCefDaSegundaLinha(dataText1, resultado1.separador);
+            const cef2 = extrairAssinadoCefDaSegundaLinha(dataText2, resultado2.separador);
+            const cefTotal = cef1 + cef2;
+
             if (listaCompleta.length === 0) {
                 throw new Error('Nenhum dado com valor encontrado.');
             }
@@ -789,6 +827,17 @@ function exibirRankingVendas(vendedoresRanking) {
                     style: 'currency',
                     currency: 'BRL'
                 });
+            }
+
+            const cefTotalElement = $('cef-total');
+            if (cefTotalElement) {
+                const valorCefFormatado = cefTotal === 0
+                    ? 'R$ 000.000,00'
+                    : cefTotal.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    });
+                cefTotalElement.innerText = valorCefFormatado;
             }
 
             // Carregar ranking de vendas (colunas E e F)
