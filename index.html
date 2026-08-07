@@ -87,7 +87,7 @@
         }
 
         /* Estilização com FUNDO PRETO SÓLIDO para o VGV Total e o ASSINADO CEF,
-           agora posicionados abaixo do 1º lugar, entre os blocos do 2º e 3º lugar */
+           posicionados abaixo do 1º lugar, entre os blocos do 2º e 3º lugar */
         .stat-box {
             position: absolute;
             left: 50%;
@@ -101,19 +101,37 @@
             box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
         }
 
-        .vgv-container {
+        .cef-container {
             top: 690px;
             left: 1360px;
-            transform: translateX(-50%);
         }
 
-        .cef-container {
-            top: 830px;
+        /* VGV Total por planilha — 3 caixas lado a lado numa fileira,
+           na faixa inferior da tela (área historicamente livre neste layout) */
+        .vgv-box-1 {
+            bottom: 130px;
             left: 1360px;
-            transform: translateX(-50%);
         }
 
-        .vgv-title,
+        .vgv-box-2 {
+            bottom: 130px;
+            left: 1040px;
+        }
+
+        .vgv-box-3 {
+            bottom: 130px;
+            left: 1710px;
+        }
+
+        .vgv-title {
+            font-size: 30px;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+            margin-bottom: 5px;
+        }
         .cef-title {
             font-size: 30px;
             color: #ffffff;
@@ -280,6 +298,67 @@
             font-weight: 700;
             color: #2ecc71;
         }
+
+        /* =========================================================================
+           PAINEL DE AVISOS (segunda tela, alterna com o pódio)
+           ========================================================================= */
+        .avisos-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1920px;
+            height: 1080px;
+            background-image: url('BACKGROUND%20AVISOS%20SITE.png');
+            background-size: 100% 100%;
+            background-position: center center;
+            background-repeat: no-repeat;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 90px 140px;
+        }
+
+        .avisos-overlay.active {
+            display: flex;
+        }
+
+        .avisos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            width: 100%;
+            max-width: 1500px;
+            margin: 0 auto;
+            overflow-y: auto;
+        }
+
+        .aviso-item {
+            background: rgba(255, 255, 255, 0.95);
+            border-left: 6px solid #e67e22;
+            border-radius: 12px;
+            padding: 26px 40px;
+            font-size: 30px;
+            font-weight: 700;
+            color: #333333;
+            line-height: 1.4;
+            text-align: center;
+            white-space: pre-line;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .avisos-empty {
+            background: rgba(255, 255, 255, 0.95);
+            border-left: 6px solid #e67e22;
+            border-radius: 12px;
+            padding: 26px 40px;
+            font-size: 30px;
+            font-weight: 700;
+            color: #333333;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -321,18 +400,32 @@
             <div class="score" id="score-3">0</div>
         </div>
 
-        <!-- Container do VGV Total, agora abaixo do 1º lugar, entre o 2º e o 3º -->
-        <div class="stat-box vgv-container" id="vgv-container">
-            <div class="vgv-title">VGV Total</div>
-            <div class="vgv-value" id="vgv-total">R$ 0,00</div>
-        </div>
-
-        <!-- Container do ASSINADO CEF, logo abaixo do VGV Total -->
+        <!-- Container do ASSINADO CEF, agora no lugar onde estava o VGV Total -->
         <div class="stat-box cef-container" id="cef-container">
             <div class="cef-title">Assinado CEF</div>
             <div class="cef-value" id="cef-total">R$ 0,00</div>
         </div>
 
+        <!-- VGV Total por planilha (1, 2 e 3), em fileira horizontal -->
+        <div class="stat-box vgv-box-1" id="vgv-box-1">
+            <div class="vgv-title">VGV Canoas</div>
+            <div class="vgv-value" id="vgv-total-1">R$ 0,00</div>
+        </div>
+        <div class="stat-box vgv-box-2" id="vgv-box-2">
+            <div class="vgv-title">VGV Viamão</div>
+            <div class="vgv-value" id="vgv-total-2">R$ 0,00</div>
+        </div>
+        <div class="stat-box vgv-box-3" id="vgv-box-3">
+            <div class="vgv-title">VGV Porto Alegre</div>
+            <div class="vgv-value" id="vgv-total-3">R$ 0,00</div>
+        </div>
+
+    </div>
+
+    <!-- Painel de Avisos (segunda tela, alterna automaticamente com o pódio) -->
+    <div id="avisos-panel" class="avisos-overlay">
+        <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
+        <div class="avisos-list" id="avisos-list"></div>
     </div>
 </div>
 
@@ -342,7 +435,7 @@
 <script>
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
     const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
-
+    const URL_PLANILHA_3 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTWO_PtLyJyb5Ua8fvOg1kiQC4COPwiB7KlPjaZ-h6Wl9Y9oydPPGvuSoht0ZV0b5R48ToJzK0ayObQ/pub?output=csv';
     // =========================================================================
     // CONFIGURAÇÃO DO REALTIME (Corrigido conflito de nome do objeto)
     // =========================================================================
@@ -381,9 +474,76 @@
                 clearInterval(intervaloAtualizacao);
                 intervaloAtualizacao = null;
             }
+            if (intervaloTrocaPainel) {
+                clearInterval(intervaloTrocaPainel);
+                intervaloTrocaPainel = null;
+            }
         } else {
             iniciarAtualizacaoAutomatica();
+            iniciarTrocaAutomaticaPainel();
         }
+    }
+
+    // =========================================================================
+    // PAINEL DE AVISOS (segunda tela)
+    // =========================================================================
+    function mostrarPainel(nomePainel) {
+        painelAtual = nomePainel;
+        const rankingPanel = $('podium-elements');
+        const avisosPanel = $('avisos-panel');
+
+        if (nomePainel === 'avisos') {
+            if (rankingPanel) rankingPanel.style.display = 'none';
+            if (avisosPanel) avisosPanel.classList.add('active');
+        } else {
+            if (avisosPanel) avisosPanel.classList.remove('active');
+            if (rankingPanel) rankingPanel.style.display = 'block';
+        }
+    }
+
+    function alternarPainelLocal() {
+        const proximo = painelAtual === 'ranking' ? 'avisos' : 'ranking';
+
+        if (proximo === 'avisos' && (!avisosAtuais || avisosAtuais.length === 0)) {
+            console.log('Sem avisos no momento. Mantendo o painel de ranking.');
+            return;
+        }
+
+        mostrarPainel(proximo);
+        console.log(`Painel alternado para: ${proximo}`);
+    }
+
+    function iniciarTrocaAutomaticaPainel() {
+        if (intervaloTrocaPainel) {
+            clearInterval(intervaloTrocaPainel);
+        }
+
+        intervaloTrocaPainel = setInterval(() => {
+            if (!paginaCongelada) {
+                alternarPainelLocal();
+            }
+        }, INTERVALO_TROCA_PAINEL_MS);
+    }
+
+    function exibirAvisos(avisos) {
+        const lista = $('avisos-list');
+        if (!lista) return;
+        lista.innerHTML = '';
+
+        if (!avisos || avisos.length === 0) {
+            const vazio = document.createElement('div');
+            vazio.className = 'avisos-empty';
+            vazio.innerText = 'Nenhum aviso no momento.';
+            lista.appendChild(vazio);
+            return;
+        }
+
+        avisos.forEach(texto => {
+            const item = document.createElement('div');
+            item.className = 'aviso-item';
+            item.innerText = texto;
+            lista.appendChild(item);
+        });
     }
     
     window.addEventListener('resize', ajustarEscala);
@@ -395,6 +555,12 @@
     let intervaloAtualizacao = null;
     let comandoLocal = false;
     let textoIndicadorCongelamento = 'Modo teste';
+
+    // Estado do painel de avisos (segunda tela)
+    let painelAtual = 'ranking'; // 'ranking' | 'avisos'
+    let intervaloTrocaPainel = null;
+    let avisosAtuais = [];
+    const INTERVALO_TROCA_PAINEL_MS = 600000; // 10 minutos
 
     function carregarEstadoCongelamentoSalvo() {
         try {
@@ -488,6 +654,7 @@
 
     if (!paginaCongelada) {
         iniciarAtualizacaoAutomatica();
+        iniciarTrocaAutomaticaPainel();
     }
 
     const DEVICE_ID = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -529,6 +696,20 @@
 
         console.log('Comando de congelamento recebido via Realtime.', payload);
         alternarCongelamentoRemoto();
+    })
+    .on('broadcast', { event: 'switch-panel-others' }, (payload) => {
+        if (payload.payload?.fromId === DEVICE_ID) {
+            return;
+        }
+
+        console.log('Comando de troca de painel recebido via Realtime.', payload);
+
+        if (paginaCongelada) {
+            console.log('Página congelada. Ignorando troca de painel remota.');
+            return;
+        }
+
+        alternarPainelLocal();
     })
     .subscribe();
 
@@ -582,31 +763,95 @@
                 payload: { fromId: DEVICE_ID, timestamp: new Date().getTime() }
             });
         }
+
+        if (event.shiftKey && tecla === 'a') {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('Alternando o painel apenas da própria página...');
+            alternarPainelLocal();
+            return;
+        }
+
+        if ((event.ctrlKey || event.metaKey) && (tecla === 'a' || code === 'keya')) {
+            event.preventDefault();
+            event.stopPropagation();
+            console.log('Alternando o painel das demais páginas, mas não a própria...');
+            alternarPainelLocal();
+            await channel.send({
+                type: 'broadcast',
+                event: 'switch-panel-others',
+                payload: { fromId: DEVICE_ID, timestamp: new Date().getTime() }
+            });
+        }
     }, true);
 
-    function parseCSVLine(line, separador) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
+    // Parser de CSV que processa o texto inteiro de uma vez (não linha por linha),
+    // respeitando aspas — inclusive quando uma célula tem quebra de linha (\n) dentro
+    // dela, que é como o Google Sheets exporta células com múltiplas linhas.
+    function parseCSVCompleto(csvText, separador) {
+        const linhas = [];
+        let linhaAtual = [];
+        let campoAtual = '';
+        let dentroDeAspas = false;
+        let i = 0;
+        const total = csvText.length;
 
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            if (char === '"') {
-                if (inQuotes && line[i + 1] === '"') {
-                    current += '"';
+        while (i < total) {
+            const char = csvText[i];
+
+            if (dentroDeAspas) {
+                if (char === '"') {
+                    if (csvText[i + 1] === '"') {
+                        campoAtual += '"';
+                        i += 2;
+                        continue;
+                    }
+                    dentroDeAspas = false;
                     i += 1;
-                } else {
-                    inQuotes = !inQuotes;
+                    continue;
                 }
-            } else if (char === separador && !inQuotes) {
-                result.push(current.trim());
-                current = '';
-            } else {
-                current += char;
+                campoAtual += char;
+                i += 1;
+                continue;
             }
+
+            if (char === '"') {
+                dentroDeAspas = true;
+                i += 1;
+                continue;
+            }
+
+            if (char === separador) {
+                linhaAtual.push(campoAtual.trim());
+                campoAtual = '';
+                i += 1;
+                continue;
+            }
+
+            if (char === '\r') {
+                i += 1;
+                continue;
+            }
+
+            if (char === '\n') {
+                linhaAtual.push(campoAtual.trim());
+                linhas.push(linhaAtual);
+                linhaAtual = [];
+                campoAtual = '';
+                i += 1;
+                continue;
+            }
+
+            campoAtual += char;
+            i += 1;
         }
-        result.push(current.trim());
-        return result;
+
+        if (campoAtual.length > 0 || linhaAtual.length > 0) {
+            linhaAtual.push(campoAtual.trim());
+            linhas.push(linhaAtual);
+        }
+
+        return linhas;
     }
 
     function detectCsvSeparator(csvText) {
@@ -625,9 +870,9 @@
     // Função genérica: extrai e limpa o valor monetário de uma coluna específica
     // (índice zero-based) da segunda linha (linha 2) de um CSV.
     function extrairValorColunaDaSegundaLinha(csvText, separador, indiceColuna) {
-        const lines = csvText.split(/\r?\n/);
-        if (lines.length > 1 && lines[1].trim()) {
-            const columns = parseCSVLine(lines[1], separador);
+        const linhas = parseCSVCompleto(csvText, separador);
+        if (linhas.length > 1 && linhas[1].length) {
+            const columns = linhas[1];
             if (columns.length > indiceColuna) {
                 return limparValorMonetario(columns[indiceColuna]);
             }
@@ -647,13 +892,15 @@
 
     function forCsvRows(csvText, rowHandler) {
         const separador = detectCsvSeparator(csvText);
-        const lines = csvText.split(/\r?\n/);
+        const linhas = parseCSVCompleto(csvText, separador);
 
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i];
-            if (!line?.trim()) continue;
+        for (let i = 1; i < linhas.length; i++) {
+            const columns = linhas[i];
+            if (!columns || columns.length === 0) continue;
 
-            const columns = parseCSVLine(line, separador);
+            const linhaVazia = columns.every(valor => !valor || !valor.trim());
+            if (linhaVazia) continue;
+
             rowHandler(columns, separador);
         }
 
@@ -690,6 +937,18 @@
         });
 
         return { itens: result, separador };
+    }
+
+    // ATENÇÃO: leitura posicional pela coluna H (índice 7), a "próxima coluna vazia"
+    // depois de G (Assinado CEF). Se uma coluna for inserida antes da H no futuro,
+    // esta função vai ler o valor errado silenciosamente — não há checagem de cabeçalho.
+    function extrairAvisosDaPlanilha(csvText) {
+        const avisos = [];
+        forCsvRows(csvText, (columns) => {
+            const valor = (columns[7] || '').trim();
+            if (valor) avisos.push(valor);
+        });
+        return avisos;
     }
 
 function exibirRankingVendas(vendedoresRanking) {
@@ -770,15 +1029,17 @@ function exibirRankingVendas(vendedoresRanking) {
 
         try {
             const timestamp = new Date().getTime();
-            const [response1, response2] = await Promise.all([
+            const [response1, response2, response3] = await Promise.all([
                 fetch(`${URL_PLANILHA_1}&cache=${timestamp}`),
-                fetch(`${URL_PLANILHA_2}&cache=${timestamp}`)
+                fetch(`${URL_PLANILHA_2}&cache=${timestamp}`),
+                fetch(`${URL_PLANILHA_3}&cache=${timestamp}`)
             ]);
 
-            if (!response1.ok || !response2.ok) throw new Error('Erro ao buscar dados das planilhas.');
+            if (!response1.ok || !response2.ok || !response3.ok) throw new Error('Erro ao buscar dados das planilhas.');
 
             const dataText1 = await response1.text();
             const dataText2 = await response2.text();
+            const dataText3 = await response3.text();
 
             const resultado1 = csvToArrays(dataText1);
             const resultado2 = csvToArrays(dataText2);
@@ -787,7 +1048,8 @@ function exibirRankingVendas(vendedoresRanking) {
 
             const vgv1 = extrairVgvDaSegundaLinha(dataText1, resultado1.separador);
             const vgv2 = extrairVgvDaSegundaLinha(dataText2, resultado2.separador);
-            const vgvTotal = vgv1 + vgv2;
+            const separador3 = detectCsvSeparator(dataText3);
+            const vgv3 = extrairVgvDaSegundaLinha(dataText3, separador3);
 
             const cef1 = extrairAssinadoCefDaSegundaLinha(dataText1, resultado1.separador);
             const cef2 = extrairAssinadoCefDaSegundaLinha(dataText2, resultado2.separador);
@@ -821,18 +1083,18 @@ function exibirRankingVendas(vendedoresRanking) {
                 }
             }
 
-            const vgvTotalElement = $('vgv-total');
-            if (vgvTotalElement) {
-                vgvTotalElement.innerText = vgvTotal.toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                });
-            }
+            const formatarBRL = valor => valor === 0
+                ? 'R$ 0.000.000,00'
+                : valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            setText('vgv-total-1', formatarBRL(vgv1));
+            setText('vgv-total-2', formatarBRL(vgv2));
+            setText('vgv-total-3', formatarBRL(vgv3));
 
             const cefTotalElement = $('cef-total');
             if (cefTotalElement) {
                 const valorCefFormatado = cefTotal === 0
-                    ? 'R$ 000.000,00'
+                    ? 'R$ 0.000.000,00'
                     : cefTotal.toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL'
@@ -846,9 +1108,19 @@ function exibirRankingVendas(vendedoresRanking) {
             const rankingCompleto = rankingSales1.itens.concat(rankingSales2.itens);
             exibirRankingVendas(rankingCompleto);
 
+            // Carregar avisos (coluna H de ambas as planilhas)
+            const avisos1 = extrairAvisosDaPlanilha(dataText1);
+            const avisos2 = extrairAvisosDaPlanilha(dataText2);
+            avisosAtuais = avisos1.concat(avisos2);
+            exibirAvisos(avisosAtuais);
+
             hide('loading');
             hide('error');
-            show('podium-elements');
+            // Respeita o painel atualmente ativo (ranking ou avisos) em vez de
+            // forçar sempre o pódio — importante porque esta função roda a cada
+            // atualização automática (10 min) e não pode "puxar" a tela de volta
+            // se o painel de avisos estiver em exibição no momento.
+            mostrarPainel(painelAtual);
 
         } catch (error) {
             console.error(error);
