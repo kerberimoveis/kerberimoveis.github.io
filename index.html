@@ -366,6 +366,18 @@
             max-width: 100%;
             min-width: 0;
             align-self: flex-start;
+            gap: 8px;
+        }
+
+        .ranking-team-logo {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 4px;
+            margin-left: auto;
+            flex-shrink: 0;
         }
 
         .ranking-item.top-1 {
@@ -644,6 +656,16 @@
     const setText = (id, text) => { const el = $(id); if (el) el.innerText = text; };
     const setStyle = (id, styleName, value) => { const el = $(id); if (el) el.style[styleName] = value; };
     const setBackgroundImage = (id, imageValue) => setStyle(id, 'backgroundImage', imageValue);
+    const TIME_LOGOS = {
+        ESPARTA: 'LOGO SPARTA.png',
+        PERSA: 'LOGO PERSA.png',
+        CELTA: 'LOGO CELTA.png'
+    };
+    const PLANILHA_TIME = {
+        1: 'ESPARTA',
+        2: 'PERSA',
+        3: 'CELTA'
+    };
     const formatarMoedaBRL = (valor, fallback = 'R$ 0.000.000,00') => {
         if (valor === 0 || Number.isNaN(valor)) return fallback;
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -1165,15 +1187,18 @@
     // têm VGV = 0. Diferente de csvToArrays (usada pelo pódio Top 3), que
     // descarta linhas com valor zerado — aqui a lista precisa estar completa,
     // pois o ranking de corretores deve mostrar todo mundo.
-    function csvToCorretoresTodos(csvText) {
+    function csvToCorretoresTodos(csvText, timeNome) {
         const result = [];
+        const timeKey = (timeNome || '').toUpperCase();
+        const logo = TIME_LOGOS[timeKey] || '';
+
         forCsvRows(csvText, (columns) => {
             if (columns.length < 1) return;
             const nomeCru = (columns[0] || '').trim();
             if (!nomeCru) return;
             const valorCru = columns[1] || '0';
             const valorNumerico = limparValorMonetario(valorCru);
-            result.push({ nome: nomeCru, valorNum: valorNumerico });
+            result.push({ nome: nomeCru, valorNum: valorNumerico, time: timeKey, logo });
         });
         return result;
     }
@@ -1301,12 +1326,17 @@ function exibirRanking(agregados, opcoes) {
 
                 const exibirNumeroPosicao = (item[campoOrdenacao] || 0) > 0;
 
+                const logoMarkup = item.logo
+                    ? `<img class="ranking-team-logo" src="LOGOS/${item.logo}" alt="Logo ${item.time || 'time'}">`
+                    : '';
+
                 itemDiv.innerHTML = `
                     ${exibirNumeroPosicao ? `<div class="ranking-position">${posicaoAtual}º</div>` : ''}
                     <div class="ranking-info">
                         <div class="ranking-company">${item.nome}</div>
                         <div class="ranking-quantity">${formatarExibicao(item)}</div>
                     </div>
+                    ${logoMarkup}
                 `;
 
                 columnDiv.appendChild(itemDiv);
@@ -1350,16 +1380,28 @@ function exibirRanking(agregados, opcoes) {
             if (!nomeRaw) return;
 
             const nomeNormalizado = nomeRaw.toUpperCase();
+            const time = (it.time || '').toUpperCase();
             const v = parseFloat(it.valorNum) || 0;
 
             const deveIgnorar = nomesComFiltro.includes(nomeNormalizado) && v <= 0;
             if (deveIgnorar) return;
 
-            const chave = nomeRaw.toLowerCase();
+            const chave = `${nomeRaw.toLowerCase()}|${time}`;
             if (mapa.has(chave)) {
                 mapa.get(chave).valor += v;
+                if (!mapa.get(chave).time && time) {
+                    mapa.get(chave).time = time;
+                }
+                if (!mapa.get(chave).logo && TIME_LOGOS[time]) {
+                    mapa.get(chave).logo = TIME_LOGOS[time];
+                }
             } else {
-                mapa.set(chave, { nome: nomeRaw, valor: v });
+                mapa.set(chave, {
+                    nome: nomeRaw,
+                    valor: v,
+                    time,
+                    logo: TIME_LOGOS[time] || ''
+                });
             }
         });
         return Array.from(mapa.values());
@@ -1503,9 +1545,9 @@ function exibirRanking(agregados, opcoes) {
             // Carregar ranking de vendas dos corretores — lista completa e
             // independente da do pódio, porque aqui não pode descartar quem
             // tem VGV = 0 (csvToArrays/listaCompleta descarta esses casos).
-            const corretoresTodos1 = csvToCorretoresTodos(dataText1);
-            const corretoresTodos2 = csvToCorretoresTodos(dataText2);
-            const corretoresTodos3 = csvToCorretoresTodos(dataText3);
+            const corretoresTodos1 = csvToCorretoresTodos(dataText1, PLANILHA_TIME[1]);
+            const corretoresTodos2 = csvToCorretoresTodos(dataText2, PLANILHA_TIME[2]);
+            const corretoresTodos3 = csvToCorretoresTodos(dataText3, PLANILHA_TIME[3]);
             exibirRankingCorretores(corretoresTodos1.concat(corretoresTodos2, corretoresTodos3));
 
             // Carregar avisos (coluna H de todas as planilhas)
