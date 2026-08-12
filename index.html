@@ -644,6 +644,31 @@
     const setText = (id, text) => { const el = $(id); if (el) el.innerText = text; };
     const setStyle = (id, styleName, value) => { const el = $(id); if (el) el.style[styleName] = value; };
     const setBackgroundImage = (id, imageValue) => setStyle(id, 'backgroundImage', imageValue);
+    const formatarMoedaBRL = (valor, fallback = 'R$ 0.000.000,00') => {
+        if (valor === 0 || Number.isNaN(valor)) return fallback;
+        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    };
+
+    function renderizarTop3Item(posicao, item, timestamp) {
+        const photoElement = $(`photo-${posicao}`);
+        const nameElement = $(`name-${posicao}`);
+        const scoreElement = $(`score-${posicao}`);
+
+        if (item) {
+            if (nameElement) nameElement.innerText = item.nome || 'Sem Nome';
+            if (scoreElement) scoreElement.innerText = item.valorTexto || '0';
+            if (photoElement) {
+                photoElement.style.backgroundImage = item.foto?.trim()
+                    ? `url('FOTOS/${item.foto}?v=${timestamp}')`
+                    : 'none';
+            }
+            return;
+        }
+
+        if (nameElement) nameElement.innerText = 'N/A';
+        if (scoreElement) scoreElement.innerText = '-';
+        if (photoElement) photoElement.style.backgroundImage = 'none';
+    }
     // =========================================================================
 
     function ajustarEscala() {
@@ -1182,9 +1207,8 @@
     }
 
 // Renderiza uma lista de ranking (posição/nome/quantidade) dentro de um
-// container/lista já existentes no HTML, quebrando em até 2 colunas quando
-// houver mais de 5 itens — mesma lógica visual usada pelo ranking de
-// construtoras, agora reaproveitável para qualquer outra lista do mesmo tipo.
+// container/lista já existentes no HTML, quebrando em 1, 2 ou 3 colunas
+// conforme a quantidade de itens e a configuração do ranking atual.
 function exibirRanking(agregados, opcoes) {
         const {
             listId,
@@ -1195,7 +1219,12 @@ function exibirRanking(agregados, opcoes) {
             campoOrdenacao = 'quantidade',
             formatarExibicao = (item) => `${item.quantidade} ${item.quantidade === 1 ? 'Venda' : 'Vendas'}`,
             // Quantos itens mostrar no máximo. null = mostra todos, sem cortar.
-            limiteItens = null
+            limiteItens = null,
+            // Ativa a quebra em 3 colunas somente em cenários específicos, como o
+            // ranking de corretores quando passa de 22 itens.
+            forcarTresColunas = false,
+            tresColunasLeft = '120px',
+            tresColunasWidth = '1750px'
         } = opcoes;
 
         const rankingList = $(listId);
@@ -1209,20 +1238,32 @@ function exibirRanking(agregados, opcoes) {
         });
 
         const itensExibir = limiteItens ? ordenados.slice(0, limiteItens) : ordenados;
-        const numeroColunas = itensExibir.length > 5 ? 2 : 1;
+        const numeroColunas = itensExibir.length > 5
+            ? (forcarTresColunas && itensExibir.length > 22 ? 3 : 2)
+            : 1;
 
-        const colunas = numeroColunas === 2
+        const colunas = numeroColunas === 3
             ? [
-                itensExibir.slice(0, Math.ceil(itensExibir.length / 2)),
-                itensExibir.slice(Math.ceil(itensExibir.length / 2))
+                itensExibir.slice(0, Math.ceil(itensExibir.length / 3)),
+                itensExibir.slice(Math.ceil(itensExibir.length / 3), Math.ceil((itensExibir.length * 2) / 3)),
+                itensExibir.slice(Math.ceil((itensExibir.length * 2) / 3))
             ]
-            : [itensExibir];
+            : numeroColunas === 2
+                ? [
+                    itensExibir.slice(0, Math.ceil(itensExibir.length / 2)),
+                    itensExibir.slice(Math.ceil(itensExibir.length / 2))
+                ]
+                : [itensExibir];
 
         // Ajusta a posição do container sem depender de classes duplicadas no CSS.
         const container = $(containerId);
         if (container) {
             container.style.display = itensExibir.length > 0 ? 'block' : 'none';
-            if (numeroColunas === 2) {
+            if (numeroColunas === 3) {
+                container.style.left = tresColunasLeft;
+                container.style.width = tresColunasWidth;
+                container.style.maxWidth = 'calc(100vw - 80px)';
+            } else if (numeroColunas === 2) {
                 container.style.left = leftOffset;
                 container.style.width = '1600px';
                 container.style.maxWidth = 'calc(100vw - 80px)';
@@ -1234,9 +1275,16 @@ function exibirRanking(agregados, opcoes) {
         }
 
         let posicaoAtual = 0;
+        const ehRankingCorretorEmTresColunas = numeroColunas === 3 && listId === 'corretores-ranking-list';
         colunas.forEach((colunaItems) => {
             const columnDiv = document.createElement('div');
             columnDiv.className = 'ranking-column';
+
+            if (ehRankingCorretorEmTresColunas) {
+                columnDiv.style.flex = '0 0 240px';
+                columnDiv.style.width = '240px';
+                columnDiv.style.maxWidth = '240px';
+            }
 
             colunaItems.forEach((item) => {
                 posicaoAtual += 1;
@@ -1251,8 +1299,7 @@ function exibirRanking(agregados, opcoes) {
                     itemDiv.classList.add('top-3');
                 }
 
-                const mostrarPosicao = (item[campoOrdenacao] || 0) > 0;
-                const exibirNumeroPosicao = mostrarPosicao && (item[campoOrdenacao] || 0) > 0;
+                const exibirNumeroPosicao = (item[campoOrdenacao] || 0) > 0;
 
                 itemDiv.innerHTML = `
                     ${exibirNumeroPosicao ? `<div class="ranking-position">${posicaoAtual}º</div>` : ''}
@@ -1286,28 +1333,6 @@ function exibirRanking(agregados, opcoes) {
                 }
             } else {
                 mapa.set(chave, { nome: nomeRaw, quantidade: q, foto });
-            }
-        });
-        return Array.from(mapa.values());
-    }
-
-    // Agrega por nome, CONTANDO quantas linhas (nome + valor) cada corretor tem —
-    // não existe uma coluna de "quantidade" pronta para corretor como existe para
-    // construtora, então cada linha válida do pódio (nome + valor preenchidos)
-    // conta como 1 venda.
-    // Agrega por nome, CONTANDO quantas linhas (nome + valor) cada corretor tem.
-    // Não usada mais pelo ranking de corretores (que passou a ser por VGV/valor),
-    // mas mantida aqui — não excluir do código — caso seja necessária de novo.
-    function agregarContandoLinhas(itens) {
-        const mapa = new Map();
-        itens.forEach(it => {
-            const nomeRaw = (it.nome || '').trim();
-            if (!nomeRaw) return;
-            const chave = nomeRaw.toLowerCase();
-            if (mapa.has(chave)) {
-                mapa.get(chave).quantidade += 1;
-            } else {
-                mapa.set(chave, { nome: nomeRaw, quantidade: 1 });
             }
         });
         return Array.from(mapa.values());
@@ -1374,8 +1399,6 @@ function exibirRanking(agregados, opcoes) {
         exibirRanking(agregados, {
             listId: 'ranking-list-construtoras',
             containerId: 'sales-ranking-container-construtoras',
-            doisColunasLeft: '150px',
-            doisColunasWidth: '700px',
             umaColunaLeft: '320px',
             umaColunaWidth: '380px',
             limiteItens: null
@@ -1393,13 +1416,14 @@ function exibirRanking(agregados, opcoes) {
         exibirRanking(agregados, {
             listId: 'corretores-ranking-list',
             containerId: 'corretores-ranking-container',
-            doisColunasLeft: '240px',
-            doisColunasWidth: '700px',
             umaColunaLeft: '320px',
             umaColunaWidth: '380px',
             leftOffset: '180px',
             campoOrdenacao: 'valor',
             limiteItens: null, // mostra todos os corretores, sem cortar em 10
+            forcarTresColunas: true,
+            tresColunasLeft: '80px',
+            tresColunasWidth: '1200px',
             formatarExibicao: (item) => {
                 if (item.valor === 0) return 'R$ 000.000,00';
                 return item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -1448,44 +1472,16 @@ function exibirRanking(agregados, opcoes) {
             listaCompleta.sort((a, b) => b.valorNum - a.valorNum);
 
             for (let i = 0; i < 3; i++) {
-                const item = listaCompleta[i];
-                const posicao = i + 1;
-                const photoElement = $(`photo-${posicao}`);
-                const nameElement = $(`name-${posicao}`);
-                const scoreElement = $(`score-${posicao}`);
-
-                if (item) {
-                    if (nameElement) nameElement.innerText = item.nome || 'Sem Nome';
-                    if (scoreElement) scoreElement.innerText = item.valorTexto || '0';
-                    if (photoElement) {
-                        photoElement.style.backgroundImage = item.foto?.trim()
-                            ? `url('FOTOS/${item.foto}?v=${timestamp}')`
-                            : 'none';
-                    }
-                } else {
-                    if (nameElement) nameElement.innerText = 'N/A';
-                    if (scoreElement) scoreElement.innerText = '-';
-                    if (photoElement) photoElement.style.backgroundImage = 'none';
-                }
+                renderizarTop3Item(i + 1, listaCompleta[i], timestamp);
             }
 
-            const formatarBRL = valor => valor === 0
-                ? 'R$ 0.000.000,00'
-                : valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-            setText('vgv-total-1', formatarBRL(vgv1));
-            setText('vgv-total-2', formatarBRL(vgv2));
-            setText('vgv-total-3', formatarBRL(vgv3));
+            setText('vgv-total-1', formatarMoedaBRL(vgv1));
+            setText('vgv-total-2', formatarMoedaBRL(vgv2));
+            setText('vgv-total-3', formatarMoedaBRL(vgv3));
 
             const cefTotalElement = $('cef-total');
             if (cefTotalElement) {
-                const valorCefFormatado = cefTotal === 0
-                    ? 'R$ 0.000.000,00'
-                    : cefTotal.toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL'
-                    });
-                cefTotalElement.innerText = valorCefFormatado;
+                cefTotalElement.innerText = formatarMoedaBRL(cefTotal);
             }
 
             // Carregar ranking de vendas (colunas E e F) - construtoras
