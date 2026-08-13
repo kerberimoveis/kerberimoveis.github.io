@@ -1594,9 +1594,9 @@ function exibirRanking(agregados, opcoes) {
             const totalVendasPlanilha2 = rankingSales2.itens.reduce((soma, item) => soma + (parseInt(item.quantidade, 10) || 0), 0);
             const totalVendasPlanilha3 = rankingSales3.itens.reduce((soma, item) => soma + (parseInt(item.quantidade, 10) || 0), 0);
 
-            setText('sales-qty-total-1', `${totalVendasPlanilha1} Vendas`);
-            setText('sales-qty-total-2', `${totalVendasPlanilha2} Vendas`);
-            setText('sales-qty-total-3', `${totalVendasPlanilha3} Vendas`);
+            setText('sales-qty-total-1', `${totalVendasPlanilha1} ${totalVendasPlanilha1 === 1 ? 'Venda' : 'Vendas'}`);
+            setText('sales-qty-total-2', `${totalVendasPlanilha2} ${totalVendasPlanilha2 === 1 ? 'Venda' : 'Vendas'}`);
+            setText('sales-qty-total-3', `${totalVendasPlanilha3} ${totalVendasPlanilha3 === 1 ? 'Venda' : 'Vendas'}`);
 
             // Carregar ranking de vendas dos corretores — lista completa e
             // independente da do pódio, porque aqui não pode descartar quem
