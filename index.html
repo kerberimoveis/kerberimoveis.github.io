@@ -151,6 +151,22 @@
             left: 1695px;
         }
 
+        .stat-box-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .stat-box-logo {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+        }
+
         .sales-qty-box {
             position: absolute;
             left: 50%;
@@ -174,12 +190,28 @@
             margin-bottom: 5px;
         }
 
+        .sales-qty-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
         .sales-qty-value {
             font-size: 30px;
             color: #2ecc71;
             font-weight: 800;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
             white-space: nowrap;
+        }
+
+        .sales-qty-logo {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
         }
 
         .vgv-title {
@@ -200,7 +232,13 @@
             margin-bottom: 5px;
         }
 
-        .vgv-value,
+        .vgv-value {
+            font-size: 24px;
+            color: #2ecc71; /* Verde vivo para destacar o faturamento total */
+            font-weight: 800;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
         .cef-value {
             font-size: 30px;
             color: #2ecc71; /* Verde vivo para destacar o faturamento total */
@@ -572,15 +610,24 @@
         <!-- VGV Total por planilha (1, 2 e 3), em fileira horizontal -->
         <div class="stat-box vgv-box-1" id="vgv-box-1">
             <div class="vgv-title">ESPARTAS - JULIANO</div>
-            <div class="vgv-value" id="vgv-total-1">R$ 0,00</div>
+            <div class="stat-box-row">
+                <div class="vgv-value" id="vgv-total-1">R$ 0,00</div>
+                <img class="stat-box-logo" src="LOGOS/LOGO SPARTA.png" alt="Logo Sparta">
+            </div>
         </div>
         <div class="stat-box vgv-box-2" id="vgv-box-2">
             <div class="vgv-title">PERSAS - MICHELL</div>
-            <div class="vgv-value" id="vgv-total-2">R$ 0,00</div>
+            <div class="stat-box-row">
+                <div class="vgv-value" id="vgv-total-2">R$ 0,00</div>
+                <img class="stat-box-logo" src="LOGOS/LOGO PERSA.png" alt="Logo Persa">
+            </div>
         </div>
         <div class="stat-box vgv-box-3" id="vgv-box-3">
             <div class="vgv-title">CELTAS - WELLIGTON</div>
-            <div class="vgv-value" id="vgv-total-3">R$ 0,00</div>
+            <div class="stat-box-row">
+                <div class="vgv-value" id="vgv-total-3">R$ 0,00</div>
+                <img class="stat-box-logo" src="LOGOS/LOGO CELTA.png" alt="Logo Celta">
+            </div>
         </div>
 
     </div>
@@ -608,15 +655,24 @@
 
         <div class="sales-qty-box" id="sales-qty-box-1" style="bottom: 140px; left: 1360px;">
             <div class="sales-qty-title">ESPARTAS - JULIANO</div>
-            <div class="sales-qty-value" id="sales-qty-total-1">0</div>
+            <div class="sales-qty-row">
+                <div class="sales-qty-value" id="sales-qty-total-1">0</div>
+                <img class="sales-qty-logo" src="LOGOS/LOGO SPARTA.png" alt="Logo Sparta">
+            </div>
         </div>
         <div class="sales-qty-box" id="sales-qty-box-2" style="bottom: 140px; left: 1035px;">
             <div class="sales-qty-title">PERSAS - MICHELL</div>
-            <div class="sales-qty-value" id="sales-qty-total-2">0</div>
+            <div class="sales-qty-row">
+                <div class="sales-qty-value" id="sales-qty-total-2">0</div>
+                <img class="sales-qty-logo" src="LOGOS/LOGO PERSA.png" alt="Logo Persa">
+            </div>
         </div>
         <div class="sales-qty-box" id="sales-qty-box-3" style="bottom: 140px; left: 1695px;">
             <div class="sales-qty-title">CELTAS - WELLIGTON</div>
-            <div class="sales-qty-value" id="sales-qty-total-3">0</div>
+            <div class="sales-qty-row">
+                <div class="sales-qty-value" id="sales-qty-total-3">0</div>
+                <img class="sales-qty-logo" src="LOGOS/LOGO CELTA.png" alt="Logo Celta">
+            </div>
         </div>
 
         <div class="sales-ranking-container" id="sales-ranking-container-construtoras">
