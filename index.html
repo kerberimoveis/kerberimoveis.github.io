@@ -123,7 +123,7 @@
             text-align: center;
             z-index: 3;
             background-color: #000000; /* Fundo preto puro */
-            padding: 15px 35px;
+            padding: 10px 20px;
             border-radius: 12px;
             border: 2px solid #e67e22; /* Borda laranja combinando com o sistema */
             box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
@@ -174,10 +174,41 @@
             text-align: center;
             z-index: 3;
             background-color: #000000;
-            padding: 15px 35px;
+            padding: 10px 20px;
             border-radius: 12px;
             border: 2px solid #e67e22;
             box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .sales-total-container {
+            position: absolute;
+            top: 690px;
+            left: 1200px;
+            text-align: center;
+            z-index: 3;
+            background-color: #000000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #e67e22;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .sales-total-title {
+            font-size: 30px;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+        }
+
+        .sales-total-value {
+            font-size: 30px;
+            color: #2ecc71;
+            font-weight: 800;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            white-space: nowrap;
         }
 
         .sales-qty-title {
@@ -673,6 +704,11 @@
                 <div class="sales-qty-value" id="sales-qty-total-3">0</div>
                 <img class="sales-qty-logo" src="LOGOS/LOGO CELTA.png" alt="Logo Celta">
             </div>
+        </div>
+
+        <div class="sales-total-container" id="sales-total-container">
+            <div class="sales-total-title">Total de Vendas</div>
+            <div class="sales-total-value" id="sales-total-value">0</div>
         </div>
 
         <div class="sales-ranking-container" id="sales-ranking-container-construtoras">
@@ -1593,10 +1629,12 @@ function exibirRanking(agregados, opcoes) {
             const totalVendasPlanilha1 = rankingSales1.itens.reduce((soma, item) => soma + (parseInt(item.quantidade, 10) || 0), 0);
             const totalVendasPlanilha2 = rankingSales2.itens.reduce((soma, item) => soma + (parseInt(item.quantidade, 10) || 0), 0);
             const totalVendasPlanilha3 = rankingSales3.itens.reduce((soma, item) => soma + (parseInt(item.quantidade, 10) || 0), 0);
+            const totalVendasTodasEquipes = totalVendasPlanilha1 + totalVendasPlanilha2 + totalVendasPlanilha3;
 
             setText('sales-qty-total-1', `${totalVendasPlanilha1} ${totalVendasPlanilha1 === 1 ? 'Venda' : 'Vendas'}`);
             setText('sales-qty-total-2', `${totalVendasPlanilha2} ${totalVendasPlanilha2 === 1 ? 'Venda' : 'Vendas'}`);
             setText('sales-qty-total-3', `${totalVendasPlanilha3} ${totalVendasPlanilha3 === 1 ? 'Venda' : 'Vendas'}`);
+            setText('sales-total-value', `${totalVendasTodasEquipes} ${totalVendasTodasEquipes === 1 ? 'Venda' : 'Vendas'}`);
 
             // Carregar ranking de vendas dos corretores — lista completa e
             // independente da do pódio, porque aqui não pode descartar quem
