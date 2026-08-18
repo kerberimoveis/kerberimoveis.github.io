@@ -1587,8 +1587,6 @@ function exibirRanking(agregados, opcoes) {
 
             const resultado1 = csvToArrays(dataText1);
             const resultado2 = csvToArrays(dataText2);
-            
-            const listaCompleta = resultado1.itens.concat(resultado2.itens);
 
             const vgv1 = extrairVgvDaSegundaLinha(dataText1, resultado1.separador);
             const vgv2 = extrairVgvDaSegundaLinha(dataText2, resultado2.separador);
@@ -1599,14 +1597,33 @@ function exibirRanking(agregados, opcoes) {
             const cef2 = extrairAssinadoCefDaSegundaLinha(dataText2, resultado2.separador);
             const cefTotal = cef1 + cef2;
 
-            if (listaCompleta.length === 0) {
+            // Carregar dados de corretores de TODAS as 3 planilhas
+            const corretoresTodos1 = csvToCorretoresTodos(dataText1, PLANILHA_TIME[1]);
+            const corretoresTodos2 = csvToCorretoresTodos(dataText2, PLANILHA_TIME[2]);
+            const corretoresTodos3 = csvToCorretoresTodos(dataText3, PLANILHA_TIME[3]);
+            const corretoresCompletos = corretoresTodos1.concat(corretoresTodos2, corretoresTodos3);
+
+            // Agregar por nome (soma VGV do mesmo corretor)
+            const corretoresAgregados = agregarSomandoValor(corretoresCompletos)
+                .sort((a, b) => b.valor - a.valor);
+
+            if (corretoresAgregados.length === 0) {
                 throw new Error('Nenhum dado com valor encontrado.');
             }
 
-            listaCompleta.sort((a, b) => b.valorNum - a.valorNum);
-
+            // Renderizar Top 3 com dados agregados
             for (let i = 0; i < 3; i++) {
-                renderizarTop3Item(i + 1, listaCompleta[i], timestamp);
+                const item = corretoresAgregados[i];
+                if (item) {
+                    renderizarTop3Item(i + 1, {
+                        nome: item.nome,
+                        valorTexto: item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+                        valorNum: item.valor,
+                        foto: item.foto || ''
+                    }, timestamp);
+                } else {
+                    renderizarTop3Item(i + 1, null, timestamp);
+                }
             }
 
             setText('vgv-total-1', formatarMoedaBRL(vgv1));
@@ -1636,13 +1653,8 @@ function exibirRanking(agregados, opcoes) {
             setText('sales-qty-total-3', `${totalVendasPlanilha3} ${totalVendasPlanilha3 === 1 ? 'Venda' : 'Vendas'}`);
             setText('sales-total-value', `${totalVendasTodasEquipes} ${totalVendasTodasEquipes === 1 ? 'Venda' : 'Vendas'}`);
 
-            // Carregar ranking de vendas dos corretores — lista completa e
-            // independente da do pódio, porque aqui não pode descartar quem
-            // tem VGV = 0 (csvToArrays/listaCompleta descarta esses casos).
-            const corretoresTodos1 = csvToCorretoresTodos(dataText1, PLANILHA_TIME[1]);
-            const corretoresTodos2 = csvToCorretoresTodos(dataText2, PLANILHA_TIME[2]);
-            const corretoresTodos3 = csvToCorretoresTodos(dataText3, PLANILHA_TIME[3]);
-            exibirRankingCorretores(corretoresTodos1.concat(corretoresTodos2, corretoresTodos3));
+            // Ranking de vendas dos corretores (já foi carregado acima)
+            exibirRankingCorretores(corretoresCompletos);
 
             // Carregar avisos (coluna H de todas as planilhas)
             const avisos1 = extrairAvisosDaPlanilha(dataText1);
