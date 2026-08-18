@@ -1289,8 +1289,9 @@
             const nomeCru = (columns[0] || '').trim();
             if (!nomeCru) return;
             const valorCru = columns[1] || '0';
+            const nomeFotoArquivo = columns[2] || '';
             const valorNumerico = limparValorMonetario(valorCru);
-            result.push({ nome: nomeCru, valorNum: valorNumerico, time: timeKey, logo });
+            result.push({ nome: nomeCru, valorNum: valorNumerico, time: timeKey, logo, foto: nomeFotoArquivo });
         });
         return result;
     }
@@ -1474,6 +1475,7 @@ function exibirRanking(agregados, opcoes) {
             const nomeNormalizado = nomeRaw.toUpperCase();
             const time = (it.time || '').toUpperCase();
             const v = parseFloat(it.valorNum) || 0;
+            const foto = (it.foto || '').trim();
 
             const deveIgnorar = nomesComFiltro.includes(nomeNormalizado) && v <= 0;
             if (deveIgnorar) return;
@@ -1487,12 +1489,16 @@ function exibirRanking(agregados, opcoes) {
                 if (!mapa.get(chave).logo && TIME_LOGOS[time]) {
                     mapa.get(chave).logo = TIME_LOGOS[time];
                 }
+                if (!mapa.get(chave).foto && foto) {
+                    mapa.get(chave).foto = foto;
+                }
             } else {
                 mapa.set(chave, {
                     nome: nomeRaw,
                     valor: v,
                     time,
-                    logo: TIME_LOGOS[time] || ''
+                    logo: TIME_LOGOS[time] || '',
+                    foto: foto
                 });
             }
         });
