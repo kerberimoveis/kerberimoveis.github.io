@@ -64,6 +64,10 @@
             background-image: url('BACKGROUND%20HORARIOS.png');
         }
 
+        #panel-ranking-corretores {
+            background-image: url('BACKGROUND%20RANKING%20VGV.png');
+        }
+
         /* Formato Oval vertical ajustado para o topo do bloco preto */
         .avatar-photo {
             position: absolute;
@@ -80,7 +84,7 @@
         /* Caixas de texto posicionadas na base interna dos blocos pretos */
         .legend-container {
             position: absolute;
-            width: 260px; /* Reduzido para não vazar a borda interna do bloco */
+            width: 320px; /* Reduzido para não vazar a borda interna do bloco */
             text-align: center;
             z-index: 3;
         }
@@ -101,6 +105,42 @@
             font-weight: 700;
             color: #e67e22; /* Mantido o tom laranja em destaque */
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        }
+
+        /* =================================================================
+           TOP 3 CORRETORES — ajuste o tamanho do nome e do VGV aqui.
+           Não afeta o top 3 das construtoras.
+           ================================================================= */
+        #podium-elements {
+            --top3-corretores-nome-tamanho: 32px;
+            --top3-corretores-score-tamanho: 30px;
+        }
+
+        #podium-elements .name {
+            font-size: var(--top3-corretores-nome-tamanho);
+        }
+
+        #podium-elements .score {
+            font-size: var(--top3-corretores-score-tamanho);
+        }
+
+        #sales-score-1,
+        #sales-score-2,
+        #sales-score-3 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+        }
+
+        .score-vendas {
+            color: #e67e22;
+        }
+
+        .score-vgv {
+            color: #2ecc71;
         }
 
         /* LOGOTIPO KERBER - Posicionado cirurgicamente no canto superior esquerdo */
@@ -131,24 +171,29 @@
 
         .cef-container {
             top: 690px;
-            left: 1360px;
+            left: 960px;
         }
 
-        /* VGV Total por planilha — 3 caixas lado a lado numa fileira,
+        /* VGV Total por planilha — 4 caixas lado a lado numa fileira,
            na faixa inferior da tela (área historicamente livre neste layout) */
         .vgv-box-1 {
             bottom: 140px;
-            left: 1360px;
+            left: 730px;
         }
 
         .vgv-box-2 {
             bottom: 140px;
-            left: 1035px;
+            left: 260px;
         }
 
         .vgv-box-3 {
             bottom: 140px;
-            left: 1695px;
+            left: 1200px;
+        }
+
+        .vgv-box-4 {
+            bottom: 140px;
+            left: 1670px;
         }
 
         .stat-box-row {
@@ -246,7 +291,7 @@
         }
 
         .vgv-title {
-            font-size: 24px;
+            font-size: 32px;
             color: #ffffff;
             font-weight: 600;
             text-transform: uppercase;
@@ -255,7 +300,7 @@
             margin-bottom: 5px;
         }
         .cef-title {
-            font-size: 30px;
+            font-size: 36px;
             color: #ffffff;
             font-weight: 600;
             text-transform: uppercase;
@@ -264,7 +309,7 @@
         }
 
         .vgv-value {
-            font-size: 24px;
+            font-size: 30px;
             color: #2ecc71; /* Verde vivo para destacar o faturamento total */
             font-weight: 800;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
@@ -284,36 +329,44 @@
 
         /* 1º LUGAR (CENTRO) */
         #photo-1 {
-            top: 345px;
-            left: 1260px;
+            top: 340px;
+            left: 870px;
+            width: 180px;
+            height: 220px;
+            transform: scale(1.2); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
+            transform-origin: center center;
         }
         #legend-1 {
-            top: 600px;
-            left: 1230px; /* Centralizado horizontalmente no bloco central */
+            top: 590px;
+            left: 805px; /* Centralizado horizontalmente no bloco central */
         }
 
         /* 2º LUGAR (ESQUERDA) */
         #photo-2 {
-            top: 475px;
-            left: 935px;
+            top: 380px;
+            left: 380px;
             width: 180px;
-            height: 216px;
+            height: 220px;
+            transform: scale(1.2); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
+            transform-origin: center center;
         }
         #legend-2 {
-            top: 700px;
-            left: 895px; /* Centralizado horizontalmente no bloco da esquerda */
+            top: 630px;
+            left: 310px; /* Centralizado horizontalmente no bloco da esquerda */
         }
 
         /* 3º LUGAR (DIREITA) */
         #photo-3 {
-            top: 475px;
-            left: 1610px;
-            width: 170px;
-            height: 204px;
+            top: 380px;
+            left: 1365px;
+            width: 180px;
+            height: 220px;
+            transform: scale(1.2); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
+            transform-origin: center center;
         }
         #legend-3 {
-            top: 700px;
-            left: 1560px; /* Centralizado horizontalmente no bloco da direita */
+            top: 630px;
+            left: 1290px; /* Centralizado horizontalmente no bloco da direita */
         }
 
         /* Mesmas posições do Top 3 do painel 1, agora usadas para as fotos do
@@ -340,17 +393,20 @@
 
         #sales-legend-1 {
             top: 600px;
-            left: 1230px;
+            left: 1150px;
+            width: 420px;
             z-index: 5;
         }
         #sales-legend-2 {
             top: 700px;
-            left: 895px;
+            left: 815px;
+            width: 420px;
             z-index: 5;
         }
         #sales-legend-3 {
             top: 700px;
-            left: 1560px;
+            left: 1485px;
+            width: 420px;
             z-index: 5;
         }
 
@@ -401,7 +457,7 @@
         /* Ranking de Quantidade de Vendas dos CORRETORES (todos, não só o Top 3). */
         #corretores-ranking-container {
             position: absolute;
-            top: 180px;
+            top: 280px;
             max-width: calc(100vw - 80px);
         }
         .ranking-list {
@@ -477,7 +533,7 @@
         }
 
         .ranking-position {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: #e67e22;
             margin-right: 8px;
@@ -493,7 +549,7 @@
         }
 
         .ranking-company {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 600;
             color: #333333;
             overflow: hidden;
@@ -505,7 +561,7 @@
         }
 
         .ranking-quantity {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 700;
             color: #2ecc71;
             white-space: nowrap;
@@ -580,7 +636,7 @@
             left: 0;
             width: 1920px;
             height: 1080px;
-            background-image: url('BACKGROUND%20RANKING.png');
+            background-image: url('BACKGROUND%20TOP%203%20CORRETORES.png');
             background-size: 100% 100%;
             background-position: center center;
             background-repeat: no-repeat;
@@ -589,6 +645,10 @@
         }
 
         #podium-elements.active {
+            display: block;
+        }
+
+        #panel-ranking-corretores.active {
             display: block;
         }
     </style>
@@ -602,11 +662,6 @@
     <div id="freeze-indicator" class="freeze-indicator">Congelado</div>
 
     <div id="podium-elements">
-        
-        <!-- Ranking de Quantidade de Vendas (corretores, todos, não só o Top 3) -->
-        <div id="corretores-ranking-container">
-            <div class="ranking-list" id="corretores-ranking-list"></div>
-        </div>
 
         <!-- Logotipo Kerber no Canto -->
         <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
@@ -660,10 +715,25 @@
                 <img class="stat-box-logo" src="LOGOS/LOGO CELTA.png" alt="Logo Celta">
             </div>
         </div>
+        <div class="stat-box vgv-box-4" id="vgv-box-4">
+            <div class="vgv-title">CELTAS - HENRIQUE</div>
+            <div class="stat-box-row">
+                <div class="vgv-value" id="vgv-total-4">R$ 0,00</div>
+                <img class="stat-box-logo" src="LOGOS/LOGO CELTA.png" alt="Logo Celta">
+            </div>
+        </div>
 
     </div>
 
-    <!-- Painel 2 - Vendas de Construtoras -->
+    <!-- Painel 2 - Ranking completo de VGV dos corretores -->
+    <div id="panel-ranking-corretores" class="panel-overlay">
+        <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
+        <div id="corretores-ranking-container">
+            <div class="ranking-list" id="corretores-ranking-list"></div>
+        </div>
+    </div>
+
+    <!-- Painel 3 - Vendas de Construtoras -->
     <div id="panel-construtoras" class="panel-overlay">
         <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
         <div class="avatar-photo" id="sales-photo-1"></div>
@@ -684,24 +754,31 @@
             <div class="score" id="sales-score-3">0</div>
         </div>
 
-        <div class="sales-qty-box" id="sales-qty-box-1" style="bottom: 140px; left: 1360px;">
+        <div class="sales-qty-box" id="sales-qty-box-1" style="bottom: 140px; left: 818px;">
             <div class="sales-qty-title">ESPARTAS - JULIANO</div>
             <div class="sales-qty-row">
                 <div class="sales-qty-value" id="sales-qty-total-1">0</div>
                 <img class="sales-qty-logo" src="LOGOS/LOGO SPARTA.png" alt="Logo Sparta">
             </div>
         </div>
-        <div class="sales-qty-box" id="sales-qty-box-2" style="bottom: 140px; left: 1035px;">
+        <div class="sales-qty-box" id="sales-qty-box-2" style="bottom: 140px; left: 1108px;">
             <div class="sales-qty-title">PERSAS - MICHELL</div>
             <div class="sales-qty-row">
                 <div class="sales-qty-value" id="sales-qty-total-2">0</div>
                 <img class="sales-qty-logo" src="LOGOS/LOGO PERSA.png" alt="Logo Persa">
             </div>
         </div>
-        <div class="sales-qty-box" id="sales-qty-box-3" style="bottom: 140px; left: 1695px;">
+        <div class="sales-qty-box" id="sales-qty-box-3" style="bottom: 140px; left: 1400px;">
             <div class="sales-qty-title">CELTAS - WELLIGTON</div>
             <div class="sales-qty-row">
                 <div class="sales-qty-value" id="sales-qty-total-3">0</div>
+                <img class="sales-qty-logo" src="LOGOS/LOGO CELTA.png" alt="Logo Celta">
+            </div>
+        </div>
+        <div class="sales-qty-box" id="sales-qty-box-4" style="bottom: 140px; left: 1700px;">
+            <div class="sales-qty-title">CELTAS - HENRIQUE</div>
+            <div class="sales-qty-row">
+                <div class="sales-qty-value" id="sales-qty-total-4">0</div>
                 <img class="sales-qty-logo" src="LOGOS/LOGO CELTA.png" alt="Logo Celta">
             </div>
         </div>
@@ -716,12 +793,12 @@
         </div>
     </div>
 
-    <!-- Painel 3 - Horários -->
+    <!-- Painel 4 - Horários -->
     <div id="panel-horarios" class="panel-overlay">
         <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
     </div>
 
-    <!-- Painel 4 - Avisos (já existia, agora faz parte do rodízio de 4 painéis) -->
+    <!-- Painel 5 - Avisos -->
     <div id="avisos-panel" class="avisos-overlay">
         <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
         <div class="avisos-list" id="avisos-list"></div>
@@ -735,6 +812,7 @@
     const URL_PLANILHA_1 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv';
     const URL_PLANILHA_2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv';
     const URL_PLANILHA_3 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTWO_PtLyJyb5Ua8fvOg1kiQC4COPwiB7KlPjaZ-h6Wl9Y9oydPPGvuSoht0ZV0b5R48ToJzK0ayObQ/pub?output=csv';
+    const URL_PLANILHA_4 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR5V8xE3zzpfPSjEG35-nMssruDEqCFlQdINhuZclB-JUt5h4w7HSLG-r-jEHBX60cOg6-nA51tSeL3/pub?gid=277533887&single=true&output=csv';
     // =========================================================================
     // CONFIGURAÇÃO DO REALTIME (Corrigido conflito de nome do objeto)
     // =========================================================================
@@ -756,7 +834,8 @@
     const PLANILHA_TIME = {
         1: 'ESPARTA',
         2: 'PERSA',
-        3: 'CELTA'
+        3: 'CELTA',
+        4: 'CELTA'
     };
     const formatarMoedaBRL = (valor, fallback = 'R$ 0.000.000,00') => {
         if (valor === 0 || Number.isNaN(valor)) return fallback;
@@ -819,10 +898,11 @@
     }
 
     // =========================================================================
-    // RODÍZIO DE 4 PAINÉIS: corretores -> construtoras -> horários -> avisos
+    // RODÍZIO DE 5 PAINÉIS: VGV corretores -> ranking corretores -> construtoras -> horários -> avisos
     // =========================================================================
     const PAINEIS_IDS = {
         corretores: 'podium-elements',
+        rankingCorretores: 'panel-ranking-corretores',
         construtoras: 'panel-construtoras',
         horarios: 'panel-horarios',
         avisos: 'avisos-panel'
@@ -907,8 +987,8 @@
     let comandoLocal = false;
     let textoIndicadorCongelamento = 'Modo teste';
 
-    // Estado do rodízio de 4 painéis
-    const PAINEIS_ORDEM = ['corretores', 'construtoras', 'horarios', 'avisos'];
+    // Estado do rodízio de 5 painéis
+    const PAINEIS_ORDEM = ['corretores', 'rankingCorretores', 'construtoras', 'horarios', 'avisos'];
     let painelAtual = 'corretores';
     let intervaloTrocaPainel = null;
     let avisosAtuais = [];
@@ -1303,10 +1383,13 @@
             const construtoraNome = (columns[4] || '').trim();
             const quantidadeVendas = columns[5] || '0';
             const fotoArquivo = (columns[8] || '').trim();
+            // Coluna J (índice 9) = VGV da construtora
+            const vgvCru = columns[9] || '';
             if (!construtoraNome) return;
 
             const quantidade = parseInt(quantidadeVendas, 10) || 0;
-            result.push({ nome: construtoraNome, quantidade, foto: fotoArquivo });
+            const vgv = limparValorMonetario(vgvCru);
+            result.push({ nome: construtoraNome, quantidade, vgv, foto: fotoArquivo });
         });
 
         return { itens: result, separador };
@@ -1338,11 +1421,14 @@ function exibirRanking(agregados, opcoes) {
             formatarExibicao = (item) => `${item.quantidade} ${item.quantidade === 1 ? 'Venda' : 'Vendas'}`,
             // Quantos itens mostrar no máximo. null = mostra todos, sem cortar.
             limiteItens = null,
-            // Ativa a quebra em 3 colunas somente em cenários específicos, como o
-            // ranking de corretores quando passa de 22 itens.
+            // Quando definido, cria uma coluna para cada grupo desta quantidade.
+            itensPorColuna = null,
+            larguraColuna = '320px',
+            // Opcoes legadas usadas pelo ranking de construtoras.
             forcarTresColunas = false,
             tresColunasLeft = '120px',
-            tresColunasWidth = '1750px'
+            tresColunasWidth = '1750px',
+            duasColunasWidth = '1600px'
         } = opcoes;
 
         const rankingList = $(listId);
@@ -1356,34 +1442,47 @@ function exibirRanking(agregados, opcoes) {
         });
 
         const itensExibir = limiteItens ? ordenados.slice(0, limiteItens) : ordenados;
-        const numeroColunas = itensExibir.length > 5
-            ? (forcarTresColunas && itensExibir.length > 22 ? 3 : 2)
-            : 1;
+        const numeroColunas = itensPorColuna
+            ? Math.max(1, Math.ceil(itensExibir.length / itensPorColuna))
+            : itensExibir.length > 5
+                ? (forcarTresColunas && itensExibir.length > 22 ? 3 : 2)
+                : 1;
 
-        const colunas = numeroColunas === 3
-            ? [
-                itensExibir.slice(0, Math.ceil(itensExibir.length / 3)),
-                itensExibir.slice(Math.ceil(itensExibir.length / 3), Math.ceil((itensExibir.length * 2) / 3)),
-                itensExibir.slice(Math.ceil((itensExibir.length * 2) / 3))
-            ]
-            : numeroColunas === 2
+        const colunas = itensPorColuna
+            ? Array.from({ length: numeroColunas }, (_, indice) => {
+                const inicio = indice * itensPorColuna;
+                return itensExibir.slice(inicio, inicio + itensPorColuna);
+            })
+            : numeroColunas === 3
                 ? [
-                    itensExibir.slice(0, Math.ceil(itensExibir.length / 2)),
-                    itensExibir.slice(Math.ceil(itensExibir.length / 2))
+                    itensExibir.slice(0, Math.ceil(itensExibir.length / 3)),
+                    itensExibir.slice(Math.ceil(itensExibir.length / 3), Math.ceil((itensExibir.length * 2) / 3)),
+                    itensExibir.slice(Math.ceil((itensExibir.length * 2) / 3))
                 ]
-                : [itensExibir];
+                : numeroColunas === 2
+                    ? [
+                        itensExibir.slice(0, Math.ceil(itensExibir.length / 2)),
+                        itensExibir.slice(Math.ceil(itensExibir.length / 2))
+                    ]
+                    : [itensExibir];
 
         // Ajusta a posição do container sem depender de classes duplicadas no CSS.
         const container = $(containerId);
         if (container) {
             container.style.display = itensExibir.length > 0 ? 'block' : 'none';
-            if (numeroColunas === 3) {
+            if (itensPorColuna) {
+                const larguraNumerica = parseInt(larguraColuna, 10);
+                const larguraTotal = numeroColunas * larguraNumerica + (numeroColunas - 1) * 10;
+                container.style.left = `${Math.max(0, (1920 - larguraTotal) / 2)}px`;
+                container.style.width = `${larguraTotal}px`;
+                container.style.maxWidth = 'none';
+            } else if (numeroColunas === 3) {
                 container.style.left = tresColunasLeft;
                 container.style.width = tresColunasWidth;
                 container.style.maxWidth = 'calc(100vw - 80px)';
             } else if (numeroColunas === 2) {
                 container.style.left = leftOffset;
-                container.style.width = '1600px';
+                container.style.width = duasColunasWidth;
                 container.style.maxWidth = 'calc(100vw - 80px)';
             } else {
                 container.style.left = umaColunaLeft;
@@ -1393,15 +1492,14 @@ function exibirRanking(agregados, opcoes) {
         }
 
         let posicaoAtual = 0;
-        const ehRankingCorretorEmTresColunas = numeroColunas === 3 && listId === 'corretores-ranking-list';
         colunas.forEach((colunaItems) => {
             const columnDiv = document.createElement('div');
             columnDiv.className = 'ranking-column';
 
-            if (ehRankingCorretorEmTresColunas) {
-                columnDiv.style.flex = '0 0 240px';
-                columnDiv.style.width = '240px';
-                columnDiv.style.maxWidth = '240px';
+            if (itensPorColuna) {
+                columnDiv.style.flex = `0 0 ${larguraColuna}`;
+                columnDiv.style.width = larguraColuna;
+                columnDiv.style.maxWidth = larguraColuna;
             }
 
             colunaItems.forEach((item) => {
@@ -1439,8 +1537,8 @@ function exibirRanking(agregados, opcoes) {
         });
     }
 
-    // Agrega por nome, SOMANDO a quantidade já vinda da planilha (construtoras:
-    // cada linha já traz um número de vendas pronto na coluna F).
+    // Agrega por nome, SOMANDO quantidade (coluna F) e VGV (coluna J) das
+    // construtoras — nomes iguais (case-insensitive) viram um único item.
     function agregarSomandoQuantidade(itens) {
         const mapa = new Map();
         itens.forEach(it => {
@@ -1448,14 +1546,17 @@ function exibirRanking(agregados, opcoes) {
             if (!nomeRaw) return;
             const chave = nomeRaw.toLowerCase();
             const q = parseInt(it.quantidade) || 0;
+            const vgv = parseFloat(it.vgv) || 0;
             const foto = (it.foto || '').trim();
             if (mapa.has(chave)) {
-                mapa.get(chave).quantidade += q;
-                if (!mapa.get(chave).foto && foto) {
-                    mapa.get(chave).foto = foto;
+                const existente = mapa.get(chave);
+                existente.quantidade += q;
+                existente.vgv += vgv;
+                if (!existente.foto && foto) {
+                    existente.foto = foto;
                 }
             } else {
-                mapa.set(chave, { nome: nomeRaw, quantidade: q, foto });
+                mapa.set(chave, { nome: nomeRaw, quantidade: q, vgv, foto });
             }
         });
         return Array.from(mapa.values());
@@ -1506,9 +1607,10 @@ function exibirRanking(agregados, opcoes) {
     }
 
     function exibirFotosRankingVendas(vendedoresRanking, timestamp) {
+        // Top 3 ordenado por VGV (coluna J); exibe vendas + VGV no pódio.
         const agregados = agregarSomandoQuantidade(vendedoresRanking)
             .sort((a, b) => {
-                const diferenca = (b.quantidade || 0) - (a.quantidade || 0);
+                const diferenca = (b.vgv || 0) - (a.vgv || 0);
                 if (diferenca !== 0) return diferenca;
                 return (a.nome || '').localeCompare(b.nome || '', 'pt-BR', { sensitivity: 'base' });
             });
@@ -1529,18 +1631,26 @@ function exibirRanking(agregados, opcoes) {
                 nameElement.innerText = item?.nome || 'N/A';
             }
             if (scoreElement) {
-                scoreElement.innerText = item ? `${item.quantidade} ${item.quantidade === 1 ? 'venda' : 'vendas'}` : '0';
+                if (!item) {
+                    scoreElement.innerText = '0';
+                } else {
+                    const qtd = `${item.quantidade} ${item.quantidade === 1 ? 'venda' : 'vendas'}`;
+                    const vgvTexto = formatarMoedaBRL(item.vgv || 0);
+                    scoreElement.innerHTML = `<span class="score-vendas">${qtd}</span><span class="score-vgv">${vgvTexto}</span>`;
+                }
             }
         }
     }
 
     function exibirRankingVendas(vendedoresRanking) {
+        // Lista ordenada por VGV; na tela continua aparecendo só a qtd. de vendas.
         const agregados = agregarSomandoQuantidade(vendedoresRanking);
         exibirRanking(agregados, {
             listId: 'ranking-list-construtoras',
             containerId: 'sales-ranking-container-construtoras',
             umaColunaLeft: '320px',
             umaColunaWidth: '380px',
+            campoOrdenacao: 'vgv',
             limiteItens: null
         });
     }
@@ -1558,12 +1668,10 @@ function exibirRanking(agregados, opcoes) {
             containerId: 'corretores-ranking-container',
             umaColunaLeft: '320px',
             umaColunaWidth: '380px',
-            leftOffset: '180px',
             campoOrdenacao: 'valor',
             limiteItens: null, // mostra todos os corretores, sem cortar em 10
-            forcarTresColunas: true,
-            tresColunasLeft: '80px',
-            tresColunasWidth: '1200px',
+            itensPorColuna: 8,
+            larguraColuna: '320px',
             formatarExibicao: (item) => {
                 if (item.valor === 0) return 'R$ 000.000,00';
                 return item.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -1579,17 +1687,23 @@ function exibirRanking(agregados, opcoes) {
 
         try {
             const timestamp = new Date().getTime();
-            const [response1, response2, response3] = await Promise.all([
+            const [response1, response2, response3, response4] = await Promise.all([
                 fetch(`${URL_PLANILHA_1}&cache=${timestamp}`),
                 fetch(`${URL_PLANILHA_2}&cache=${timestamp}`),
-                fetch(`${URL_PLANILHA_3}&cache=${timestamp}`)
+                fetch(`${URL_PLANILHA_3}&cache=${timestamp}`),
+                URL_PLANILHA_4
+                    ? fetch(`${URL_PLANILHA_4}${URL_PLANILHA_4.includes('?') ? '&' : '?'}cache=${timestamp}`)
+                    : Promise.resolve(null)
             ]);
 
-            if (!response1.ok || !response2.ok || !response3.ok) throw new Error('Erro ao buscar dados das planilhas.');
+            if (!response1.ok || !response2.ok || !response3.ok || (response4 && !response4.ok)) {
+                throw new Error('Erro ao buscar dados das planilhas.');
+            }
 
             const dataText1 = await response1.text();
             const dataText2 = await response2.text();
             const dataText3 = await response3.text();
+            const dataText4 = response4 ? await response4.text() : '';
 
             const resultado1 = csvToArrays(dataText1);
             const resultado2 = csvToArrays(dataText2);
@@ -1598,16 +1712,24 @@ function exibirRanking(agregados, opcoes) {
             const vgv2 = extrairVgvDaSegundaLinha(dataText2, resultado2.separador);
             const separador3 = detectCsvSeparator(dataText3);
             const vgv3 = extrairVgvDaSegundaLinha(dataText3, separador3);
+            const separador4 = dataText4 ? detectCsvSeparator(dataText4) : ',';
+            const vgv4 = dataText4 ? extrairVgvDaSegundaLinha(dataText4, separador4) : 0;
 
             const cef1 = extrairAssinadoCefDaSegundaLinha(dataText1, resultado1.separador);
             const cef2 = extrairAssinadoCefDaSegundaLinha(dataText2, resultado2.separador);
-            const cefTotal = cef1 + cef2;
+            const cef4 = extrairAssinadoCefDaSegundaLinha(dataText4, separador4);
+            const cefTotal = cef1 + cef2 + cef4;
 
-            // Carregar dados de corretores de TODAS as 3 planilhas
+            // Carregar dados de corretores de TODAS as 4 planilhas
             const corretoresTodos1 = csvToCorretoresTodos(dataText1, PLANILHA_TIME[1]);
             const corretoresTodos2 = csvToCorretoresTodos(dataText2, PLANILHA_TIME[2]);
             const corretoresTodos3 = csvToCorretoresTodos(dataText3, PLANILHA_TIME[3]);
-            const corretoresCompletos = corretoresTodos1.concat(corretoresTodos2, corretoresTodos3);
+            const corretoresTodos4 = csvToCorretoresTodos(dataText4, PLANILHA_TIME[4]);
+            const corretoresCompletos = corretoresTodos1.concat(
+                corretoresTodos2,
+                corretoresTodos3,
+                corretoresTodos4
+            );
 
             // Agregar por nome (soma VGV do mesmo corretor)
             const corretoresAgregados = agregarSomandoValor(corretoresCompletos)
@@ -1635,6 +1757,7 @@ function exibirRanking(agregados, opcoes) {
             setText('vgv-total-1', formatarMoedaBRL(vgv1));
             setText('vgv-total-2', formatarMoedaBRL(vgv2));
             setText('vgv-total-3', formatarMoedaBRL(vgv3));
+            setText('vgv-total-4', formatarMoedaBRL(vgv4));
 
             const cefTotalElement = $('cef-total');
             if (cefTotalElement) {
@@ -1645,18 +1768,25 @@ function exibirRanking(agregados, opcoes) {
             const rankingSales1 = csvToSalesRanking(dataText1);
             const rankingSales2 = csvToSalesRanking(dataText2);
             const rankingSales3 = csvToSalesRanking(dataText3);
-            const rankingCompleto = rankingSales1.itens.concat(rankingSales2.itens, rankingSales3.itens);
+            const rankingSales4 = csvToSalesRanking(dataText4);
+            const rankingCompleto = rankingSales1.itens.concat(
+                rankingSales2.itens,
+                rankingSales3.itens,
+                rankingSales4.itens
+            );
             exibirRankingVendas(rankingCompleto);
             exibirFotosRankingVendas(rankingCompleto, timestamp);
 
             const totalVendasPlanilha1 = rankingSales1.itens.reduce((soma, item) => soma + (parseInt(item.quantidade, 10) || 0), 0);
             const totalVendasPlanilha2 = rankingSales2.itens.reduce((soma, item) => soma + (parseInt(item.quantidade, 10) || 0), 0);
             const totalVendasPlanilha3 = rankingSales3.itens.reduce((soma, item) => soma + (parseInt(item.quantidade, 10) || 0), 0);
-            const totalVendasTodasEquipes = totalVendasPlanilha1 + totalVendasPlanilha2 + totalVendasPlanilha3;
+            const totalVendasPlanilha4 = rankingSales4.itens.reduce((soma, item) => soma + (parseInt(item.quantidade, 10) || 0), 0);
+            const totalVendasTodasEquipes = totalVendasPlanilha1 + totalVendasPlanilha2 + totalVendasPlanilha3 + totalVendasPlanilha4;
 
             setText('sales-qty-total-1', `${totalVendasPlanilha1} ${totalVendasPlanilha1 === 1 ? 'Venda' : 'Vendas'}`);
             setText('sales-qty-total-2', `${totalVendasPlanilha2} ${totalVendasPlanilha2 === 1 ? 'Venda' : 'Vendas'}`);
             setText('sales-qty-total-3', `${totalVendasPlanilha3} ${totalVendasPlanilha3 === 1 ? 'Venda' : 'Vendas'}`);
+            setText('sales-qty-total-4', `${totalVendasPlanilha4} ${totalVendasPlanilha4 === 1 ? 'Venda' : 'Vendas'}`);
             setText('sales-total-value', `${totalVendasTodasEquipes} ${totalVendasTodasEquipes === 1 ? 'Venda' : 'Vendas'}`);
 
             // Ranking de vendas dos corretores (já foi carregado acima)
