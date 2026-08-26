@@ -1,0 +1,691 @@
+/* =============================================================================
+   RANKING VENDEDOR DO MÊS — FOLHA DE ESTILOS
+   =============================================================================
+   Índice (nesta ordem no arquivo):
+     1. Reset e base do documento
+     2. Container principal (tela 1920x1080) e painéis genéricos (overlay)
+     3. Avatar / legenda (nome + valor) — usado no pódio e nas construtoras
+     4. Ajustes de tamanho — TOP 3 CORRETORES (variáveis CSS)
+     5. Logotipo Kerber
+     6. Caixas de estatística (VGV total, Assinado CEF, qtd. de vendas)
+     7. Posicionamento cirúrgico do pódio (fotos e legendas — corretores)
+     8. Posicionamento cirúrgico do pódio (fotos e legendas — construtoras)
+     9. Estados de carregamento, erro e indicador de congelamento
+    10. Ranking em lista (corretores e construtoras)
+    11. Painel de avisos
+    12. Painel do pódio de corretores (background + toggle .active)
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------
+   1. RESET E BASE DO DOCUMENTO
+   ----------------------------------------------------------------------- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Remove as barras e fixa o background do sistema no topo esquerdo */
+body {
+    background-color: #000000;
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+/* -----------------------------------------------------------------------
+   2. CONTAINER PRINCIPAL E PAINÉIS GENÉRICOS (OVERLAY)
+   ----------------------------------------------------------------------- */
+
+/* CONFIGURAÇÃO PARA PREENCHER TODA A TELA SEM BORDAS PRETAS.
+   O container não tem mais um background fixo — cada um dos 4 painéis
+   (corretores, construtoras, horários, avisos) define sua própria imagem
+   de fundo em tela cheia, e só o painel ativo fica visível por vez. */
+.screen-container {
+    width: 1920px;
+    height: 1080px;
+    background-color: #000000;
+    position: absolute;
+    flex-shrink: 0;
+    transform-origin: top left;
+}
+
+/* Base compartilhada pelos painéis que ainda não têm estilo próprio
+   (construtoras e horários) — tela cheia, fundo definido por ID,
+   escondido por padrão e mostrado via classe .active. */
+.panel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    background-size: 100% 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: 10;
+    display: none;
+}
+
+.panel-overlay.active {
+    display: block;
+}
+
+#panel-construtoras {
+    background-image: url('BACKGROUND%20RANKING.png');
+}
+
+#panel-horarios {
+    background-image: url('BACKGROUND%20HORARIOS.png');
+}
+
+#panel-ranking-corretores {
+    background-image: url('BACKGROUND%20RANKING%20VGV.png');
+}
+
+/* -----------------------------------------------------------------------
+   3. AVATAR / LEGENDA (NOME + VALOR)
+   ----------------------------------------------------------------------- */
+
+/* Formato Oval vertical ajustado para o topo do bloco preto */
+.avatar-photo {
+    position: absolute;
+    width: 200px;
+    height: 240px;
+    border-radius: 40px;
+    background-color: transparent;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 2;
+}
+
+/* Caixas de texto posicionadas na base interna dos blocos pretos */
+.legend-container {
+    position: absolute;
+    width: 320px; /* Reduzido para não vazar a borda interna do bloco */
+    text-align: center;
+    z-index: 3;
+}
+
+.name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff; /* Alterado para BRANCO para dar leitura dentro do bloco preto */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 2px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.score {
+    font-size: 22px;
+    font-weight: 700;
+    color: #e67e22; /* Mantido o tom laranja em destaque */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* -----------------------------------------------------------------------
+   4. AJUSTES DE TAMANHO — TOP 3 CORRETORES (VARIÁVEIS CSS)
+   -----------------------------------------------------------------------
+   Ajuste o tamanho do nome e do VGV do Top 3 de CORRETORES aqui.
+   Não afeta o top 3 das construtoras. */
+#podium-elements {
+    --top3-corretores-nome-tamanho: 32px;
+    --top3-corretores-score-tamanho: 30px;
+}
+
+#podium-elements .name {
+    font-size: var(--top3-corretores-nome-tamanho);
+}
+
+#podium-elements .score {
+    font-size: var(--top3-corretores-score-tamanho);
+}
+
+#sales-score-1,
+#sales-score-2,
+#sales-score-3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.score-vendas {
+    color: #e67e22;
+}
+
+.score-vgv {
+    color: #2ecc71;
+}
+
+/* -----------------------------------------------------------------------
+   5. LOGOTIPO KERBER
+   ----------------------------------------------------------------------- */
+.logo-kerber {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    width: 220px; /* Tamanho ajustado e elegante para o canto superior */
+    height: auto;
+    z-index: 3;
+    display: block;
+}
+
+/* -----------------------------------------------------------------------
+   6. CAIXAS DE ESTATÍSTICA (VGV TOTAL, ASSINADO CEF, QTD. DE VENDAS)
+   ----------------------------------------------------------------------- */
+
+/* Estilização com FUNDO PRETO SÓLIDO para o VGV Total e o ASSINADO CEF,
+   posicionados abaixo do 1º lugar, entre os blocos do 2º e 3º lugar */
+.stat-box {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 3;
+    background-color: #000000; /* Fundo preto puro */
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 2px solid #e67e22; /* Borda laranja combinando com o sistema */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.cef-container {
+    top: 700px;
+    left: 960px;
+}
+
+/* VGV Total por planilha — 4 caixas lado a lado numa fileira,
+   na faixa inferior da tela (área historicamente livre neste layout) */
+.vgv-box-1 {
+    bottom: 140px;
+    left: 730px;
+}
+
+.vgv-box-2 {
+    bottom: 140px;
+    left: 260px;
+}
+
+.vgv-box-3 {
+    bottom: 140px;
+    left: 1200px;
+}
+
+.vgv-box-4 {
+    bottom: 140px;
+    left: 1670px;
+}
+
+.stat-box-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.stat-box-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+}
+
+.sales-qty-box {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 3;
+    background-color: #000000;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 2px solid #e67e22;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.sales-total-container {
+    position: absolute;
+    top: 690px;
+    left: 1200px;
+    text-align: center;
+    z-index: 3;
+    background-color: #000000;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #e67e22;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.sales-total-title {
+    font-size: 30px;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+
+.sales-total-value {
+    font-size: 30px;
+    color: #2ecc71;
+    font-weight: 800;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    white-space: nowrap;
+}
+
+.sales-qty-title {
+    font-size: 24px;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+    margin-bottom: 5px;
+}
+
+.sales-qty-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.sales-qty-value {
+    font-size: 30px;
+    color: #2ecc71;
+    font-weight: 800;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    white-space: nowrap;
+}
+
+.sales-qty-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+}
+
+.vgv-title {
+    font-size: 32px;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+    margin-bottom: 5px;
+}
+.cef-title {
+    font-size: 36px;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 5px;
+}
+
+.vgv-value {
+    font-size: 30px;
+    color: #2ecc71; /* Verde vivo para destacar o faturamento total */
+    font-weight: 800;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    white-space: nowrap;
+}
+.cef-value {
+    font-size: 30px;
+    color: #2ecc71; /* Verde vivo para destacar o faturamento total */
+    font-weight: 800;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    white-space: nowrap;
+}
+
+/* -----------------------------------------------------------------------
+   7. POSICIONAMENTO CIRÚRGICO DO PÓDIO — CORRETORES
+   ----------------------------------------------------------------------- */
+
+/* 1º LUGAR (CENTRO) */
+#photo-1 {
+    top: 340px;
+    left: 870px;
+    width: 180px;
+    height: 220px;
+    transform: scale(1.2); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
+    transform-origin: center center;
+}
+#legend-1 {
+    top: 590px;
+    left: 805px; /* Centralizado horizontalmente no bloco central */
+}
+
+/* 2º LUGAR (ESQUERDA) */
+#photo-2 {
+    top: 380px;
+    left: 380px;
+    width: 180px;
+    height: 220px;
+    transform: scale(1.2); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
+    transform-origin: center center;
+}
+#legend-2 {
+    top: 630px;
+    left: 310px; /* Centralizado horizontalmente no bloco da esquerda */
+}
+
+/* 3º LUGAR (DIREITA) */
+#photo-3 {
+    top: 380px;
+    left: 1365px;
+    width: 180px;
+    height: 220px;
+    transform: scale(1.2); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
+    transform-origin: center center;
+}
+#legend-3 {
+    top: 630px;
+    left: 1290px; /* Centralizado horizontalmente no bloco da direita */
+}
+
+/* -----------------------------------------------------------------------
+   8. POSICIONAMENTO CIRÚRGICO DO PÓDIO — CONSTRUTORAS
+   -----------------------------------------------------------------------
+   Mesmas posições do Top 3 do painel 1, agora usadas para as fotos do
+   ranking de vendas do segundo painel. */
+#sales-photo-1 {
+    top: 345px;
+    left: 1260px;
+    z-index: 4;
+}
+#sales-photo-2 {
+    top: 475px;
+    left: 935px;
+    width: 180px;
+    height: 216px;
+    z-index: 4;
+}
+#sales-photo-3 {
+    top: 475px;
+    left: 1610px;
+    width: 170px;
+    height: 204px;
+    z-index: 4;
+}
+
+#sales-legend-1 {
+    top: 600px;
+    left: 1150px;
+    width: 420px;
+    z-index: 5;
+}
+#sales-legend-2 {
+    top: 700px;
+    left: 815px;
+    width: 420px;
+    z-index: 5;
+}
+#sales-legend-3 {
+    top: 700px;
+    left: 1485px;
+    width: 420px;
+    z-index: 5;
+}
+
+/* -----------------------------------------------------------------------
+   9. CARREGAMENTO, ERRO E INDICADOR DE CONGELAMENTO
+   ----------------------------------------------------------------------- */
+.loading, .error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #ffffff;
+    padding: 20px 40px;
+    border-radius: 8px;
+    font-size: 22px;
+    z-index: 100;
+}
+
+.freeze-indicator {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    background: rgba(231, 76, 60, 0.95);
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    z-index: 110;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.freeze-indicator.active {
+    display: block;
+}
+
+/* -----------------------------------------------------------------------
+   10. RANKING EM LISTA (CORRETORES E CONSTRUTORAS)
+   ----------------------------------------------------------------------- */
+
+/* Ranking de Quantidade de Vendas (construtoras), exibido no painel 2. */
+.sales-ranking-container {
+    display: none;
+    position: absolute;
+    top: 180px;
+    max-width: calc(100vw - 80px);
+    z-index: 3;
+}
+/* Ranking de Quantidade de Vendas dos CORRETORES (todos, não só o Top 3). */
+#corretores-ranking-container {
+    position: absolute;
+    top: 280px;
+    max-width: calc(100vw - 80px);
+}
+.ranking-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+    overflow: hidden;
+    max-height: 1400px;
+}
+
+.ranking-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 0 0 320px;
+    width: 320px;
+    max-width: 320px;
+}
+
+.ranking-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: rgba(255, 255, 255, 1);
+    padding: 6px 6px;
+    border-radius: 8px;
+    border-left: 4px solid #e67e22;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    align-self: flex-start;
+    gap: 8px;
+}
+
+.ranking-team-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 4px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.ranking-item.top-1 {
+    border-left-color: #f1c40f;
+    box-shadow: 0 2px 10px rgba(241, 196, 15, 0.35);
+}
+
+.ranking-item.top-1 .ranking-position {
+    color: #f1c40f;
+}
+
+.ranking-item.top-2 {
+    border-left-color: #c0c0c0;
+    box-shadow: 0 2px 10px rgba(192, 192, 192, 0.35);
+}
+
+.ranking-item.top-2 .ranking-position {
+    color: #c0c0c0;
+}
+
+.ranking-item.top-3 {
+    border-left-color: #cd7f32;
+    box-shadow: 0 2px 10px rgba(205, 127, 50, 0.35);
+}
+
+.ranking-item.top-3 .ranking-position {
+    color: #cd7f32;
+}
+
+.ranking-position {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e67e22;
+    margin-right: 8px;
+    min-width: 24px;
+    text-align: center;
+}
+
+.ranking-info {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    padding-right: 0;
+}
+
+.ranking-company {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 1px;
+    padding-right: 0;
+    max-width: 100%;
+}
+
+.ranking-quantity {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2ecc71;
+    white-space: nowrap;
+}
+
+/* -----------------------------------------------------------------------
+   11. PAINEL DE AVISOS (alterna com o pódio)
+   ----------------------------------------------------------------------- */
+.avisos-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    background-image: url('BACKGROUND%20AVISOS%20SITE.png');
+    background-size: 100% 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: 50;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 90px 140px;
+}
+
+.avisos-overlay.active {
+    display: flex;
+}
+
+.avisos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    overflow-y: auto;
+}
+
+.aviso-item {
+    background: rgba(255, 255, 255, 0.95);
+    border-left: 6px solid #e67e22;
+    border-radius: 12px;
+    padding: 26px 40px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #333333;
+    line-height: 1.4;
+    text-align: center;
+    white-space: pre-line;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.avisos-empty {
+    background: rgba(255, 255, 255, 0.95);
+    border-left: 6px solid #e67e22;
+    border-radius: 12px;
+    padding: 26px 40px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #333333;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* -----------------------------------------------------------------------
+   12. PAINEL DO PÓDIO DE CORRETORES (background + toggle .active)
+   ----------------------------------------------------------------------- */
+#podium-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    background-image: url('BACKGROUND%20TOP%203%20CORRETORES.png');
+    background-size: 100% 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: 10;
+    display: none;
+}
+
+#podium-elements.active {
+    display: block;
+}
+
+#panel-ranking-corretores.active {
+    display: block;
+}
