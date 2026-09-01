@@ -889,7 +889,8 @@ function exibirFotosRankingVendas(vendedoresRanking, timestamp) {
             const diferenca = (b.vgv || 0) - (a.vgv || 0);
             if (diferenca !== 0) return diferenca;
             return (a.nome || '').localeCompare(b.nome || '', 'pt-BR', { sensitivity: 'base' });
-        });
+        })
+        .filter(item => (item.vgv || 0) > 0); // Exibir apenas construtoras com VGV > 0
 
     for (let i = 0; i < 3; i++) {
         const item = agregados[i];
@@ -1012,11 +1013,10 @@ async function carregarTop3() {
 
         // Agregar por nome (soma VGV do mesmo corretor)
         const corretoresAgregados = agregarSomandoValor(corretoresCompletos)
-            .sort((a, b) => b.valor - a.valor);
+            .sort((a, b) => b.valor - a.valor)
+            .filter(item => item.valor > 0); // Exibir apenas corretores com valor > 0
 
-        if (corretoresAgregados.length === 0) {
-            throw new Error('Nenhum dado com valor encontrado.');
-        }
+        // Se nenhum dado com valor for encontrado, apenas renderiza N/A e - no Top 3
 
         // Renderizar Top 3 com dados agregados
         for (let i = 0; i < 3; i++) {
