@@ -78,6 +78,10 @@ body {
     background-image: url('BACKGROUND%20RANKING.png');
 }
 
+#sales-qty-box-4, #vgv-box-4 {
+    display: none;
+}
+
 #panel-horarios {
     background-image: url('BACKGROUND%20HORARIOS.png');
 }
@@ -207,17 +211,17 @@ body {
    na faixa inferior da tela (área historicamente livre neste layout) */
 .vgv-box-1 {
     bottom: 140px;
-    left: 730px;
+    left: 960px;
 }
 
 .vgv-box-2 {
     bottom: 140px;
-    left: 260px;
+    left: 470px;
 }
 
 .vgv-box-3 {
     bottom: 140px;
-    left: 1200px;
+    left: 1455px;
 }
 
 .vgv-box-4 {
