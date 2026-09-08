@@ -203,30 +203,35 @@ body {
 }
 
 .cef-container {
-    top: 700px;
+    bottom: 140px;
     left: 960px;
+    transform: translateX(-50%) scale(0.8);
 }
 
 /* VGV Total por planilha — 4 caixas lado a lado numa fileira,
    na faixa inferior da tela (área historicamente livre neste layout) */
 .vgv-box-1 {
-    bottom: 140px;
-    left: 960px;
+    bottom: 40px;
+    left: 760px;
+    transform: scale(0.8);
 }
 
 .vgv-box-2 {
-    bottom: 140px;
-    left: 470px;
+    bottom: 100px;
+    left: 240px;
+    transform: scale(0.8);
 }
 
 .vgv-box-3 {
-    bottom: 140px;
-    left: 1455px;
+    bottom: 100px;
+    left: 1290px;
+    transform: scale(0.8);
 }
 
 .vgv-box-4 {
     bottom: 140px;
     left: 1670px;
+    transform: scale(0.8);
 }
 
 .stat-box-row {
@@ -248,7 +253,10 @@ body {
 .sales-qty-box {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) scale(0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     z-index: 3;
     background-color: #000000;
@@ -260,8 +268,9 @@ body {
 
 .sales-total-container {
     position: absolute;
-    top: 690px;
-    left: 1200px;
+    top: 680px;
+    left: 1340px;
+    transform: translateX(-50%) scale(0.9);
     text-align: center;
     z-index: 3;
     background-color: #000000;
@@ -272,7 +281,7 @@ body {
 }
 
 .sales-total-title {
-    font-size: 30px;
+    font-size: 24px;
     color: #ffffff;
     font-weight: 600;
     text-transform: uppercase;
@@ -362,44 +371,47 @@ body {
 
 /* 1º LUGAR (CENTRO) */
 #photo-1 {
-    top: 340px;
-    left: 870px;
+    top: 430px;
+    left: 960px;
     width: 180px;
     height: 220px;
-    transform: scale(1.2); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
+    transform: translateX(-50%) scale(1.5); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
     transform-origin: center center;
 }
 #legend-1 {
-    top: 590px;
-    left: 805px; /* Centralizado horizontalmente no bloco central */
+    top: 720px;
+    left: 960px;
+    transform: translateX(-50%);
 }
 
 /* 2º LUGAR (ESQUERDA) */
 #photo-2 {
-    top: 380px;
-    left: 380px;
+    top: 480px;
+    left: 440px;
     width: 180px;
     height: 220px;
-    transform: scale(1.2); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
+    transform: translateX(-50%) scale(1.3); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
     transform-origin: center center;
 }
 #legend-2 {
-    top: 630px;
-    left: 310px; /* Centralizado horizontalmente no bloco da esquerda */
+    top: 750px;
+    left: 440px;
+    transform: translateX(-50%);
 }
 
 /* 3º LUGAR (DIREITA) */
 #photo-3 {
-    top: 380px;
-    left: 1365px;
+    top: 480px;
+    left: 1480px;
     width: 180px;
     height: 220px;
-    transform: scale(1.2); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
+    transform: translateX(-50%) scale(1.3); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
     transform-origin: center center;
 }
 #legend-3 {
-    top: 630px;
-    left: 1290px; /* Centralizado horizontalmente no bloco da direita */
+    top: 750px;
+    left: 1480px;
+    transform: translateX(-50%);
 }
 
 /* -----------------------------------------------------------------------
@@ -408,40 +420,43 @@ body {
    Mesmas posições do Top 3 do painel 1, agora usadas para as fotos do
    ranking de vendas do segundo painel. */
 #sales-photo-1 {
-    top: 345px;
-    left: 1260px;
+    top: 365px;
+    left: 1240px;
     z-index: 4;
+    transform: scale(0.9);
 }
 #sales-photo-2 {
-    top: 475px;
-    left: 935px;
+    top: 460px;
+    left: 910px;
     width: 180px;
     height: 216px;
     z-index: 4;
+    transform: scale(0.9);
 }
 #sales-photo-3 {
-    top: 475px;
-    left: 1610px;
+    top: 460px;
+    left: 1595px;
     width: 170px;
     height: 204px;
     z-index: 4;
+    transform: scale(0.9);
 }
 
 #sales-legend-1 {
     top: 600px;
-    left: 1150px;
+    left: 1130px;
     width: 420px;
     z-index: 5;
 }
 #sales-legend-2 {
-    top: 700px;
-    left: 815px;
+    top: 670px;
+    left: 790px;
     width: 420px;
     z-index: 5;
 }
 #sales-legend-3 {
-    top: 700px;
-    left: 1485px;
+    top: 670px;
+    left: 1470px;
     width: 420px;
     z-index: 5;
 }
@@ -491,14 +506,14 @@ body {
 .sales-ranking-container {
     display: none;
     position: absolute;
-    top: 180px;
+    top: 250px;
     max-width: calc(100vw - 80px);
     z-index: 3;
 }
 /* Ranking de Quantidade de Vendas dos CORRETORES (todos, não só o Top 3). */
 #corretores-ranking-container {
     position: absolute;
-    top: 280px;
+    top: 270px;
     max-width: calc(100vw - 80px);
 }
 .ranking-list {
