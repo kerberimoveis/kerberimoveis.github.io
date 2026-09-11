@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking Vendedor do Mês</title>
+    <title>Painel Comercial Kerber</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="screen-container" id="main-container">
+<main class="screen-container" id="main-container">
     
-    <div id="loading" class="loading">Carregando dados...</div>
-    <div id="error" class="error" style="display: none;">Erro ao carregar os dados.</div>
-    <div id="freeze-indicator" class="freeze-indicator">Congelado</div>
+    <div id="loading" class="loading" role="status" aria-live="polite">Carregando dados...</div>
+    <div id="error" class="error" role="alert" aria-live="assertive" hidden>Erro ao carregar os dados.</div>
+    <div id="data-status" class="data-status" role="status" aria-live="polite"></div>
+    <div id="freeze-indicator" class="freeze-indicator" role="status" aria-live="polite">Congelado</div>
 
-    <div id="podium-elements">
+    <section id="podium-elements" aria-label="Pódio de vendedores">
 
         <!-- Logotipo Kerber no Canto -->
         <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
@@ -76,18 +77,63 @@
             </div>
         </div>
 
-    </div>
+    </section>
 
     <!-- Painel 2 - Ranking completo de VGV dos corretores -->
-    <div id="panel-ranking-corretores" class="panel-overlay">
+    <section id="panel-ranking-corretores" class="panel-overlay" aria-label="Ranking de corretores">
         <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
         <div id="corretores-ranking-container">
             <div class="ranking-list" id="corretores-ranking-list"></div>
         </div>
-    </div>
+    </section>
 
-    <!-- Painel 3 - Vendas de Construtoras -->
-    <div id="panel-construtoras" class="panel-overlay">
+    <!-- Painel 3 - Top 3 Corretores -->
+    <section id="panel-top3-corretores" class="panel-overlay" aria-label="Top 3 corretores">
+        <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
+
+        <div class="avatar-photo documentacao-photo" id="documentacao-photo-1"></div>
+        <div class="legend-container documentacao-legend" id="documentacao-legend-1">
+            <div class="name" id="documentacao-name-1">-</div>
+            <div class="score" id="documentacao-score-1">0</div>
+        </div>
+
+        <div class="avatar-photo documentacao-photo" id="documentacao-photo-2"></div>
+        <div class="legend-container documentacao-legend" id="documentacao-legend-2">
+            <div class="name" id="documentacao-name-2">-</div>
+            <div class="score" id="documentacao-score-2">0</div>
+        </div>
+
+        <div class="avatar-photo documentacao-photo" id="documentacao-photo-3"></div>
+        <div class="legend-container documentacao-legend" id="documentacao-legend-3">
+            <div class="name" id="documentacao-name-3">-</div>
+            <div class="score" id="documentacao-score-3">0</div>
+        </div>
+
+        <div class="stat-box documentacao-time-box documentacao-time-box-1" id="documentacao-time-box-1">
+            <div class="documentacao-time-title">ESPARTAS - JULIANO</div>
+            <div class="stat-box-row">
+                <div class="documentacao-time-value" id="documentacao-time-total-1">0 Documentações</div>
+                <img class="stat-box-logo" src="LOGOS/LOGO SPARTA.png" alt="Logo Sparta">
+            </div>
+        </div>
+        <div class="stat-box documentacao-time-box documentacao-time-box-2" id="documentacao-time-box-2">
+            <div class="documentacao-time-title">PERSAS - ALEXANDRE</div>
+            <div class="stat-box-row">
+                <div class="documentacao-time-value" id="documentacao-time-total-2">0 Documentações</div>
+                <img class="stat-box-logo" src="LOGOS/LOGO PERSA.png" alt="Logo Persa">
+            </div>
+        </div>
+        <div class="stat-box documentacao-time-box documentacao-time-box-3" id="documentacao-time-box-3">
+            <div class="documentacao-time-title">CELTAS - WELLIGTON</div>
+            <div class="stat-box-row">
+                <div class="documentacao-time-value" id="documentacao-time-total-3">0 Documentações</div>
+                <img class="stat-box-logo" src="LOGOS/LOGO CELTA.png" alt="Logo Celta">
+            </div>
+        </div>
+    </section>
+
+    <!-- Painel 4 - Vendas de Construtoras -->
+    <section id="panel-construtoras" class="panel-overlay" aria-label="Vendas por construtora">
         <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
         <div class="avatar-photo" id="sales-photo-1"></div>
         <div class="legend-container" id="sales-legend-1">
@@ -107,28 +153,28 @@
             <div class="score" id="sales-score-3">0</div>
         </div>
 
-        <div class="sales-qty-box" id="sales-qty-box-1" style="bottom: 180px; left: 1340px;">
+        <div class="sales-qty-box" id="sales-qty-box-1">
             <div class="sales-qty-title">ESPARTAS - JULIANO</div>
             <div class="sales-qty-row">
                 <div class="sales-qty-value" id="sales-qty-total-1">0</div>
                 <img class="sales-qty-logo" src="LOGOS/LOGO SPARTA.png" alt="Logo Sparta">
             </div>
         </div>
-        <div class="sales-qty-box" id="sales-qty-box-2" style="bottom: 200px; left: 1000px;">
+        <div class="sales-qty-box" id="sales-qty-box-2">
             <div class="sales-qty-title">PERSAS - ALEXANDRE</div>
             <div class="sales-qty-row">
                 <div class="sales-qty-value" id="sales-qty-total-2">0</div>
                 <img class="sales-qty-logo" src="LOGOS/LOGO PERSA.png" alt="Logo Persa">
             </div>
         </div>
-        <div class="sales-qty-box" id="sales-qty-box-3" style="bottom: 200px; left: 1680px;">
+        <div class="sales-qty-box" id="sales-qty-box-3">
             <div class="sales-qty-title">CELTAS - WELLIGTON</div>
             <div class="sales-qty-row">
                 <div class="sales-qty-value" id="sales-qty-total-3">0</div>
                 <img class="sales-qty-logo" src="LOGOS/LOGO CELTA.png" alt="Logo Celta">
             </div>
         </div>
-        <div class="sales-qty-box" id="sales-qty-box-4" style="bottom: 140px; left: 1700px;">
+        <div class="sales-qty-box" id="sales-qty-box-4">
             <div class="sales-qty-title">CELTAS - HENRIQUE</div>
             <div class="sales-qty-row">
                 <div class="sales-qty-value" id="sales-qty-total-4">0</div>
@@ -144,23 +190,18 @@
         <div class="sales-ranking-container" id="sales-ranking-container-construtoras">
             <div class="ranking-list" id="ranking-list-construtoras"></div>
         </div>
-    </div>
+    </section>
 
-    <!-- Painel 4 - Horários -->
-    <div id="panel-horarios" class="panel-overlay">
+    <!-- Painel 5 - Horários -->
+    <section id="panel-horarios" class="panel-overlay" aria-label="Horários">
         <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
-    </div>
+    </section>
 
-    <!-- Painel 5 - Avisos -->
-    <div id="avisos-panel" class="avisos-overlay">
-        <img src="LOGO%20KERBER.jpeg" alt="Logo Kerber" class="logo-kerber">
-        <div class="avisos-list" id="avisos-list"></div>
-    </div>
-</div>
+</main>
 
 <!-- Importa a biblioteca do Supabase via CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- Lógica da aplicação (ver script.js) -->
-<script src="script.js"></script>
+<!-- A aplicação é dividida em módulos ES por responsabilidade. -->
+<script type="module" src="js/app.js"></script>
 </body>
 </html>
