@@ -651,7 +651,9 @@ body {
 #corretores-ranking-container {
     position: absolute;
     top: 270px;
-    max-width: calc(100vw - 80px);
+    /* O painel usa uma tela virtual fixa de 1920px e é escalado depois.
+       O limite baseado na viewport física quebrava a terceira coluna em TVs menores. */
+    max-width: none;
 }
 .ranking-list {
     display: flex;
