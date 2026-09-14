@@ -82,7 +82,10 @@ function exibirFotosRankingVendas(vendas, timestamp) {
 function exibirTop3Documentacoes(documentacoes, timestamp) {
     const top3 = documentacoes
         .filter(item => item.quantidade > 0)
-        .sort((a, b) => b.quantidade - a.quantidade || a.nome.localeCompare(b.nome, 'pt-BR'))
+        .sort((a, b) => b.quantidade - a.quantidade
+            || b.aprovacoesTotal - a.aprovacoesTotal
+            || b.aprovacoesComCondicao - a.aprovacoesComCondicao
+            || a.nome.localeCompare(b.nome, 'pt-BR'))
         .slice(0, 3);
 
     for (let indice = 0; indice < 3; indice += 1) {

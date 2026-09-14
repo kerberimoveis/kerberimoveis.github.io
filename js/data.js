@@ -125,6 +125,8 @@ export function csvToDocumentacoes(csvText) {
     const separador = detectCsvSeparator(csvText);
     const linhas = parseCSVCompleto(csvText, separador);
     const nomes = linhas[0] || [];
+    const aprovacoesTotal = linhas[2] || [];
+    const aprovacoesComCondicao = linhas[3] || [];
     const indiceLinhaQuantidade = linhas.findIndex(linha =>
         (linha[0] || '').trim().toUpperCase() === 'PASTAS OK'
     );
@@ -135,7 +137,15 @@ export function csvToDocumentacoes(csvText) {
         if (!nome) return itens;
         const quantidadeTexto = (quantidades[indice] || '').trim();
         const quantidade = Number.parseInt(quantidadeTexto.replace(/[^\d-]/g, ''), 10) || 0;
-        itens.push({ nome, quantidade, foto: `${nome}.jpeg` });
+        const aprovacoesTotalTexto = (aprovacoesTotal[indice] || '').trim();
+        const aprovacoesComCondicaoTexto = (aprovacoesComCondicao[indice] || '').trim();
+        itens.push({
+            nome,
+            quantidade,
+            aprovacoesTotal: Number.parseInt(aprovacoesTotalTexto.replace(/[^\d-]/g, ''), 10) || 0,
+            aprovacoesComCondicao: Number.parseInt(aprovacoesComCondicaoTexto.replace(/[^\d-]/g, ''), 10) || 0,
+            foto: `${nome}.jpeg`
+        });
         return itens;
     }, []);
 }
