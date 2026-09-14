@@ -1,4 +1,4 @@
-import { TIME_LOGOS } from './config.js';
+import { PLACEHOLDER_LOGO, TIME_LOGOS } from './config.js';
 
 export function agregarSomandoValor(itens) {
     const mapa = new Map();
@@ -20,7 +20,7 @@ export function agregarSomandoValor(itens) {
                 nome,
                 valor,
                 time,
-                logo: TIME_LOGOS[time] || '',
+                logo: TIME_LOGOS[time] || PLACEHOLDER_LOGO,
                 foto: (item.foto || '').trim()
             });
         }
@@ -44,7 +44,8 @@ export function agregarSomandoQuantidade(itens) {
                 nome,
                 quantidade: Number.parseInt(item.quantidade, 10) || 0,
                 vgv: Number.parseFloat(item.vgv) || 0,
-                foto: (item.foto || '').trim()
+                foto: (item.foto || '').trim(),
+                logo: (item.foto || '').trim() || PLACEHOLDER_LOGO
             });
         }
     });

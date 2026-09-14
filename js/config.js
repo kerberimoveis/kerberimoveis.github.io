@@ -30,6 +30,8 @@ export const TIME_LOGOS = {
     CELTA: 'LOGO CELTA.png'
 };
 
+export const PLACEHOLDER_LOGO = 'PLACEHOLDER LOGO.jpeg';
+
 export const SUPABASE_CONFIG = {
     url: 'https://qpvwrheqwzzqynfyqgoq.supabase.co',
     anonKey: 'sb_publishable_pnz26qo9AP-jristVGo6CQ_dmFGamqP'
