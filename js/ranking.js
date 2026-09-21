@@ -52,6 +52,17 @@ export function agregarSomandoQuantidade(itens) {
     return [...mapa.values()];
 }
 
+function aplicarFallbackLogo(elemento, logo) {
+    const fallback = `LOGOS/${PLACEHOLDER_LOGO}`;
+    const src = logo ? `LOGOS/${logo}` : fallback;
+
+    elemento.src = src;
+    elemento.onerror = () => {
+        elemento.onerror = null;
+        elemento.src = fallback;
+    };
+}
+
 export function exibirRanking(agregados, opcoes) {
     const {
         listId,
@@ -110,8 +121,8 @@ export function exibirRanking(agregados, opcoes) {
             if (item.logo) {
                 const logo = document.createElement('img');
                 logo.className = 'ranking-team-logo';
-                logo.src = `LOGOS/${item.logo}`;
                 logo.alt = `Logo ${item.time || 'time'}`;
+                aplicarFallbackLogo(logo, item.logo);
                 itemElemento.appendChild(logo);
             }
             coluna.appendChild(itemElemento);

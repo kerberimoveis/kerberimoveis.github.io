@@ -304,7 +304,13 @@ body {
    na faixa inferior da tela (área historicamente livre neste layout) */
 .vgv-box-1 {
     bottom: 40px;
-    left: 760px;
+    left: 580px;
+    transform: scale(0.8);
+}
+
+.vgv-box-5 {
+    bottom: 40px;
+    left: 980px;
     transform: scale(0.8);
 }
 

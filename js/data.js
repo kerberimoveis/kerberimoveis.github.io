@@ -255,7 +255,7 @@ export async function carregarDocumentacoes() {
                 vendasPorTime: csvToVendasPorTime(texto)
             };
         }
-        console.warn('Não foi possível carregar a planilha de documentações.', error);
+        console.warn('Não foi possível carregar a planilha de documentações. Verifique a conexão.', error);
         return { documentacoes: [], vendasPorTime: {} };
     }
 }

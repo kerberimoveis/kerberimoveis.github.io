@@ -13,6 +13,37 @@ const setText = (id, text) => { const elemento = $(id); if (elemento) elemento.t
 const hide = id => { const elemento = $(id); if (elemento) { elemento.hidden = true; elemento.style.display = 'none'; } };
 const show = id => { const elemento = $(id); if (elemento) { elemento.hidden = false; elemento.style.display = 'block'; } };
 
+const PLACEHOLDER_PATH = 'LOGOS/PLACEHOLDER%20LOGO.jpeg';
+
+function aplicarFallbackImagem(elemento, src, tipo = 'img', fallback = PLACEHOLDER_PATH) {
+    if (!elemento) return;
+
+    const fonte = (src || '').trim();
+    const urlFinal = fonte ? src : fallback;
+
+    if (tipo === 'background') {
+        const aplicar = () => {
+            elemento.style.backgroundImage = `url('${urlFinal}')`;
+        };
+
+        aplicar();
+
+        const teste = new Image();
+        teste.onload = aplicar;
+        teste.onerror = () => {
+            elemento.style.backgroundImage = `url('${fallback}')`;
+        };
+        teste.src = urlFinal;
+        return;
+    }
+
+    elemento.onerror = () => {
+        elemento.onerror = null;
+        elemento.src = fallback;
+    };
+    elemento.src = urlFinal;
+}
+
 let paginaCongelada = false;
 let painelAtual = 'corretores';
 let intervaloAtualizacao = null;
@@ -41,9 +72,10 @@ function renderizarTop3Item(posicao, item, timestamp) {
     const valor = $(`score-${posicao}`);
     if (nome) nome.textContent = item?.nome || 'N/A';
     if (valor) valor.textContent = item?.valorTexto || '-';
-    if (foto) foto.style.backgroundImage = item?.foto?.trim()
-        ? `url('FOTOS/${encodeURIComponent(item.foto.trim())}?v=${timestamp}')`
-        : 'none';
+    if (foto) {
+        const fonte = item?.foto?.trim() ? `FOTOS/${encodeURIComponent(item.foto.trim())}?v=${timestamp}` : PLACEHOLDER_PATH;
+        aplicarFallbackImagem(foto, fonte, 'background', PLACEHOLDER_PATH);
+    }
 }
 
 function exibirFotosRankingVendas(vendas, timestamp) {
@@ -55,9 +87,10 @@ function exibirFotosRankingVendas(vendas, timestamp) {
         const foto = $(`sales-photo-${indice + 1}`);
         const nome = $(`sales-name-${indice + 1}`);
         const score = $(`sales-score-${indice + 1}`);
-        if (foto) foto.style.backgroundImage = item?.foto
-            ? `url('LOGOS/${encodeURIComponent(item.foto)}?v=${timestamp}')`
-            : 'none';
+        if (foto) {
+            const fonte = item?.foto ? `LOGOS/${encodeURIComponent(item.foto)}?v=${timestamp}` : PLACEHOLDER_PATH;
+            aplicarFallbackImagem(foto, fonte, 'background', PLACEHOLDER_PATH);
+        }
         if (nome) nome.textContent = item?.nome || 'N/A';
         if (score) {
             score.replaceChildren();
@@ -93,9 +126,10 @@ function exibirTop3Documentacoes(documentacoes, timestamp) {
         const foto = $(`documentacao-photo-${indice + 1}`);
         const nome = $(`documentacao-name-${indice + 1}`);
         const score = $(`documentacao-score-${indice + 1}`);
-        if (foto) foto.style.backgroundImage = item
-            ? `url('FOTOS/${encodeURIComponent(item.foto)}?v=${timestamp}')`
-            : 'none';
+        if (foto) {
+            const fonte = item?.foto ? `FOTOS/${encodeURIComponent(item.foto)}?v=${timestamp}` : PLACEHOLDER_PATH;
+            aplicarFallbackImagem(foto, fonte, 'background', PLACEHOLDER_PATH);
+        }
         if (nome) nome.textContent = item?.nome || '-';
         if (score) score.textContent = item ? `${item.quantidade} ${item.quantidade === 1 ? 'DOCUMENTAÇÃO' : 'DOCUMENTAÇÕES'}` : '0';
     }
