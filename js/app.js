@@ -258,6 +258,21 @@ function configurarRealtime() {
     }).subscribe();
 }
 
+function iniciarRadio() {
+    const radio = $('radio-antena1');
+    if (!radio) return;
+
+    radio.play().catch(() => {
+        const retomarReproducao = () => {
+            document.removeEventListener('pointerdown', retomarReproducao);
+            document.removeEventListener('keydown', retomarReproducao);
+            radio.play().catch(() => {});
+        };
+        document.addEventListener('pointerdown', retomarReproducao, { once: true });
+        document.addEventListener('keydown', retomarReproducao, { once: true });
+    });
+}
+
 window.addEventListener('resize', ajustarEscala);
 window.addEventListener('keydown', async event => {
     const tecla = event.key.toLowerCase();
@@ -283,6 +298,7 @@ window.addEventListener('keydown', async event => {
 const estadoSalvo = (() => { try { return localStorage.getItem(STORAGE_KEY) === 'true'; } catch { return false; } })();
 paginaCongelada = estadoSalvo;
 ajustarEscala();
+iniciarRadio();
 mostrarPainel(painelAtual);
 configurarRealtime();
 if (!paginaCongelada) {
