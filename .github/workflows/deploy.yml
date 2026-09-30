@@ -39,8 +39,8 @@ jobs:
       - name: Baixar branch Porto Alegre
         uses: actions/checkout@v6
         with:
-          ref: porto-alegre
-          path: porto-alegre
+          ref: Porto-Alegre
+          path: Porto-Alegre
 
       # ==========================
       # VIAMÃO
@@ -48,8 +48,8 @@ jobs:
       - name: Baixar branch Viamão
         uses: actions/checkout@v6
         with:
-          ref: viamao
-          path: viamao
+          ref: Viamão
+          path: Viamão
 
       # =========================
       # MONTAR SITE
@@ -58,8 +58,8 @@ jobs:
         run: |
 
           mkdir -p public
-          mkdir -p public/porto-alegre
-          mkdir -p public/viamao
+          mkdir -p public/Porto-Alegre
+          mkdir -p public/Viamão
 
           # CANOAS = MAIN
           rsync -av \
@@ -70,14 +70,14 @@ jobs:
           # PORTO ALEGRE
           rsync -av \
             --exclude='.git' \
-            porto-alegre/ \
-            public/porto-alegre/
+            Porto-Alegre/ \
+            public/Porto-Alegre/
 
           # VIAMÃO
           rsync -av \
             --exclude='.git' \
-            viamao/ \
-            public/viamao/
+            Viamão/ \
+            public/viamão/
 
           # Impede processamento Jekyll
           touch public/.nojekyll
