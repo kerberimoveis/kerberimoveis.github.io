@@ -226,6 +226,7 @@ body {
    Ajuste o tamanho do nome e do VGV do Top 3 de CORRETORES aqui.
    Não afeta o top 3 das construtoras. */
 #podium-elements {
+    --top1-photo-center: 50%;
     --top3-corretores-nome-tamanho: 32px;
     --top3-corretores-score-tamanho: 30px;
 }
@@ -292,7 +293,7 @@ body {
 
 .cef-container {
     bottom: 140px;
-    left: 960px;
+    left: var(--top1-photo-center);
     transform: translateX(-50%) scale(0.8);
 }
 
@@ -300,7 +301,7 @@ body {
    na faixa inferior da tela (área historicamente livre neste layout) */
 .vgv-box-1 {
     bottom: 40px;
-    left: 580px;
+    left: 606.67px;
     transform: scale(0.8);
 }
 
@@ -469,7 +470,7 @@ body {
 /* 1º LUGAR (CENTRO) */
 #photo-1 {
     top: 430px;
-    left: 960px;
+    left: var(--top1-photo-center);
     width: 180px;
     height: 220px;
     transform: translateX(-50%) scale(1.5); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
@@ -477,7 +478,7 @@ body {
 }
 #legend-1 {
     top: 720px;
-    left: 960px;
+    left: 50%;
     transform: translateX(-50%);
 }
 
