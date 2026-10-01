@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - 'Porto Alegre'
+      - Porto-Alegre
       - Viamao
 
   workflow_dispatch:
@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: kerberimoveis/kerberimoveis.github.io
-          ref: 'Porto Alegre'
+          ref: Porto-Alegre
           path: porto-alegre
 
       # =====================================
