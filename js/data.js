@@ -155,20 +155,13 @@ export function csvToVendasPorTime(csvText) {
     const linhas = parseCSVCompleto(csvText, separador);
     const cidades = linhas[15] || [];
     const quantidades = linhas[28] || [];
-    const cidadesDosTimes = {
-        ESPARTA: 'CANOAS',
-        PERSA: 'VIAMÃO',
-        CELTA: 'PORTO ALEGRE'
+    const indiceCanoas = cidades.findIndex(cidade =>
+        (cidade || '').trim().toUpperCase() === 'CANOAS'
+    );
+    const valor = indiceCanoas >= 0 ? quantidades[indiceCanoas] : '';
+    return {
+        ESPARTA: Number.parseInt(String(valor).replace(/[^\d-]/g, ''), 10) || 0
     };
-
-    return Object.entries(cidadesDosTimes).reduce((vendas, [time, cidadeEsperada]) => {
-        const indice = cidades.findIndex(cidade =>
-            (cidade || '').trim().toUpperCase() === cidadeEsperada
-        );
-        const valor = indice >= 0 ? quantidades[indice] : '';
-        vendas[time] = Number.parseInt(String(valor).replace(/[^\d-]/g, ''), 10) || 0;
-        return vendas;
-    }, {});
 }
 
 function lerCache(chave = CACHE_PLANILHAS_KEY) {
