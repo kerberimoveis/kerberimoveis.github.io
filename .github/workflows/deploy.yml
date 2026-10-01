@@ -1,11 +1,11 @@
-name: Deploy Kerber - Todas as Cidades
+name: Deploy Kerber Imóveis
 
 on:
   push:
     branches:
       - main
-      - Porto-Alegre
-      - Viamão
+      - 'Porto Alegre'
+      - Viamao
 
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: github-pages
   cancel-in-progress: false
 
 jobs:
@@ -24,81 +24,100 @@ jobs:
 
     steps:
 
-      # ==========================
+      # =====================================
       # CANOAS
-      # ==========================
-      - name: Baixar branch Canoas
+      # BRANCH: main
+      # URL: /8F2K7M9Q/
+      # =====================================
+
+      - name: Checkout Canoas
         uses: actions/checkout@v6
         with:
+          repository: kerberimoveis/kerberimoveis.github.io
           ref: main
           path: canoas
 
-      # ==========================
+      # =====================================
       # PORTO ALEGRE
-      # ==========================
-      - name: Baixar branch Porto Alegre
+      # BRANCH: Porto Alegre
+      # URL: /P4X9A7Z2/
+      # =====================================
+
+      - name: Checkout Porto Alegre
         uses: actions/checkout@v6
         with:
-          ref: Porto-Alegre
-          path: Porto-Alegre
+          repository: kerberimoveis/kerberimoveis.github.io
+          ref: 'Porto Alegre'
+          path: porto-alegre
 
-      # ==========================
+      # =====================================
       # VIAMÃO
-      # ==========================
-      - name: Baixar branch Viamão
+      # BRANCH: Viamao
+      # URL: /Q4M8Z2K7/
+      # =====================================
+
+      - name: Checkout Viamão
         uses: actions/checkout@v6
         with:
-          ref: Viamão
-          path: Viamão
+          repository: kerberimoveis/kerberimoveis.github.io
+          ref: Viamao
+          path: viamao
 
-      # =========================
+      # =====================================
       # MONTAR SITE
-      # ==========================
-      - name: Montar estrutura do site
+      # =====================================
+
+      - name: Montar site
         run: |
 
           mkdir -p public
-          mkdir -p public/Porto-Alegre
-          mkdir -p public/Viamão
 
-          # CANOAS = MAIN
+          # CANOAS
+          mkdir -p public/8F2K7M9Q
+
           rsync -av \
             --exclude='.git' \
             canoas/ \
-            public/
+            public/8F2K7M9Q/
 
           # PORTO ALEGRE
+          mkdir -p public/P4X9A7Z2
+
           rsync -av \
             --exclude='.git' \
-            Porto-Alegre/ \
-            public/Porto-Alegre/
+            porto-alegre/ \
+            public/P4X9A7Z2/
 
           # VIAMÃO
+          mkdir -p public/Q4M8Z2K7
+
           rsync -av \
             --exclude='.git' \
-            Viamão/ \
-            public/viamão/
+            viamao/ \
+            public/Q4M8Z2K7/
 
-          # Impede processamento Jekyll
           touch public/.nojekyll
 
-      # ==========================
+      # =====================================
       # CONFIGURAR GITHUB PAGES
-      # ==========================
+      # =====================================
+
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
-      # ==========================
-      # GERAR ARTEFATO
-      # ==========================
-      - name: Gerar artefato do site
+      # =====================================
+      # UPLOAD
+      # =====================================
+
+      - name: Upload do site
         uses: actions/upload-pages-artifact@v4
         with:
           path: public
 
-  # ==========================
+  # =======================================
   # DEPLOY
-  # ==========================
+  # =======================================
+
   deploy:
     needs: build
 
@@ -110,6 +129,6 @@ jobs:
 
     steps:
 
-      - name: Publicar no GitHub Pages
+      - name: Publicar
         id: deployment
         uses: actions/deploy-pages@v4
