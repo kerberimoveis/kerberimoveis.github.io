@@ -97,8 +97,18 @@ export function exibirRanking(agregados, opcoes) {
         itens.forEach((item, indiceItem) => {
             const posicao = indiceColuna * itensPorColuna + indiceItem + 1;
             const itemElemento = document.createElement('div');
-            itemElemento.className = `ranking-item ${posicao <= 3 ? `top-${posicao}` : ''}`;
-            if ((item[campoOrdenacao] || 0) > 0) {
+            const temDados = (item[campoOrdenacao] || 0) > 0;
+            const classePosicao = !temDados
+                ? 'top-3'
+                : posicao === 1
+                    ? 'top-1'
+                    : posicao === 2
+                        ? 'top-2'
+                        : posicao === 3
+                            ? 'top-3'
+                            : '';
+            itemElemento.className = `ranking-item ${classePosicao}`.trim();
+            if (temDados) {
                 const posicaoElemento = document.createElement('div');
                 posicaoElemento.className = 'ranking-position';
                 posicaoElemento.textContent = `${posicao}º`;

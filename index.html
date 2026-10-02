@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Comercial Kerber - Canoas</title>
+    <title>Painel Comercial Kerber</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -47,21 +47,18 @@
             <div class="cef-value" id="cef-total">R$ 0,00</div>
         </div>
 
-        <!-- VGV total da equipe de Canoas -->
+        <!-- VGV Total por planilha (1, 2 e 3), em fileira horizontal -->
         <div class="stat-box vgv-box-1" id="vgv-box-1">
             <div class="vgv-title">VGV TOTAL</div>
             <div class="stat-box-row">
                 <div class="vgv-value" id="vgv-total-1">R$ 0,00</div>
-                <img class="stat-box-logo" src="LOGOS/LOGO SPARTA.png" alt="Logo Sparta">
+                <img class="stat-box-logo" src="LOGOS/LOGO PERSA.png" alt="Logo Persa">
             </div>
         </div>
-        <div class="stat-box vgv-box-5" id="vgv-box-5">
-            <div class="vgv-title">VGV LENDÁRIOS</div>
-            <div class="stat-box-row">
-                <div class="vgv-value" id="vgv-total-5">R$ 0.000.000,00</div>
-                <img class="stat-box-logo" src="LOGOS/LOGO LENDÁRIOS.png" alt="Logo Lendários">
-            </div>
-        </div>
+        <div class="stat-box vgv-box-5" id="vgv-box-5"></div>
+        <div class="stat-box vgv-box-2" id="vgv-box-2"></div>
+        <div class="stat-box vgv-box-3" id="vgv-box-3"></div>
+        <div class="stat-box vgv-box-4" id="vgv-box-4"></div>
 
     </section>
 
@@ -99,9 +96,11 @@
             <div class="documentacao-time-title">TOTAL DE DOCUMENTAÇÕES</div>
             <div class="stat-box-row">
                 <div class="documentacao-time-value" id="documentacao-time-total-1">0 Documentações</div>
-                <img class="stat-box-logo" src="LOGOS/LOGO SPARTA.png" alt="Logo Sparta">
+                <img class="stat-box-logo" src="LOGOS/LOGO PERSA.png" alt="Logo Persa">
             </div>
         </div>
+        <div class="stat-box documentacao-time-box documentacao-time-box-2" id="documentacao-time-box-2"></div>
+        <div class="stat-box documentacao-time-box documentacao-time-box-3" id="documentacao-time-box-3"></div>
     </section>
 
     <!-- Painel 4 - Vendas de Construtoras -->
@@ -124,6 +123,17 @@
             <div class="name" id="sales-name-3">-</div>
             <div class="score" id="sales-score-3">0</div>
         </div>
+
+        <div class="sales-qty-box" id="sales-qty-box-1" style="display: none;">
+            <div class="sales-qty-title">VIAMÃO</div>
+            <div class="sales-qty-row">
+                <div class="sales-qty-value" id="sales-qty-total-1">0</div>
+                <img class="sales-qty-logo" src="LOGOS/LOGO PERSA.png" alt="Logo Persa">
+            </div>
+        </div>
+        <div class="sales-qty-box" id="sales-qty-box-2"></div>
+        <div class="sales-qty-box" id="sales-qty-box-3"></div>
+        <div class="sales-qty-box" id="sales-qty-box-4"></div>
 
         <div class="sales-total-container" id="sales-total-container">
             <div class="sales-total-title">Total de Vendas</div>

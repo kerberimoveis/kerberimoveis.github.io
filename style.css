@@ -86,6 +86,18 @@ body {
     background-image: url('BACKGROUND%20RANKING.png');
 }
 
+#sales-qty-box-2,
+#sales-qty-box-3,
+#sales-qty-box-4,
+#vgv-box-2,
+#vgv-box-3,
+#vgv-box-4,
+#vgv-box-5,
+#documentacao-time-box-2,
+#documentacao-time-box-3 {
+    display: none !important;
+}
+
 #panel-horarios {
     background-image: url('BACKGROUND%20HORARIOS.png');
 }
@@ -108,7 +120,7 @@ body {
 
 #documentacao-legend-1 {
     top: 720px;
-    left: 50%;
+    left: 960px;
     transform: translateX(-50%);
 }
 
@@ -194,6 +206,11 @@ body {
     z-index: 2;
 }
 
+.avatar-photo.placeholder-image {
+    background-size: contain;
+    background-color: #000000;
+}
+
 /* Caixas de texto posicionadas na base interna dos blocos pretos */
 .legend-container {
     position: absolute;
@@ -226,7 +243,6 @@ body {
    Ajuste o tamanho do nome e do VGV do Top 3 de CORRETORES aqui.
    Não afeta o top 3 das construtoras. */
 #podium-elements {
-    --top1-photo-center: 50%;
     --top3-corretores-nome-tamanho: 32px;
     --top3-corretores-score-tamanho: 30px;
 }
@@ -293,7 +309,7 @@ body {
 
 .cef-container {
     bottom: 140px;
-    left: var(--top1-photo-center);
+    left: 960px;
     transform: translateX(-50%) scale(0.8);
 }
 
@@ -301,8 +317,8 @@ body {
    na faixa inferior da tela (área historicamente livre neste layout) */
 .vgv-box-1 {
     bottom: 40px;
-    left: 606.67px;
-    transform: scale(0.8);
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
 }
 
 .vgv-box-5 {
@@ -311,12 +327,38 @@ body {
     transform: scale(0.8);
 }
 
+.vgv-box-2 {
+    bottom: 100px;
+    left: 240px;
+    transform: scale(0.8);
+}
+
+.vgv-box-3 {
+    bottom: 100px;
+    left: 1290px;
+    transform: scale(0.8);
+}
+
+.vgv-box-4 {
+    bottom: 140px;
+    left: 1670px;
+    transform: scale(0.8);
+}
+
 #panel-top3-corretores .documentacao-time-box {
     transform: translateX(-50%) scale(0.8);
 }
 
 #panel-top3-corretores .documentacao-time-box-1 {
-    left: 50%;
+    left: 960px;
+}
+
+#panel-top3-corretores .documentacao-time-box-2 {
+    left: 440px;
+}
+
+#panel-top3-corretores .documentacao-time-box-3 {
+    left: 1480px;
 }
 
 .stat-box-row {
@@ -420,7 +462,22 @@ body {
 /* Posições dos indicadores de vendas do painel de construtoras. */
 #sales-qty-box-1 {
     bottom: 180px;
-    left: 960px;
+    left: 1340px;
+}
+
+#sales-qty-box-2 {
+    bottom: 200px;
+    left: 1000px;
+}
+
+#sales-qty-box-3 {
+    bottom: 200px;
+    left: 1680px;
+}
+
+#sales-qty-box-4 {
+    bottom: 140px;
+    left: 1700px;
 }
 
 .vgv-title {
@@ -470,7 +527,7 @@ body {
 /* 1º LUGAR (CENTRO) */
 #photo-1 {
     top: 430px;
-    left: var(--top1-photo-center);
+    left: 960px;
     width: 180px;
     height: 220px;
     transform: translateX(-50%) scale(1.5); /* 1.1 = 10% maior. Teste 1.05, 1.15... */
@@ -478,7 +535,7 @@ body {
 }
 #legend-1 {
     top: 720px;
-    left: 50%;
+    left: 960px;
     transform: translateX(-50%);
 }
 
@@ -606,7 +663,7 @@ body {
     position: absolute;
     top: 250px;
     left: 180px;
-    max-width: none;
+    max-width: calc(100vw - 80px);
     z-index: 3;
 }
 /* Ranking de Quantidade de Vendas dos CORRETORES (todos, não só o Top 3). */
