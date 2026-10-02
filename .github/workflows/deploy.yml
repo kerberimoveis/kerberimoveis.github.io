@@ -61,7 +61,7 @@ jobs:
         with:
           repository: kerberimoveis/kerberimoveis.github.io
           ref: Viamao
-          path: viamao
+          path: Viamao
 
       # =====================================
       # MONTAR SITE
@@ -93,7 +93,7 @@ jobs:
 
           rsync -av \
             --exclude='.git' \
-            viamao/ \
+            Viamao/ \
             public/Q4M8Z2K7/
 
           touch public/.nojekyll
