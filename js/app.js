@@ -112,10 +112,9 @@ function exibirFotosRankingVendas(vendas, timestamp) {
     }
 }
 
-function exibirTop3Documentacoes(documentacoes, timestamp, nomesPermitidos = null) {
-    const nomesAutorizados = nomesPermitidos ? new Set([...nomesPermitidos].map(nome => String(nome).trim().toLowerCase())) : null;
+function exibirTop3Documentacoes(documentacoes, timestamp) {
     const top3 = documentacoes
-        .filter(item => item.quantidade > 0 && (!nomesAutorizados || nomesAutorizados.has((item.nome || '').trim().toLowerCase())))
+        .filter(item => item.quantidade > 0)
         .sort((a, b) => b.quantidade - a.quantidade
             || b.aprovacoesTotal - a.aprovacoesTotal
             || b.aprovacoesComCondicao - a.aprovacoesComCondicao
@@ -141,6 +140,10 @@ function renderizarDados(dados, documentacoes, vendasPorTime) {
     const corretores = agregarSomandoValor(dados.corretores)
         .filter(item => item.valor > 0)
         .sort((a, b) => b.valor - a.valor);
+    const nomesEquipesExibidas = new Set(dados.corretores.map(item => item.nome.trim().toLocaleLowerCase('pt-BR')));
+    const documentacoesEquipesExibidas = documentacoes.filter(item =>
+        nomesEquipesExibidas.has(item.nome.trim().toLocaleLowerCase('pt-BR'))
+    );
     for (let indice = 0; indice < 3; indice += 1) {
         const item = corretores[indice];
         renderizarTop3Item(indice + 1, item && {
@@ -150,36 +153,23 @@ function renderizarDados(dados, documentacoes, vendasPorTime) {
         }, timestamp);
     }
 
-    dados.vgv.forEach((valor, indice) => setText(`vgv-total-${indice + 1}`, formatarMoedaBRL(valor)));
+    dados.planilhas.forEach((planilha, indice) => {
+        setText(`vgv-total-${planilha.id}`, formatarMoedaBRL(dados.vgv[indice]));
+    });
     const cefTotal = dados.cef.reduce((total, valor) => total + valor, 0);
     setText('cef-total', formatarMoedaBRL(cefTotal));
 
-    const vendasPorPlanilha = dados.planilhas.map(planilha => {
+    const totalVendas = dados.planilhas
+        .filter(planilha => ['ESPARTA', 'LENDÁRIOS'].includes(planilha.time))
+        .reduce((total, planilha) => {
         const vendas = planilha.texto ? normalizarDados([planilha]).vendas : [];
-        return vendas.reduce((total, item) => total + item.quantidade, 0);
-    });
-    vendasPorPlanilha.forEach((total, indice) => {
-        setText(`sales-qty-total-${indice + 1}`, `${total} ${total === 1 ? 'Venda' : 'Vendas'}`);
-    });
-    const totalVendas = vendasPorPlanilha.reduce((total, valor) => total + valor, 0);
+            return total + vendas.reduce((subtotal, item) => subtotal + item.quantidade, 0);
+        }, 0);
     setText('sales-total-value', `${totalVendas} ${totalVendas === 1 ? 'Venda' : 'Vendas'}`);
 
     exibirFotosRankingVendas(dados.vendas, timestamp);
-
-    const nomesCorretoresPersa = new Set((dados.corretores || []).map(item => String(item.nome || '').trim().toLowerCase()));
-    const documentacoesPersa = (documentacoes || []).filter(item => nomesCorretoresPersa.has((item.nome || '').trim().toLowerCase()));
-    exibirTop3Documentacoes(documentacoesPersa, timestamp, nomesCorretoresPersa);
-
-    const totalDocumentacoesPersa = documentacoesPersa.reduce((total, item) => total + (item.quantidade || 0), 0);
-    setText('documentacao-time-total-1', `${totalDocumentacoesPersa} ${totalDocumentacoesPersa === 1 ? 'DOCUMENTAÇÃO' : 'DOCUMENTAÇÕES'}`);
-    setText('documentacao-time-total-2', '');
-    setText('documentacao-time-total-3', '');
-
-    const caixaDoc2 = $('documentacao-time-box-2');
-    const caixaDoc3 = $('documentacao-time-box-3');
-    if (caixaDoc2) caixaDoc2.style.display = 'none';
-    if (caixaDoc3) caixaDoc3.style.display = 'none';
-
+    exibirTop3Documentacoes(documentacoesEquipesExibidas, timestamp);
+    setText('documentacao-time-total-1', `${vendasPorTime.ESPARTA || 0} ${vendasPorTime.ESPARTA === 1 ? 'DOCUMENTAÇÃO' : 'DOCUMENTAÇÕES'}`);
     exibirRanking(agregarSomandoQuantidade(dados.vendas), {
         listId: 'ranking-list-construtoras',
         containerId: 'sales-ranking-container-construtoras',

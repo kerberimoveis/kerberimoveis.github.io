@@ -155,13 +155,12 @@ export function csvToVendasPorTime(csvText) {
     const linhas = parseCSVCompleto(csvText, separador);
     const cidades = linhas[15] || [];
     const quantidades = linhas[28] || [];
-    const cidadeEsperada = 'VIAMÃO';
-    const indice = cidades.findIndex(cidade =>
-        (cidade || '').trim().toUpperCase() === cidadeEsperada
+    const indiceCanoas = cidades.findIndex(cidade =>
+        (cidade || '').trim().toUpperCase() === 'CANOAS'
     );
-    const valor = indice >= 0 ? quantidades[indice] : '';
+    const valor = indiceCanoas >= 0 ? quantidades[indiceCanoas] : '';
     return {
-        PERSA: Number.parseInt(String(valor).replace(/[^\d-]/g, ''), 10) || 0
+        ESPARTA: Number.parseInt(String(valor).replace(/[^\d-]/g, ''), 10) || 0
     };
 }
 
@@ -255,12 +254,11 @@ export async function carregarDocumentacoes() {
 }
 
 export function normalizarDados(planilhas) {
-    const planilhasPersa = (planilhas || []).filter(item => (item.time || '').toUpperCase() === 'PERSA');
-    const textos = planilhasPersa.map(item => item.texto || '');
+    const textos = planilhas.map(item => item.texto || '');
     const resultados = textos.map(csvToArrays);
     const vgv = textos.map((texto, indice) => extrairValorDaSegundaLinha(texto, resultados[indice].separador, 3));
     const cef = textos.map((texto, indice) => extrairValorDaSegundaLinha(texto, resultados[indice].separador, 6));
-    const corretores = planilhasPersa.flatMap(item => csvToCorretoresTodos(item.texto, item.time));
-    const vendas = planilhasPersa.flatMap(item => csvToSalesRanking(item.texto).itens);
-    return { vgv, cef, corretores, vendas, planilhas: planilhasPersa };
+    const corretores = planilhas.flatMap(item => csvToCorretoresTodos(item.texto, item.time));
+    const vendas = planilhas.flatMap(item => csvToSalesRanking(item.texto).itens);
+    return { vgv, cef, corretores, vendas, planilhas };
 }

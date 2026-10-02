@@ -1,8 +1,13 @@
 export const PLANILHAS = [
     {
-        id: 2,
-        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSlshA2wJmrhz2fjEU5x1Y9on1uVLiyJXjXuK7w9HZVhGx3waQJe6fGM0o_0NhnsAbZEqud4EwOMadV/pub?gid=539484592&single=true&output=csv',
-        time: 'PERSA'
+        id: 1,
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzNtrrrqc63MiPQ88VaT7FAeczwujFdk8KiXSHXfoNRAf397iFHvw-iluIR1TkrNevow--QHIwbPH7/pub?gid=277533887&single=true&output=csv',
+        time: 'ESPARTA'
+    },
+    {
+        id: 5,
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTOvzzPJ4s8RBSzjWVPfMpdvTCayyr705ZEBadh1zho3EegP1mFGM3prfMJMUMG5bJpBFdjBZs6Fl00/pub?gid=277533887&single=true&output=csv',
+        time: 'LENDÁRIOS'
     }
 ];
 
@@ -10,7 +15,8 @@ export const PLANILHAS = [
 export const DOCUMENTACOES_PLANILHA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwyK_0HZdKbAVLLefusgym-eUkDR_UsmlaAf2XMHGCl2lfWWsdLMTgBgEIyQHR412E3SgSZ7s-eF6x/pub?gid=1522343431&single=true&output=csv';
 
 export const TIME_LOGOS = {
-    PERSA: 'LOGO PERSA.png'
+    ESPARTA: 'LOGO SPARTA.png',
+    LENDÁRIOS: 'LOGO LENDÁRIOS.png'
 };
 
 export const PLACEHOLDER_LOGO = 'PLACEHOLDER LOGO.jpeg';
