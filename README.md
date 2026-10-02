@@ -2,7 +2,9 @@
 # Painel Comercial Kerber
 
 Painel em tela cheia para exibir desempenho de corretores, VGV, vendas por construtora e informações operacionais em uma TV.
-
+- CANOAS: https://kerberimoveis.github.io/8F2K7M9Q/
+- PORTO ALEGRE: https://kerberimoveis.github.io/P4X9A7Z2/
+- VIAMÃO: https://kerberimoveis.github.io/Q4M8Z2K7/
 ## Estrutura
 
 - `index.html`: estrutura dos cinco painéis e elementos atualizados pelo JavaScript.
