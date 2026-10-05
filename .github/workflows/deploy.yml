@@ -62,7 +62,7 @@ jobs:
         with:
           repository: kerberimoveis/kerberimoveis.github.io
           ref: Porto-Alegre-T
-          path: porto-alegre-t
+          path: Porto-Alegre-T
 
       # =====================================
       # VIAMÃO
