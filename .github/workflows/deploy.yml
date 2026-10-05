@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - Porto-Alegre
+      - Porto-Alegre-T
       - Viamao
 
   workflow_dispatch:
@@ -51,6 +52,19 @@ jobs:
           path: porto-alegre
 
       # =====================================
+      # PORTO ALEGRE T
+      # BRANCH: Porto-Alegre-T
+      # URL: /T7K3P9X2/
+      # =====================================
+
+      - name: Checkout Porto Alegre T
+        uses: actions/checkout@v6
+        with:
+          repository: kerberimoveis/kerberimoveis.github.io
+          ref: Porto-Alegre-T
+          path: porto-alegre-t
+
+      # =====================================
       # VIAMÃO
       # BRANCH: Viamao
       # URL: /Q4M8Z2K7/
@@ -61,7 +75,7 @@ jobs:
         with:
           repository: kerberimoveis/kerberimoveis.github.io
           ref: Viamao
-          path: Viamao
+          path: viamao
 
       # =====================================
       # MONTAR SITE
@@ -88,12 +102,20 @@ jobs:
             porto-alegre/ \
             public/P4X9A7Z2/
 
+          # PORTO ALEGRE T
+          mkdir -p public/T7K3P9X2
+
+          rsync -av \
+            --exclude='.git' \
+            porto-alegre-t/ \
+            public/T7K3P9X2/
+
           # VIAMÃO
           mkdir -p public/Q4M8Z2K7
 
           rsync -av \
             --exclude='.git' \
-            Viamao/ \
+            viamao/ \
             public/Q4M8Z2K7/
 
           touch public/.nojekyll
