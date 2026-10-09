@@ -1,7 +1,7 @@
 
 # Painel Comercial Kerber - Porto Alegre
 
-Painel exclusivo de Porto Alegre para exibir desempenho de corretores, VGV, vendas por construtora e informações operacionais em uma TV. As documentações são filtradas pela cidade registrada na planilha, incluindo apenas corretores de Porto Alegre.
+Painel exclusivo de Porto Alegre para exibir desempenho de corretores, VGV, vendas por construtora e informações operacionais em uma TV. O top 3 de documentações considera somente corretores presentes no ranking de VGV de Porto Alegre; o total de documentações é lido da tabela de totais por cidade.
 
 ## Estrutura
 
@@ -37,4 +37,3 @@ Atalhos disponíveis:
 O layout foi desenhado para uma tela de referência de 1920x1080 e é escalado para preencher a janela disponível.
 
 As planilhas são buscadas com até três tentativas e timeout de 15 segundos. Quando uma fonte fica indisponível, o último CSV válido daquela fonte é usado a partir do cache local.
-
