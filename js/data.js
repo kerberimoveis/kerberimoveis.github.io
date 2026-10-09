@@ -125,7 +125,6 @@ export function csvToDocumentacoes(csvText) {
     const separador = detectCsvSeparator(csvText);
     const linhas = parseCSVCompleto(csvText, separador);
     const nomes = linhas[0] || [];
-    const cidades = linhas[15] || [];
     const aprovacoesTotal = linhas[2] || [];
     const aprovacoesComCondicao = linhas[3] || [];
     const indiceLinhaQuantidade = linhas.findIndex(linha =>
@@ -135,8 +134,7 @@ export function csvToDocumentacoes(csvText) {
 
     return nomes.reduce((itens, nomeCru, indice) => {
         const nome = (nomeCru || '').trim();
-        const cidade = (cidades[indice] || '').trim().replace(/\s+/g, ' ').toLocaleUpperCase('pt-BR');
-        if (!nome || cidade !== 'PORTO ALEGRE') return itens;
+        if (!nome) return itens;
         const quantidadeTexto = (quantidades[indice] || '').trim();
         const quantidade = Number.parseInt(quantidadeTexto.replace(/[^\d-]/g, ''), 10) || 0;
         const aprovacoesTotalTexto = (aprovacoesTotal[indice] || '').trim();

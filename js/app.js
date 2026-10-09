@@ -12,6 +12,12 @@ const $ = id => document.getElementById(id);
 const setText = (id, text) => { const elemento = $(id); if (elemento) elemento.textContent = text; };
 const hide = id => { const elemento = $(id); if (elemento) { elemento.hidden = true; elemento.style.display = 'none'; } };
 const show = id => { const elemento = $(id); if (elemento) { elemento.hidden = false; elemento.style.display = 'block'; } };
+const normalizarNome = nome => (nome || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR');
 
 const PLACEHOLDER_PATH = 'LOGOS/PLACEHOLDER%20LOGO.jpeg';
 
@@ -164,7 +170,13 @@ function renderizarDados(dados, documentacoes, vendasPorTime) {
     setText('sales-total-value', `${totalVendas} ${totalVendas === 1 ? 'Venda' : 'Vendas'}`);
 
     exibirFotosRankingVendas(dados.vendas, timestamp);
-    exibirTop3Documentacoes(documentacoes, timestamp);
+    const nomesCorretoresPortoAlegre = new Set(
+        dados.corretores.map(item => normalizarNome(item.nome))
+    );
+    const documentacoesPortoAlegre = documentacoes.filter(item =>
+        nomesCorretoresPortoAlegre.has(normalizarNome(item.nome))
+    );
+    exibirTop3Documentacoes(documentacoesPortoAlegre, timestamp);
     setText('documentacao-time-total-1', `${vendasPorTime.CELTA || 0} ${vendasPorTime.CELTA === 1 ? 'DOCUMENTAÇÃO' : 'DOCUMENTAÇÕES'}`);
     exibirRanking(agregarSomandoQuantidade(dados.vendas), {
         listId: 'ranking-list-construtoras',
