@@ -168,6 +168,7 @@ export function csvToVendasPorTime(csvText) {
         );
         const valor = indice >= 0 ? quantidades[indice] : '';
         vendas[time] = Number.parseInt(String(valor).replace(/[^\d-]/g, ''), 10) || 0;
+        if (time === 'ATENAS') vendas[time] = 0;
         return vendas;
     }, {});
 }
