@@ -3,7 +3,7 @@
 
 Painel em tela cheia para exibir desempenho de corretores, VGV, vendas por construtora e informações operacionais em uma TV.
 
-## Estrutura
+### Estrutura
 
 - `index.html`: estrutura dos cinco painéis e elementos atualizados pelo JavaScript.
 - `style.css`: dimensões da tela 1920x1080, tema visual e posicionamento dos elementos.
