@@ -27,7 +27,7 @@ export const PLANILHAS = [
 ];
 
 // Cole aqui o link CSV publicado da planilha de documentações.
-export const DOCUMENTACOES_PLANILHA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwyK_0HZdKbAVLLefusgym-eUkDR_UsmlaAf2XMHGCl2lfWWsdLMTgBgEIyQHR412E3SgSZ7s-eF6x/pubhtml?gid=1522343431&single=true';
+export const DOCUMENTACOES_PLANILHA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwyK_0HZdKbAVLLefusgym-eUkDR_UsmlaAf2XMHGCl2lfWWsdLMTgBgEIyQHR412E3SgSZ7s-eF6x/pub?gid=1522343431&single=true&output=csv';
 
 export const TIME_LOGOS = {
     ESPARTA: 'LOGO SPARTA.png',
