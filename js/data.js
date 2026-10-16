@@ -158,8 +158,7 @@ export function csvToVendasPorTime(csvText) {
     const cidadesDosTimes = {
         ESPARTA: 'CANOAS',
         PERSA: 'VIAMÃO',
-        CELTA: 'PORTO ALEGRE',
-        ATENAS: 'PORTO ALEGRE'
+        CELTA: 'PORTO ALEGRE'
     };
 
     return Object.entries(cidadesDosTimes).reduce((vendas, [time, cidadeEsperada]) => {
@@ -168,7 +167,6 @@ export function csvToVendasPorTime(csvText) {
         );
         const valor = indice >= 0 ? quantidades[indice] : '';
         vendas[time] = Number.parseInt(String(valor).replace(/[^\d-]/g, ''), 10) || 0;
-        if (time === 'ATENAS') vendas[time] = 0;
         return vendas;
     }, {});
 }

@@ -14,17 +14,7 @@ export const PLANILHAS = [
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTWO_PtLyJyb5Ua8fvOg1kiQC4COPwiB7KlPjaZ-h6Wl9Y9oydPPGvuSoht0ZV0b5R48ToJzK0ayObQ/pub?output=csv',
         time: 'CELTA'
     },
-    {
-        id: 4,
-        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR5V8xE3zzpfPSjEG35-nMssruDEqCFlQdINhuZclB-JUt5h4w7HSLG-r-jEHBX60cOg6-nA51tSeL3/pub?gid=277533887&single=true&output=csv',
-        time: 'ATENAS'
-    },
-    {
-        id: 5,
-        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTOvzzPJ4s8RBSzjWVPfMpdvTCayyr705ZEBadh1zho3EegP1mFGM3prfMJMUMG5bJpBFdjBZs6Fl00/pub?gid=277533887&single=true&output=csv',
-        time: 'LENDÁRIOS'
-    }
-];
+]; 
 
 // Cole aqui o link CSV publicado da planilha de documentações.
 export const DOCUMENTACOES_PLANILHA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTwyK_0HZdKbAVLLefusgym-eUkDR_UsmlaAf2XMHGCl2lfWWsdLMTgBgEIyQHR412E3SgSZ7s-eF6x/pub?gid=1522343431&single=true&output=csv';
@@ -32,9 +22,7 @@ export const DOCUMENTACOES_PLANILHA_URL = 'https://docs.google.com/spreadsheets/
 export const TIME_LOGOS = {
     ESPARTA: 'LOGO SPARTA.png',
     PERSA: 'LOGO PERSA.png',
-    CELTA: 'LOGO CELTA.png',
-    ATENAS: 'LOGO ATENAS.png',
-    LENDÁRIOS: 'LOGO LENDÁRIOS.png'
+    CELTA: 'LOGO CELTA.png'
 };
 
 export const PLACEHOLDER_LOGO = 'PLACEHOLDER LOGO.jpeg';

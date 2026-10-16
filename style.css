@@ -145,22 +145,18 @@ body {
 }
 
 .documentacao-time-box-1 {
-    bottom: 100px;
+    bottom: 35px;
     left: 440px;
 }
 
 .documentacao-time-box-2 {
-    bottom: 100px;
+    bottom: 35px;
     left: 960px;
 }
 
 .documentacao-time-box-3 {
-    bottom: 100px;
+    bottom: 35px;
     left: 1480px;
-}
-
-.documentacao-time-box-4 {
-    bottom: 100px;
 }
 
 .documentacao-time-title {
@@ -309,33 +305,21 @@ body {
 /* VGV Total por planilha — 4 caixas lado a lado numa fileira,
    na faixa inferior da tela (área historicamente livre neste layout) */
 .vgv-box-1 {
-    bottom: 40px;
-    left: 470px;
-    transform: scale(0.8);
-}
-
-.vgv-box-5 {
-    bottom: 40px;
+    bottom: 30px;
     left: 960px;
     transform: translateX(-50%) scale(0.8);
 }
 
 .vgv-box-2 {
-    bottom: 100px;
-    left: 200px;
-    transform: scale(0.8);
+    bottom: 30px;
+    left: 440px;
+    transform: translateX(-50%) scale(0.8);
 }
 
 .vgv-box-3 {
-    bottom: 100px;
-    left: 1370px;
-    transform: scale(0.8);
-}
-
-.vgv-box-4 {
-    bottom: 40px;
-    left: 1070px;
-    transform: scale(0.8);
+    bottom: 30px;
+    left: 1480px;
+    transform: translateX(-50%) scale(0.8);
 }
 
 #panel-top3-corretores .documentacao-time-box {
@@ -343,19 +327,15 @@ body {
 }
 
 #panel-top3-corretores .documentacao-time-box-1 {
-    left: 260px;
+    left: 440px;
 }
 
 #panel-top3-corretores .documentacao-time-box-2 {
-    left: 727px;
+    left: 960px;
 }
 
 #panel-top3-corretores .documentacao-time-box-3 {
-    left: 1193px;
-}
-
-#panel-top3-corretores .documentacao-time-box-4 {
-    left: 1660px;
+    left: 1480px;
 }
 
 .stat-box-row {
@@ -392,8 +372,8 @@ body {
 
 .sales-total-container {
     position: absolute;
-    top: 680px;
-    left: 1340px;
+    top: 690px;
+    left: 1330px;
     transform: translateX(-50%) scale(0.9);
     text-align: center;
     z-index: 3;
@@ -459,22 +439,17 @@ body {
 /* Posições dos indicadores de vendas do painel de construtoras. */
 #sales-qty-box-1 {
     bottom: 180px;
-    left: 1180px;
+    left: 1330px;
 }
 
 #sales-qty-box-2 {
-    bottom: 200px;
-    left: 930px;
+    bottom: 180px;
+    left: 990px;
 }
 
 #sales-qty-box-3 {
-    bottom: 200px;
-    left: 1730px;
-}
-
-#sales-qty-box-4 {
     bottom: 180px;
-    left: 1455px;
+    left: 1675px;
 }
 
 .vgv-title {

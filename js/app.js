@@ -170,7 +170,6 @@ function renderizarDados(dados, documentacoes, vendasPorTime) {
     setText('documentacao-time-total-1', `${vendasPorTime.ESPARTA || 0} ${vendasPorTime.ESPARTA === 1 ? 'DOCUMENTAÇÃO' : 'DOCUMENTAÇÕES'}`);
     setText('documentacao-time-total-2', `${vendasPorTime.PERSA || 0} ${vendasPorTime.PERSA === 1 ? 'DOCUMENTAÇÃO' : 'DOCUMENTAÇÕES'}`);
     setText('documentacao-time-total-3', `${vendasPorTime.CELTA || 0} ${vendasPorTime.CELTA === 1 ? 'DOCUMENTAÇÃO' : 'DOCUMENTAÇÕES'}`);
-    setText('documentacao-time-total-4', `${vendasPorTime.ATENAS || 0} ${vendasPorTime.ATENAS === 1 ? 'DOCUMENTAÇÃO' : 'DOCUMENTAÇÕES'}`);
     exibirRanking(agregarSomandoQuantidade(dados.vendas), {
         listId: 'ranking-list-construtoras',
         containerId: 'sales-ranking-container-construtoras',
