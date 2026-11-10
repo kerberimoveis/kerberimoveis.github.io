@@ -14,6 +14,11 @@ export const PLANILHAS = [
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTWO_PtLyJyb5Ua8fvOg1kiQC4COPwiB7KlPjaZ-h6Wl9Y9oydPPGvuSoht0ZV0b5R48ToJzK0ayObQ/pub?output=csv',
         time: 'CELTA'
     },
+    {
+        id:4,
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRyX59DdS5YMtS0mpIAnyV5YoiuB1ndcdxE23PqrjaE4f2EUtI3TAwzW4FMtmViyERYxQZyctVhdFh7/pub?gid=277533887&single=true&output=csv',
+        time: 'ZONA SUL'
+    },
 ]; 
 
 // Cole aqui o link CSV publicado da planilha de documentações.
