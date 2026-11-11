@@ -158,7 +158,8 @@ export function csvToVendasPorTime(csvText) {
     const cidadesDosTimes = {
         ESPARTA: 'CANOAS',
         PERSA: 'VIAMÃO',
-        CELTA: 'PORTO ALEGRE'
+        CELTA: 'PORTO ALEGRE',
+        ULTRAS: 'PORTO ALEGRE 2'
     };
 
     return Object.entries(cidadesDosTimes).reduce((vendas, [time, cidadeEsperada]) => {

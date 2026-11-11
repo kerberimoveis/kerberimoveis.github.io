@@ -17,7 +17,7 @@ export const PLANILHAS = [
     {
         id:4,
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRyX59DdS5YMtS0mpIAnyV5YoiuB1ndcdxE23PqrjaE4f2EUtI3TAwzW4FMtmViyERYxQZyctVhdFh7/pub?gid=277533887&single=true&output=csv',
-        time: 'ZONA SUL'
+        time: 'ULTRAS'
     },
 ]; 
 
@@ -27,7 +27,8 @@ export const DOCUMENTACOES_PLANILHA_URL = 'https://docs.google.com/spreadsheets/
 export const TIME_LOGOS = {
     ESPARTA: 'LOGO SPARTA.png',
     PERSA: 'LOGO PERSA.png',
-    CELTA: 'LOGO CELTA.png'
+    CELTA: 'LOGO CELTA.png',
+    ULTRAS: 'LOGO ULTRAS.png',
 };
 
 export const PLACEHOLDER_LOGO = 'PLACEHOLDER LOGO.jpeg';
