@@ -15,9 +15,14 @@ export const PLANILHAS = [
         time: 'CELTA'
     },
     {
-        id:4,
+        id: 4,
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRyX59DdS5YMtS0mpIAnyV5YoiuB1ndcdxE23PqrjaE4f2EUtI3TAwzW4FMtmViyERYxQZyctVhdFh7/pub?gid=277533887&single=true&output=csv',
         time: 'ULTRAS'
+    },
+    {
+        id: 5,
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTOvzzPJ4s8RBSzjWVPfMpdvTCayyr705ZEBadh1zho3EegP1mFGM3prfMJMUMG5bJpBFdjBZs6Fl00/pub?gid=277533887&single=true&output=csv',
+        time: 'LENDÁRIOS'
     },
 ]; 
 
@@ -29,6 +34,7 @@ export const TIME_LOGOS = {
     PERSA: 'LOGO PERSA.png',
     CELTA: 'LOGO CELTA.png',
     ULTRAS: 'LOGO ULTRAS.png',
+    LENDÁRIOS: 'LOGO LENDÁRIOS.png'
 };
 
 export const PLACEHOLDER_LOGO = 'PLACEHOLDER LOGO.jpeg';
