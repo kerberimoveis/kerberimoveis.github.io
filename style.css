@@ -308,29 +308,35 @@ body {
     transform: translateX(-50%) scale(0.8);
 }
 
-/* VGV Total por planilha — 4 caixas lado a lado numa fileira,
+/* VGV Total por planilha — caixas lado a lado numa fileira,
    na faixa inferior da tela (área historicamente livre neste layout) */
 .vgv-box-1 {
     bottom: 30px;
-    left: 787px;
+    left: 600px;
     transform: translateX(-50%) scale(0.8);
 }
 
 .vgv-box-2 {
     bottom: 30px;
-    left: 440px;
+    left: 300px;
     transform: translateX(-50%) scale(0.8);
 }
 
 .vgv-box-3 {
     bottom: 30px;
-    left: 1480px;
+    left: 1500px;
     transform: translateX(-50%) scale(0.8);
 }
 
 .vgv-box-4 {
     bottom: 30px;
-    left: 1133px;
+    left: 1200px;
+    transform: translateX(-50%) scale(0.8);
+}
+
+.vgv-box-5 {
+    bottom: 30px;
+    left: 900px;
     transform: translateX(-50%) scale(0.8);
 }
 
