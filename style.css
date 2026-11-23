@@ -379,15 +379,15 @@ body {
 .sales-qty-box {
     position: absolute;
     left: 50%;
-    width: 290px;
-    transform: translateX(-50%) scale(0.9);
+    width: 240px;
+    transform: translateX(-50%) scale(0.85);
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     z-index: 3;
     background-color: var(--color-surface);
-    padding: 10px 20px;
+    padding: 8px 12px;
     border-radius: 12px;
     border: 2px solid var(--color-accent);
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
@@ -426,7 +426,7 @@ body {
 }
 
 .sales-qty-title {
-    font-size: 21px;
+    font-size: 18px;
     color: #ffffff;
     font-weight: 600;
     text-transform: uppercase;
@@ -444,7 +444,7 @@ body {
 }
 
 .sales-qty-value {
-    font-size: 30px;
+    font-size: 26px;
     color: #2ecc71;
     font-weight: 800;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
@@ -452,36 +452,37 @@ body {
 }
 
 .sales-qty-logo {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
     display: block;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
 }
 
-/* Posições dos indicadores de vendas do painel de construtoras. */
+/* Indicadores de vendas alinhados em uma fileira no painel de construtoras. */
 #sales-qty-box-1 {
     bottom: 180px;
-    left: 1060px;
-    transform: scale(0.8);
+    left: 1140px;
 }
 
 #sales-qty-box-2 {
     bottom: 180px;
-    left: 820px;
-    transform: scale(0.8);
+    left: 930px;
 }
 
 #sales-qty-box-3 {
     bottom: 180px;
-    left: 1540px;
-    transform: scale(0.8);
+    left: 1770px;
 }
 
 #sales-qty-box-4 {
     bottom: 180px;
-    left: 1300px;
-    transform: scale(0.8);
+    left: 1560px;
+}
+
+#sales-qty-box-5 {
+    bottom: 180px;
+    left: 1350px;
 }
 
 .vgv-title {
